@@ -37,7 +37,14 @@
 .pb-10 {
   padding-bottom: 10px;
 }
+.p-4-12-4{
+  padding: 4px 12px 4px 0px;
+}
+.p-4-8-10{
+  padding: 4px 8px 10px;
+}
 
 .subtotal{
-  width: 100%;
+  display:flex;
+  justify-content: space-between;
 }

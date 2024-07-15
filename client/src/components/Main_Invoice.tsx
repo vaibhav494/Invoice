@@ -12,9 +12,9 @@ import Page from "./page";
 import View from "./view";
 import Text from "./text";
 import { Font } from "@react-pdf/renderer";
-// import Download from "./download_pdf";
+import Download from "./download_pdf";
 import { format } from "date-fns/format";
-import { useCommonContext } from "../context_common/context";
+// import { useCommonContext } from "../context_common/context";
 import axios from "axios";
 import { ToWords } from 'to-words';
 
@@ -37,9 +37,10 @@ interface Props {
   data?: invoice;
   pdfMode?: boolean;
   onChange?: (invoice: invoice) => void;
+  fstate:string[];
 }
 
-const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
+const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
   const [invoiceState, setInvoiceState] = useState<invoice>(
     //use the comment section to remember data when reload
     //data ? { ...data } : { ...initial_invoice }
@@ -47,9 +48,9 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
   );
   // will be using this seller_name here
 
-  const { sname } = useCommonContext();
+  // const { sname } = useCommonContext();
 
-  const seller_name_list = sname.map((seller: any) => ({
+  const seller_name_list = fstate.map((seller: any) => ({
     value: seller.id,
     text: seller.name,
   }));
@@ -194,7 +195,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
   useEffect(() => {
     if (invoiceState.seller_shipping_company_name) {
       const url = `http://localhost:4000/get_seller_detail/${invoiceState.seller_shipping_company_name}`;
-
+      
       axios
         .get(url)
         .then((response: any) => {
@@ -226,7 +227,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
     <>
       <Document pdfMode={pdfMode}>
         <Page className="invoice-wrapper" pdfMode={pdfMode}>
-          {/* {!pdfMode && <Download data={invoiceState} setData={(d) => setInvoiceState(d)} />} */}
+          {!pdfMode && <Download data={invoiceState} setData={(d) => setInvoiceState(d)} />}
 
           <View className="flex" pdfMode={pdfMode}>
             {/* main start */}
@@ -1012,7 +1013,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
             );
           })}
           {/* product row heading detail end*/}
-          <View className="flex" pdfMode={pdfMode}>
+          <View className="subtotal" pdfMode={pdfMode}>
             <View className="w-50 mt-10" pdfMode={pdfMode}>
               {!pdfMode && (
                 <button className="link" onClick={handleAdd}>
@@ -1023,7 +1024,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
             </View>
             
             <View className="flex mb-5" >
-              <View className="w-100" pdfMode={pdfMode}>
+              <View  pdfMode={pdfMode}>
               <Input
                 editable={false}
                 value={invoiceState.total_label}
@@ -1033,7 +1034,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
                 pdfMode={pdfMode}
               />
               </View>
-              <View className="subtotal right" pdfMode={pdfMode}>
+              <View className="p-4-8-10 right" pdfMode={pdfMode}>
                 <Text 
                   children={`${subTotal}`}
                 />

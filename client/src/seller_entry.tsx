@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { FC} from "react";
 import Axios from "axios";
 import axios from "axios";
-import { useCommonContext } from "./context_common/context"; // Adjust the import path accordingly
+//import { useCommonContext } from "./context_common/context"; // Adjust the import path accordingly
 import state_list from "./data/dropdown_data/state_list";
+interface Props {
+  fstate: string[];
+  fsetState: (value: string[]) => void;
+}
 
-function Seller_entry() {
-  const { sname, setSname } = useCommonContext(); // Accessing sname and setSname from CommonContext
+const Seller_entry: FC<Props> = ({fstate,fsetState}) => {
+  //const { sname, setSname } = useCommonContext(); // Accessing sname and setSname from CommonContext
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -15,7 +20,7 @@ function Seller_entry() {
   useEffect(() => {
     axios
       .get("http://localhost:4000/insert")
-      .then((seller_name) => setSname(seller_name.data))
+      .then((seller_name) => fsetState(seller_name.data))
       .catch((err) => {
         console.log(err);
       });
@@ -32,14 +37,14 @@ function Seller_entry() {
       console.log(data);
       axios
         .get("http://localhost:4000/insert")
-        .then((seller_name) => setSname(seller_name.data))
+        .then((seller_name) => fsetState(seller_name.data))
         .catch((err) => {
           console.log(err);
         });
     });
   };
 
-  console.log(sname);
+  console.log(fstate);
 
   return (
     <>
@@ -81,15 +86,15 @@ function Seller_entry() {
             />
 
             <p>Seller State:</p>
-            {/* <input
+            <input
               className="Role"
               type="text"
               placeholder="Seller State...."
               onChange={(e) => {
                 setStat(e.target.value);
               }}
-            /> */}
-            <select
+            />
+            {/* <select
               autoFocus={true}
               onChange={(e) => {
                 setStat(e.target.value);
@@ -103,7 +108,7 @@ function Seller_entry() {
               }
               
               
-            </select>
+            </select> */}
             <button type="submit">Submit</button>
           </form>
         </div>
