@@ -108,6 +108,6 @@ export const initial_invoice: invoice = {
 
   total_label: "TOTAL:",
   currency: "₹",
-  amount_chargeable_in_words_label : "Amount Chargeable in Words",
+  amount_chargeable_in_words_label : "Amount Chargeable in Words:",
 
 }

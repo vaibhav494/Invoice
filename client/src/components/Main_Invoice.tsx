@@ -18,9 +18,7 @@ import { format } from "date-fns/format";
 import axios from "axios";
 import { ToWords } from 'to-words';
 
-// const toWords = new ToWords();
 
-// let words = toWords.convert(452, { currency: true });
 
 Font.register({
   family: "Nunito",
@@ -57,7 +55,9 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
 
   const [subTotal, setSubTotal] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
+  const toWords = new ToWords();
 
+  let words = toWords.convert(subTotal, { currency: true });
   const date_format = "MMM dd, yyyy";
   const invoiceDate =
     invoiceState.invoice_date !== ""
@@ -1024,7 +1024,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
             </View>
             
             <View className="flex mb-5" >
-              <View  pdfMode={pdfMode}>
+              <View className="p-4-8-10" pdfMode={pdfMode}>
               <Input
                 editable={false}
                 value={invoiceState.total_label}
@@ -1040,7 +1040,28 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 />
               </View>
             </View>
+
+
           </View>
+          {/* tax and bottom half */}
+          <hr />
+          <View className="w-50" pdfMode={pdfMode}>
+          <Input
+          className="bold"
+                editable={false}
+                value={invoiceState.amount_chargeable_in_words_label}
+                onChange={(value) =>
+                  handleChange("amount_chargeable_in_words_label", value)
+                }
+                pdfMode={pdfMode}
+          />
+          <Text
+          pdfMode={pdfMode}
+          children={`${words}`}
+          ></Text>
+          </View>
+
+
         </Page>
       </Document>
     </>
