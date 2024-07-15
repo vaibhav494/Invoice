@@ -106,7 +106,7 @@ export const initial_invoice: invoice = {
   CGST_label : "CGST",
   SGST_label : "SGST",
 
-  total_label: "TOTAL",
+  total_label: "TOTAL:",
   currency: "₹",
   amount_chargeable_in_words_label : "Amount Chargeable in Words",
 

@@ -16,6 +16,12 @@ import { Font } from "@react-pdf/renderer";
 import { format } from "date-fns/format";
 import { useCommonContext } from "../context_common/context";
 import axios from "axios";
+import { ToWords } from 'to-words';
+
+// const toWords = new ToWords();
+
+// let words = toWords.convert(452, { currency: true });
+
 Font.register({
   family: "Nunito",
   fonts: [
@@ -240,6 +246,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
 
               {/* company address start */}
               <Textarea
+              rows={6.05}
                 placeholder="Company's Address"
                 value={invoiceState.buyer_billing_address}
                 onChange={(value) =>
@@ -329,6 +336,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
 
               {/* company address start */}
               <Textarea
+              rows={4.5}
                 placeholder="Billing Address"
                 value={invoiceState.seller_billing_address}
                 onChange={(value) =>
@@ -1013,8 +1021,9 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
                 </button>
               )}
             </View>
+            
             <View className="flex mb-5" >
-              <View className="w-50" pdfMode={pdfMode}>
+              <View className="w-100" pdfMode={pdfMode}>
               <Input
                 editable={false}
                 value={invoiceState.total_label}
@@ -1024,8 +1033,10 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
                 pdfMode={pdfMode}
               />
               </View>
-              <View className="right" pdfMode={pdfMode}>
-                <span>{subTotal}</span>
+              <View className="subtotal right" pdfMode={pdfMode}>
+                <Text 
+                  children={`${subTotal}`}
+                />
               </View>
             </View>
           </View>
