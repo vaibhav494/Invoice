@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import axios from "axios";
 import { useCommonContext } from "./context_common/context"; // Adjust the import path accordingly
+import state_list from "./data/dropdown_data/state_list";
 
 function Seller_entry() {
   const { sname, setSname } = useCommonContext(); // Accessing sname and setSname from CommonContext
@@ -80,14 +81,29 @@ function Seller_entry() {
             />
 
             <p>Seller State:</p>
-            <input
+            {/* <input
               className="Role"
               type="text"
               placeholder="Seller State...."
               onChange={(e) => {
                 setStat(e.target.value);
               }}
-            />
+            /> */}
+            <select
+              autoFocus={true}
+              onChange={(e) => {
+                setStat(e.target.value);
+              }}
+            >
+              {state_list?.map((option) => (
+                <option key={option.text} value={option.value}>
+                  {option.text}
+                </option>
+              ))
+              }
+              
+              
+            </select>
             <button type="submit">Submit</button>
           </form>
         </div>

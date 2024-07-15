@@ -484,19 +484,238 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
             {/* left half ends here*/}
 
             {/* right half starts here */}
-            {/* <View className="w-50" pdfMode={pdfMode}>
-            <Input
+            <View className="w-50" pdfMode={pdfMode}>
+            {/* <Input
             editable={true}
               className="fs-45 right bold"
               placeholder="Invoice"
               value={invoiceState.buyer_company_name}
               onChange={(value) => handleChange("buyer_company_name", value)}
               pdfMode={pdfMode}
-            />
-          </View> */}
+            /> */}
+
+
+            <View className="flex mb-5" pdfMode={pdfMode}>
+                <View className="w-50" pdfMode={pdfMode}>
+                  {/* invoice number label start */}
+                  <Input
+                    editable={false}
+                    className="bold"
+                    value={invoiceState.invoice_number_label}
+                    onChange={(value) =>
+                      handleChange("invoice_number_label", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+                <View className="w-50" pdfMode={pdfMode}>
+                  <Input
+                    editable={false}
+                    className="bold"
+                    value={invoiceState.dated_label}
+                    onChange={(value) =>
+                      handleChange("dated_label", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+              </View>
+
+
+
+
+              <View className="flex mb-5" pdfMode={pdfMode}>
+                <View className="w-50" pdfMode={pdfMode}>
+                  {/* invoice number label start */}
+                  <Input
+                    editable={true}
+                    value={invoiceState.invoice_number}
+                    onChange={(value) =>
+                      handleChange("invoice_number", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+                
+                <View className="w-50" pdfMode={pdfMode}>
+                  <Input
+                    editable={true}
+                    value={invoiceState.dated}
+                    onChange={(value) =>
+                      handleChange("dated", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+              </View>
+              <hr />
+              <View className="flex mb-5" pdfMode={pdfMode}>
+                <View className="w-50" pdfMode={pdfMode}>
+                  {/* invoice number label start */}
+                  <Input
+                    editable={false}
+                    className="bold"
+                    value={invoiceState.invoice_number_label}
+                    onChange={(value) =>
+                      handleChange("invoice_number_label", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+                <View className="w-50" pdfMode={pdfMode}>
+                  <Input
+                    editable={false}
+                    className="bold"
+                    value={invoiceState.dated_label}
+                    onChange={(value) =>
+                      handleChange("dated_label", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+              </View>
+
+
+
+
+              <View className="flex mb-5" pdfMode={pdfMode}>
+                <View className="w-50" pdfMode={pdfMode}>
+                  {/* invoice number label start */}
+                  <Input
+                    editable={true}
+                    value={invoiceState.invoice_number}
+                    onChange={(value) =>
+                      handleChange("invoice_number", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+                
+                <View className="w-50" pdfMode={pdfMode}>
+                  <Input
+                    editable={true}
+                    value={invoiceState.dated}
+                    onChange={(value) =>
+                      handleChange("dated", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+              </View>
+              <hr />
+              <View className="flex mb-5" pdfMode={pdfMode}>
+                <View className="w-50" pdfMode={pdfMode}>
+                  {/* invoice number label start */}
+                  <Input
+                    editable={false}
+                    className="bold"
+                    value={invoiceState.invoice_number_label}
+                    onChange={(value) =>
+                      handleChange("invoice_number_label", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+                <View className="w-50" pdfMode={pdfMode}>
+                  <Input
+                    editable={false}
+                    className="bold"
+                    value={invoiceState.dated_label}
+                    onChange={(value) =>
+                      handleChange("dated_label", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+              </View>
+
+
+
+
+              <View className="flex mb-5" pdfMode={pdfMode}>
+                <View className="w-50" pdfMode={pdfMode}>
+                  {/* invoice number label start */}
+                  <Input
+                    editable={true}
+                    value={invoiceState.invoice_number}
+                    onChange={(value) =>
+                      handleChange("invoice_number", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+                
+                <View className="w-50" pdfMode={pdfMode}>
+                  <Input
+                    editable={true}
+                    value={invoiceState.dated}
+                    onChange={(value) =>
+                      handleChange("dated", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+              </View>
+              <hr />
+              <View className="flex mb-5" pdfMode={pdfMode}>
+                <View className="w-50" pdfMode={pdfMode}>
+                  {/* invoice number label start */}
+                  <Input
+                    editable={false}
+                    className="bold"
+                    value={invoiceState.invoice_number_label}
+                    onChange={(value) =>
+                      handleChange("invoice_number_label", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+                <View className="w-50" pdfMode={pdfMode}>
+                  <Input
+                    editable={false}
+                    className="bold"
+                    value={invoiceState.dated_label}
+                    onChange={(value) =>
+                      handleChange("dated_label", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+              </View>
+
+
+
+
+              <View className="flex mb-5" pdfMode={pdfMode}>
+                <View className="w-50" pdfMode={pdfMode}>
+                  {/* invoice number label start */}
+                  <Input
+                    editable={true}
+                    value={invoiceState.invoice_number}
+                    onChange={(value) =>
+                      handleChange("invoice_number", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+                
+                <View className="w-50" pdfMode={pdfMode}>
+                  <Input
+                    editable={true}
+                    value={invoiceState.dated}
+                    onChange={(value) =>
+                      handleChange("dated", value)
+                    }
+                    pdfMode={pdfMode}
+                  />
+                </View>
+              </View>
+              <hr />
+          </View>
           </View>
           {/* main ends here */}
 
+          {/* product row heading */}
           <View className="mt-30 bg-dark flex" pdfMode={pdfMode}>
             <View className="w-48 p-4-8" pdfMode={pdfMode}>
               <Input
@@ -562,7 +781,9 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
               />
             </View>
           </View>
+          {/* product row heading end*/}
 
+          {/* product row detail */}
           {invoiceState.product_all_detail.map((Product_line_1, i) => {
             return pdfMode && Product_line_1.particulars === "" ? (
               <Text key={i}></Text>
@@ -645,6 +866,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
               </View>
             );
           })}
+          {/* product row heading detail end*/}
           <View className="flex" pdfMode={pdfMode}>
             <View className="w-50 mt-10" pdfMode={pdfMode}>
               {!pdfMode && (
