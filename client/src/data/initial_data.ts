@@ -37,46 +37,46 @@ export const initial_invoice: invoice = {
 
 
   invoice_number_label : "Invoice Number",
-  invoice_number : "invoice number",
+  invoice_number : "",
 
-  dated_seller_label : "Dated seller",
-  dated_seller : "dated seller",
+  dated_seller_label : "Dated",
+  dated_seller : "",
 
   invoice_date_label : "Invoice Date",
-  invoice_date : "invoice date",
+  invoice_date : "",
   
   delivery_note_label : "Delivery Note",
-  delivery_note : "delivery note",
+  delivery_note : "",
   
   mode_terms_of_payment_label : "Mode/Terms of Payment",
-  mode_terms_of_payment : "mode/terms of payment",
+  mode_terms_of_payment : "",
   
   reference_number_and_date_label : "Reference Number and Date",
-  reference_number_and_date : "reference number and date",
+  reference_number_and_date : "",
   
   other_references_label : "Other Reference",
-  other_references : "other reference",
+  other_references : "",
   
   buyers_order_number_label : "Buyer's Order Number",
-  buyers_order_number : "buyers order number",
+  buyers_order_number : "",
   
-  dated_buyer_label : "Dated buyer",
-  dated_buyer : "dated buyer",
+  dated_buyer_label : "Dated",
+  dated_buyer : "",
   
   dispatch_doc_number_label : "Dispatch Doc Number",
-  dispatch_doc_number : "dispatch doc number",
+  dispatch_doc_number : "",
   
   delivery_note_date_label : "Delivery Note Date",
-  delivery_note_date : "delivery note date",
+  delivery_note_date : "",
   
   dispatched_through_label : "Dispatch through",
-  dispatched_through : "dispatch through",
+  dispatched_through : "",
   
   destination_label : "Destination",
-  destination : "destination",
+  destination : "",
 
   terms_of_delivery_label : "Terms of Delivery",
-  terms_of_delivery : "terms of delivery",
+  terms_of_delivery : "",
 
 
   product_sr_number_label : "Sr No.",

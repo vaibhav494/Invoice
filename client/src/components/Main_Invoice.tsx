@@ -19,7 +19,6 @@ import axios from "axios";
 import { ToWords } from 'to-words';
 
 
-
 Font.register({
   family: "Nunito",
   fonts: [
@@ -215,13 +214,6 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
         });
     }
   }, [invoiceState.seller_shipping_company_name]);
-
-  // amount in words
-  // using Number to Words library
-  // useEffect(()=>{
-
-  // },[])
-
 
   return (
     <>
@@ -517,6 +509,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                   <Input
                     editable={false}
                     className="bold"
+                    
                     value={invoiceState.invoice_number_label}
                     onChange={(value) =>
                       handleChange("invoice_number_label", value)
@@ -546,6 +539,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                   <Input
                     editable={true}
                     value={invoiceState.invoice_number}
+                    placeholder="Enter invoice number"
                     onChange={(value) =>
                       handleChange("invoice_number", value)
                     }
@@ -557,6 +551,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                   <Input
                     editable={true}
                     value={invoiceState.dated_seller}
+                    placeholder="Enter dated seller"
                     onChange={(value) =>
                       handleChange("dated_seller", value)
                     }
@@ -599,6 +594,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                   <Input
                     editable={true}
                     value={invoiceState.delivery_note}
+                    placeholder="Enter delivery note"
                     onChange={(value) =>
                       handleChange("delivery_note", value)
                     }
@@ -609,6 +605,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 <View className="w-50" pdfMode={pdfMode}>
                   <Input
                     editable={true}
+                    placeholder="Enter Mode/Terms of payment"
                     value={invoiceState.mode_terms_of_payment}
                     onChange={(value) =>
                       handleChange("mode_terms_of_payment", value)
@@ -651,6 +648,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                  
                   <Input
                     editable={true}
+                    placeholder="Enter reference number and date"
                     value={invoiceState.reference_number_and_date}
                     onChange={(value) =>
                       handleChange("reference_number_and_date", value)
@@ -662,6 +660,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 <View className="w-50" pdfMode={pdfMode}>
                   <Input
                     editable={true}
+                    placeholder="Enter other references"
                     value={invoiceState.other_references}
                     onChange={(value) =>
                       handleChange("other_references", value)
@@ -704,6 +703,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                   {/* invoice number label start */}
                   <Input
                     editable={true}
+                    placeholder="Enter buyer order number"
                     value={invoiceState.buyers_order_number}
                     onChange={(value) =>
                       handleChange("buyers_order_number", value)
@@ -716,6 +716,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                   <Input
                     editable={true}
                     value={invoiceState.dated_buyer}
+                    placeholder="Enter dated"
                     onChange={(value) =>
                       handleChange("dated_buyer", value)
                     }
@@ -761,6 +762,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                   {/* invoice number label start */}
                   <Input
                     editable={true}
+                    placeholder="Enter dispatch doc number"
                     value={invoiceState.dispatch_doc_number}
                     onChange={(value) =>
                       handleChange("dispatch_doc_number", value)
@@ -772,6 +774,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 <View className="w-50" pdfMode={pdfMode}>
                   <Input
                     editable={true}
+                    placeholder="Enter delivery note date"
                     value={invoiceState.delivery_note_date}
                     onChange={(value) =>
                       handleChange("delivery_note_date", value)
@@ -813,6 +816,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 <View className="w-50" pdfMode={pdfMode}>
                   <Input
                     editable={true}
+                    placeholder="Enter dispatched through"
                     value={invoiceState.dispatched_through}
                     onChange={(value) =>
                       handleChange("dispatched_through", value)
@@ -824,6 +828,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 <View className="w-50" pdfMode={pdfMode}>
                   <Input
                     editable={true}
+                    placeholder="Enter destination"
                     value={invoiceState.destination}
                     onChange={(value) =>
                       handleChange("destination", value)
@@ -846,8 +851,9 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                   pdfMode={pdfMode}
                 />
                 <Textarea 
-                  placeholder="Company's Address"
+                  placeholder="Enter terms of delivery"
                   value={invoiceState.terms_of_delivery}
+
                   onChange={(value) =>
                     handleChange("terms_of_delivery", value)
                   }
