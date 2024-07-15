@@ -209,6 +209,13 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
     }
   }, [invoiceState.seller_shipping_company_name]);
 
+  // amount in words
+  // using Number to Words library
+  // useEffect(()=>{
+
+  // },[])
+
+
   return (
     <>
       <Document pdfMode={pdfMode}>
