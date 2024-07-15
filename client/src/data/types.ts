@@ -63,6 +63,9 @@ export const t_invoice = z.object({
     invoice_number_label : z.string(),
     invoice_number : z.string(),
 
+    dated_seller_label : z.string(),
+    dated_seller : z.string(),
+
     invoice_date_label : z.string(),
     invoice_date : z.string(),
     
@@ -81,8 +84,8 @@ export const t_invoice = z.object({
     buyers_order_number_label : z.string(),
     buyers_order_number : z.string(),
     
-    dated_label : z.string(),
-    dated : z.string(),
+    dated_buyer_label : z.string(),
+    dated_buyer : z.string(),
     
     dispatch_doc_number_label : z.string(),
     dispatch_doc_number : z.string(),
@@ -90,8 +93,8 @@ export const t_invoice = z.object({
     delivery_note_date_label : z.string(),
     delivery_note_date : z.string(),
     
-    dispatched_event_label : z.string(),
-    dispatched_event : z.string(),
+    dispatched_through_label : z.string(),
+    dispatched_through : z.string(),
     
     destination_label : z.string(),
     destination : z.string(),
