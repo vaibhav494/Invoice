@@ -826,7 +826,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
               <hr />
 
 
-              <View>
+              <View pdfMode={pdfMode}>
                 <Input
                   editable={false}
                   className="bold"
@@ -1012,6 +1012,21 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange }) => {
                   Add Line Item
                 </button>
               )}
+            </View>
+            <View className="flex mb-5" >
+              <View className="w-50" pdfMode={pdfMode}>
+              <Input
+                editable={false}
+                value={invoiceState.total_label}
+                onChange={(value) =>
+                  handleChange("total_label", value)
+                }
+                pdfMode={pdfMode}
+              />
+              </View>
+              <View className="right" pdfMode={pdfMode}>
+                <span>{subTotal}</span>
+              </View>
             </View>
           </View>
         </Page>
