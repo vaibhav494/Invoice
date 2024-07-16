@@ -45,7 +45,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
   );
   // will be using this seller_name here
 
-  // const { sname } = useCommonContext();
+  //  const { sname } = useCommonContext();
 
   const seller_name_list = fstate.map((seller: any) => ({
     value: seller.id,
@@ -62,6 +62,20 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
     invoiceState.invoice_date !== ""
       ? new Date(invoiceState.invoice_date)
       : new Date();
+
+  const data_add_db = (e : any)=>{
+    e.preventDefault();
+    axios.post("http://localhost:4000/insert", {
+      Seller_Name:invoiceState.buyer_company_name,
+      Buyer_Name:invoiceState.seller_billing_company_name,
+      Invoice_Number: invoiceState.invoice_number,
+      Invoice_Date:invoiceState.invoice_date,
+      Total_Amount:subTotal
+    
+    }).then((data) => {
+      console.log(data);
+    });
+  }
 
   const handleChange = (name: keyof invoice, value: string | number) => {
     if (name !== "product_all_detail") {
