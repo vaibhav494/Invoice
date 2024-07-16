@@ -48,6 +48,13 @@ app.post('/insert_full_invoice_detail', async(req, res)=>{
             console.log(err)
         }
 })
+
+app.get('/insert_full_invoice_detail', (req, res)=>{
+    Invoice_detail.find()
+    .then(seller_name => res.json(seller_name))
+    .catch(err => res.json(err))
+})
+
 app.get('/insert', (req, res)=>{
     User.find({},'name')
     .then(seller_name => res.json(seller_name))
