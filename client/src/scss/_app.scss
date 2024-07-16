@@ -213,3 +213,18 @@
   border-radius: 4px;
   box-shadow: 2px 1px 6px rgba(0, 0, 0, 0.15);
 }
+
+
+.bill_detail_main {
+  margin: 0 auto; /* Center the table horizontally */
+  width: auto; /* Let the table width adjust to its content */
+  font-size:x-large;
+  margin-top: 5vh;
+  border: black solid;
+}
+
+.bill_detail_main th {
+  border: black solid;
+  width: 30vh; /* Set the width of each column */
+  text-align:center; /* Optional: center the text within each header cell */
+}

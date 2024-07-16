@@ -7,3 +7,7 @@ discount function and calculation
 sr number add
 
 vertical line add
+
+bill page for each generated invoice 
+
+auto date in invoice
