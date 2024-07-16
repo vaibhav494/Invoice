@@ -33,23 +33,21 @@ app.get('/get_seller_detail/:name', (req, res) => {
 });
 
 
-app.post('/insert_full_invoice_detail'), async(req, res)=>{
+app.post('/insert_full_invoice_detail', async(req, res)=>{
     try {
-        const formData = await Invoice_detail.create({
+        const formData1 = await Invoice_detail.create({
             Buyer_Name: req.body.Buyer_Name,
             Seller_Name: req.body.Seller_Name,
             Invoice_Number: req.body.Invoice_Number,
             Invoice_Date: req.body.Invoice_Date,
             Total_Amount: req.body.Total_Amount,
         })
-    
-        
-            await formData.save();
+            await formData1.save();
             res.send("invoice data added..")
         } catch(err) {
             console.log(err)
         }
-}
+})
 app.get('/insert', (req, res)=>{
     User.find({},'name')
     .then(seller_name => res.json(seller_name))

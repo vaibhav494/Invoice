@@ -63,8 +63,8 @@ export const t_invoice = z.object({
     invoice_number_label : z.string(),
     invoice_number : z.string(),
 
-    dated_seller_label : z.string(),
-    dated_seller : z.string(),
+    // dated_seller_label : z.string(),
+    // dated_seller : z.string(),
 
     invoice_date_label : z.string(),
     invoice_date : z.string(),

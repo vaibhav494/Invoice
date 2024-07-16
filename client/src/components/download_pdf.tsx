@@ -8,7 +8,6 @@ import Main_Invoice from './Main_Invoice'
 interface Props {
   data: invoice
   setData(data: invoice): void
-
 }
 
 const Download: FC<Props> = ({ data }) => {

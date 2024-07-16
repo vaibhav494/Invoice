@@ -39,10 +39,10 @@ export const initial_invoice: invoice = {
   invoice_number_label : "Invoice Number",
   invoice_number : "",
 
-  dated_seller_label : "Dated",
-  dated_seller : "",
+  // dated_seller_label : "Dated",
+  // dated_seller : "",
 
-  invoice_date_label : "Invoice Date",
+  invoice_date_label : "Dated",
   invoice_date : "",
   
   delivery_note_label : "Delivery Note",

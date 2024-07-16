@@ -16,6 +16,7 @@ import Download from "./download_pdf";
 import { format } from "date-fns/format";
 // import { useCommonContext } from "../context_common/context";
 import axios from "axios";
+import Axios  from "axios";
 import { ToWords } from 'to-words';
 
 
@@ -65,7 +66,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
 
   const data_add_db = (e : any)=>{
     e.preventDefault();
-    axios.post("http://localhost:4000/insert", {
+    Axios.post("http://localhost:4000/insert_full_invoice_detail", {
       Seller_Name:invoiceState.buyer_company_name,
       Buyer_Name:invoiceState.seller_billing_company_name,
       Invoice_Number: invoiceState.invoice_number,
@@ -231,6 +232,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
 
   return (
     <>
+    <div><button onClick={data_add_db}>Save</button></div>
       <Document pdfMode={pdfMode}>
         <Page className="invoice-wrapper" pdfMode={pdfMode}>
           {!pdfMode && <Download data={invoiceState} setData={(d) => setInvoiceState(d)} />}
@@ -535,9 +537,9 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                   <Input
                     editable={false}
                     className="bold"
-                    value={invoiceState.dated_seller_label}
+                    value={invoiceState.invoice_date_label}
                     onChange={(value) =>
-                      handleChange("dated_seller_label", value)
+                      handleChange("invoice_date_label", value)
                     }
                     pdfMode={pdfMode}
                   />
@@ -564,10 +566,10 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 <View className="w-50" pdfMode={pdfMode}>
                   <Input
                     editable={true}
-                    value={invoiceState.dated_seller}
+                    value={invoiceState.invoice_date}
                     placeholder="Enter dated seller"
                     onChange={(value) =>
-                      handleChange("dated_seller", value)
+                      handleChange("invoice_date", value)
                     }
                     pdfMode={pdfMode}
                   />
