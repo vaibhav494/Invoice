@@ -63,22 +63,12 @@ app.get('/insert', (req, res)=>{
 
 app.post('/insert', async(req, res) => {
     try {
-    const SellerName = req.body.seller_name
-    const SellerAddress = req.body.seller_address
-    const SellerGst = req.body.seller_gst
-    const SellerState = req.body.seller_state
-    console.log(SellerAddress)
-    console.log(SellerName)
-    console.log(SellerGst)
-    console.log(typeof(SellerState))
     const formData = await User.create({
-        name: SellerName,
-        address: SellerAddress,
-        gst: SellerGst,
-        state: SellerState,
+        name: req.body.seller_name,
+        address: req.body.seller_address,
+        gst: req.body.seller_gst,
+        state: req.body.seller_state,
     })
-
-    
         await formData.save();
         res.send("inserted data..")
     } catch(err) {
