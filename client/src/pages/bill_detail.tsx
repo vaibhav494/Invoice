@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-// Interface for InvoiceDetail
 interface InvoiceDetail {
   Seller_Name: string;
   Buyer_Name: string;
@@ -16,21 +15,19 @@ function Bill_detail() {
   const [buyerName, setBuyerName] = useState("all");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "none">("none");
   const [sellerName, setSellerName] = useState("all");
-
-  // Fetching details
   useEffect(() => {
     axios
       .get("http://localhost:4000/insert_full_invoice_detail")
       .then((response) => {
         setDetail(response.data);
-        setFilteredDetail(response.data); // Initialize filteredDetail with full data
+        // setFilteredDetail(response.data);
       })
+    
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  // Update filtered details when buyerName or sortOrder changes
   useEffect(() => {
     let data = [...detail];
     if (sellerName !== "all") {

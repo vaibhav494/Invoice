@@ -67,11 +67,11 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
   const data_add_db = (e : any)=>{
     e.preventDefault();
     Axios.post("http://localhost:4000/insert_full_invoice_detail", {
-      Seller_Name:invoiceState.buyer_company_name,
-      Buyer_Name:invoiceState.seller_billing_company_name,
-      Invoice_Number: invoiceState.invoice_number,
-      Invoice_Date:invoiceState.invoice_date,
-      Total_Amount:subTotal
+      Seller_name:invoiceState.buyer_company_name,
+      Buyer_name:invoiceState.seller_billing_company_name,
+      Invoice_number: invoiceState.invoice_number,
+      Invoice_date:invoiceState.invoice_date,
+      Total_amount:subTotal
     
     }).then((data) => {
       console.log(data);
