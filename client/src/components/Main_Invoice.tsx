@@ -55,6 +55,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
 
   const [subTotal, setSubTotal] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
+  const [Total_GST, setTotalGST] = useState<number>(0);
   const toWords = new ToWords();
 
   let words = toWords.convert(subTotal, { currency: true });
@@ -148,7 +149,25 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
 
     return amount.toFixed(2);
   };
-
+  
+  //GST Calculation
+  useEffect(()=>{
+    let gst = 0;
+    invoiceState.product_all_detail?.forEach((Product_line_1) => {  
+      const quantityNumber = parseFloat(Product_line_1.quantity);
+      const rateNumber = parseFloat(Product_line_1.rate);
+      const amount =
+        quantityNumber && rateNumber ? quantityNumber * rateNumber : 0;
+      if (rateNumber < 1000){
+        gst += amount * 5 / 100
+      }
+      if (rateNumber > 1000){
+        gst += amount * 12 /100
+      }
+    });
+    setTotalGST(gst);
+    console.log('this is gst'+Total_GST)
+  },[invoiceState.product_all_detail])
   useEffect(() => {
     let sub_total = 0;
 
@@ -1062,9 +1081,11 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 />
               </View>
             </View>
+            
 
 
           </View>
+          
           {/* tax and bottom half */}
           <hr />
           <View className="w-50" pdfMode={pdfMode}>
