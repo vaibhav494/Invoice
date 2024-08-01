@@ -6,7 +6,7 @@ import Seller_entry from './seller_entry';
 import Bill_detail from './pages/bill_detail';
 import { invoice } from './data/types';
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
-
+import Estimate_Invoice from './components/estimate_invoice';
 function App() {
   const [sssname, setSssname] = useState<string[]>([]);
   
@@ -74,7 +74,7 @@ function App() {
           }
         />
         <Route path="/bill_detail" element={<Bill_detail />} />
-        <Route path="/estimate_invoice" element={<>hello</>} />
+        <Route path="/estimate_invoice" element={<><Estimate_Invoice/></>} />
       </Routes>
     </BrowserRouter>
   );

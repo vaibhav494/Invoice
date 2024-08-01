@@ -1,0 +1,19 @@
+.table-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+table {
+  width: 60%;
+  border-collapse: collapse;
+}
+
+td.wide {
+  width: 50%;
+}
+
+td.narrow {
+  width: 25%;
+}
