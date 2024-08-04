@@ -1,3 +1,8 @@
+input, textarea {
+    border: none;
+    outline: none;
+  }
+
 .table-div{
     display: flex;
     justify-content: center;
@@ -13,7 +18,10 @@ table {
 td.wide {
   width: 50%;
 }
-
 td.narrow {
   width: 25%;
 }
+
+.detail {
+    margin-bottom: 10px; /* Add space between items */
+  }

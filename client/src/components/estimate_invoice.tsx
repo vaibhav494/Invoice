@@ -6,9 +6,30 @@ function Estimate_Invoice() {
       <table border={1}>
         <tr>
           <td className="wide">
-            <input type="text" placeholder="Enter Name" /><br />
+            <div>
+            <input type="text" placeholder="Enter Name" />
+            <br />
             <textarea placeholder="Enter Address"></textarea>
+            <br />
+            <input type="text" placeholder="Enter GST" />
+            <br />
+            <input type="text" placeholder="Enter State" />
+            </div>
+            
           </td>
+          <td className="narrow">
+            <div className="detail">1</div>
+            <div className="detail">2</div>
+            <div className="detail">3</div>
+          </td>
+          <td className="narrow">
+            <div className="detail">1</div>
+            <div className="detail">2</div>
+            <div className="detail">3</div>
+          </td>
+        </tr>
+        <tr>
+          <td className="wide">1</td>
           <td className="narrow">
             <tr>1</tr>
             <tr>2</tr>
@@ -21,21 +42,8 @@ function Estimate_Invoice() {
           </td>
         </tr>
         <tr>
-        <td className="wide">1</td>
-          <td className="narrow">
-            <tr>1</tr>
-            <tr>2</tr>
-            <tr>3</tr>
-          </td>
-          <td className="narrow">
-            <tr>4</tr>
-            <tr>5</tr>
-            <tr>6</tr>
-          </td>
-        </tr>
-        <tr>
-            <td className="wide"></td>
-            <td className="wide" colSpan={2}></td>
+          <td className="wide"></td>
+          <td className="wide" colSpan={2}></td>
         </tr>
       </table>
     </div>
