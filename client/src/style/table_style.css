@@ -1,27 +1,39 @@
 input, textarea {
-    border: none;
-    outline: none;
-  }
+  border: none;
+  outline: none;
+}
 
 .table-div{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 table {
-  width: 60%;
-  border-collapse: collapse;
+width: 60%;
+border-collapse: collapse;
 }
 
 td.wide {
-  width: 50%;
+width: 50%;
 }
 td.narrow {
-  width: 25%;
+width: 25%;
 }
 
 .detail {
-    margin-bottom: 10px; /* Add space between items */
-  }
+  margin-bottom: 10px; /* Add space between items */
+}
+
+.innertd{
+width: 50vw;
+height: 5vh;
+border-collapse: collapse;
+}
+.items{
+height: 30px;
+}
+.noborder{
+border: 0px;
+}

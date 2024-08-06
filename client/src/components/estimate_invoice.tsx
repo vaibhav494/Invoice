@@ -5,45 +5,131 @@ function Estimate_Invoice() {
     <div className="table-div">
       <table border={1}>
         <tr>
-          <td className="wide">
-            <div>
-            <input type="text" placeholder="Enter Name" />
-            <br />
-            <textarea placeholder="Enter Address"></textarea>
-            <br />
-            <input type="text" placeholder="Enter GST" />
-            <br />
-            <input type="text" placeholder="Enter State" />
-            </div>
-            
+          <td className="wide" colSpan={2}>
+            name:vaibhav <br />
+            address:vile parle
           </td>
-          <td className="narrow">
-            <div className="detail">1</div>
-            <div className="detail">2</div>
-            <div className="detail">3</div>
-          </td>
-          <td className="narrow">
-            <div className="detail">1</div>
-            <div className="detail">2</div>
-            <div className="detail">3</div>
-          </td>
-        </tr>
-        <tr>
-          <td className="wide">1</td>
-          <td className="narrow">
-            <tr>1</tr>
-            <tr>2</tr>
-            <tr>3</tr>
-          </td>
-          <td className="narrow">
-            <tr>4</tr>
-            <tr>5</tr>
-            <tr>6</tr>
+          <td colSpan={3}>
+            <tr>
+              <td className="innertd">
+                hello
+              </td>
+              <td className="innertd">
+                world
+              </td>
+            </tr>
+            <tr>
+              <td className="innertd">
+                hello
+              </td>
+              <td className="innertd">
+                world
+              </td>
+            </tr>
+            <tr>
+              <td className="innertd">
+                hello
+              </td>
+              <td className="innertd">
+                world
+              </td>
+            </tr>
           </td>
         </tr>
+
         <tr>
-          <td className="wide"></td>
-          <td className="wide" colSpan={2}></td>
+          <td className="wide" colSpan={2}>
+            name:vaibhav <br />
+            address:vile parle
+          </td>
+          <td colSpan={3}>
+            <tr>
+              <td className="innertd">
+                hello
+              </td>
+              <td className="innertd">
+                world
+              </td>
+            </tr>
+            <tr>
+              <td className="innertd">
+                hello
+              </td>
+              <td className="innertd">
+                world
+              </td>
+            </tr>
+            <tr>
+              <td className="innertd">
+                hello
+              </td>
+              <td className="innertd">
+                world
+              </td>
+            </tr>
+          </td>
+        </tr>
+
+
+        <tr>
+          <td className="wide" colSpan={2}>
+            name:vaibhav <br />
+            address:vile parle
+          </td>
+          <td className="innertd" colSpan={3}>
+           Terms of Delivery
+          </td>
+        </tr>
+
+
+        <tr>
+          <td className="items">sr no</td>
+          <td className="items">particulars</td>
+          <td className="items">rate</td>
+          <td className="items">qty</td>
+          <td className="items">amount</td>
+        </tr>
+        <tr>
+          <td className="items"></td>
+          <td className="items"></td>
+          <td className="items"></td>
+          <td className="items"></td>
+          <td className="items"></td>
+        </tr>
+        <tr>
+          <td className="items"></td>
+          <td className="items"></td>
+          <td className="items"></td>
+          <td className="items"></td>
+          <td className="items"></td>
+        </tr>
+        <tr>
+          <td className="items"></td>
+          <td className="items"></td>
+          <td className="items"></td>
+          <td className="items"></td>
+          <td className="items"></td>
+        </tr>
+        <tr>
+          <td className="noborder" ></td>
+          <td className="noborder" ></td>
+          <td className="noborder" ></td>
+          <td className="noborder" ></td>
+          <td >SubTotal: 20000rs</td>
+        </tr>
+        <tr>
+          <td className="noborder" ></td>
+          <td className="noborder" ></td>
+          <td className="noborder" ></td>
+          <td className="noborder" ></td>
+          <td >GST: 20000rs</td>
+        </tr>
+        <tr>
+          <td className="noborder" ></td>
+          <td className="noborder" ></td>
+          <td className="noborder" ></td>
+          <td className="noborder" ></td>
+          <td >Total: 20000rs</td>
         </tr>
       </table>
     </div>
