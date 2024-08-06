@@ -17,6 +17,7 @@ border-collapse: collapse;
 
 td.wide {
 width: 50%;
+padding: 0px;
 }
 td.narrow {
 width: 25%;
@@ -29,7 +30,10 @@ width: 25%;
 .innertd{
 width: 50vw;
 height: 5vh;
+padding: 0px;
 border-collapse: collapse;
+/* border-top: 1px;
+border-bottom: 1px; */
 }
 .items{
 height: 30px;

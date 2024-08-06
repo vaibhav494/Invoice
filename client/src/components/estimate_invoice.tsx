@@ -5,36 +5,20 @@ function Estimate_Invoice() {
     <div className="table-div">
       <table border={1}>
         <tr>
-          <td className="wide" colSpan={2}>
-            name:vaibhav <br />
-            address:vile parle
+          <td rowSpan={3} colSpan={2}>
+            <p>name: vaibhav</p>
+            <p>address: vile parle</p>
           </td>
-          <td colSpan={3}>
-            <tr>
-              <td className="innertd">
-                hello
-              </td>
-              <td className="innertd">
-                world
-              </td>
-            </tr>
-            <tr>
-              <td className="innertd">
-                hello
-              </td>
-              <td className="innertd">
-                world
-              </td>
-            </tr>
-            <tr>
-              <td className="innertd">
-                hello
-              </td>
-              <td className="innertd">
-                world
-              </td>
-            </tr>
-          </td>
+          <td >hello</td>
+          <td>world</td>
+        </tr>
+        <tr>
+          <td>hello</td>
+          <td>world</td>
+        </tr>
+        <tr>
+          <td>hello</td>
+          <td>world</td>
         </tr>
 
         <tr>
@@ -42,34 +26,21 @@ function Estimate_Invoice() {
             name:vaibhav <br />
             address:vile parle
           </td>
-          <td colSpan={3}>
+          <td colSpan={3} className="wide">
             <tr>
-              <td className="innertd">
-                hello
-              </td>
-              <td className="innertd">
-                world
-              </td>
+              <td className="innertd">hello</td>
+              <td className="innertd">world</td>
             </tr>
             <tr>
-              <td className="innertd">
-                hello
-              </td>
-              <td className="innertd">
-                world
-              </td>
+              <td className="innertd">hello</td>
+              <td className="innertd">world</td>
             </tr>
             <tr>
-              <td className="innertd">
-                hello
-              </td>
-              <td className="innertd">
-                world
-              </td>
+              <td className="innertd">hello</td>
+              <td className="innertd">world</td>
             </tr>
           </td>
         </tr>
-
 
         <tr>
           <td className="wide" colSpan={2}>
@@ -77,10 +48,9 @@ function Estimate_Invoice() {
             address:vile parle
           </td>
           <td className="innertd" colSpan={3}>
-           Terms of Delivery
+            Terms of Delivery
           </td>
         </tr>
-
 
         <tr>
           <td className="items">sr no</td>
@@ -111,25 +81,25 @@ function Estimate_Invoice() {
           <td className="items"></td>
         </tr>
         <tr>
-          <td className="noborder" ></td>
-          <td className="noborder" ></td>
-          <td className="noborder" ></td>
-          <td className="noborder" ></td>
-          <td >SubTotal: 20000rs</td>
+          <td className="noborder"></td>
+          <td className="noborder"></td>
+          <td className="noborder"></td>
+          <td className="noborder"></td>
+          <td>SubTotal: 20000rs</td>
         </tr>
         <tr>
-          <td className="noborder" ></td>
-          <td className="noborder" ></td>
-          <td className="noborder" ></td>
-          <td className="noborder" ></td>
-          <td >GST: 20000rs</td>
+          <td className="noborder"></td>
+          <td className="noborder"></td>
+          <td className="noborder"></td>
+          <td className="noborder"></td>
+          <td>GST: 20000rs</td>
         </tr>
         <tr>
-          <td className="noborder" ></td>
-          <td className="noborder" ></td>
-          <td className="noborder" ></td>
-          <td className="noborder" ></td>
-          <td >Total: 20000rs</td>
+          <td className="noborder"></td>
+          <td className="noborder"></td>
+          <td className="noborder"></td>
+          <td className="noborder"></td>
+          <td>Total: 20000rs</td>
         </tr>
       </table>
     </div>
