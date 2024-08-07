@@ -22,7 +22,7 @@ td {
 
 table {
   border: 2px solid black;
-  width: 60%;
+  width: 100%;
   border-collapse: collapse;
   margin-bottom: -1px; /* Remove gap between tables */
 }
