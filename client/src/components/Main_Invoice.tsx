@@ -57,7 +57,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
 
   //  const { sname } = useCommonContext();
 
-  const seller_name_list = fstate.map((seller: any) => ({
+  const customer_name_list = fstate.map((seller: any) => ({
     value: seller.id,
     text: seller.name,
   }));
@@ -234,6 +234,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
 
   // seller shipping details update based on seller name
   useEffect(() => {
+    console.log(invoiceState.customer_shipping_company_name)
     if (invoiceState.customer_shipping_company_name) {
       const url = `http://localhost:4000/get_seller_detail/${invoiceState.customer_shipping_company_name}`;
 
@@ -386,14 +387,27 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
 
           <tr>
             <td rowSpan={3}>
-              <input
+              {/* <input
                 type="text"
                 placeholder="Enter Business Name"
                 value={invoiceState.customer_billing_company_name}
                 onChange={(e) =>
                   handleChange("customer_billing_company_name", e.target.value)
                 }
-              />
+
+              /> */}
+              <select name="customer-company-name" id="customer-company-name" value={invoiceState.customer_billing_company_name}
+              onChange={(e) =>
+                handleChange("customer_billing_company_name", e.target.value)
+              }>
+                
+                <option>Select Company Name</option>
+                {customer_name_list?.map((option) => (
+                  <option key={option.text} value={option.value}>
+                    {option.text}
+                  </option>
+                ))}
+              </select>
               <br />
               <textarea
                 value={invoiceState.customer_billing_address}
@@ -406,7 +420,9 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
               ></textarea>
               <br />
               GST:{" "}
-              <select name="gst" id="gst">
+              <select name="gst" id="gst" value={invoiceState.customer_billing_gstin} onChange={(e) =>
+                  handleChange("customer_billing_gstin", e.target.value)
+                }>
                 {gst_list?.map((option) => (
                   <option key={option.text} value={option.value}>
                     {option.text}
