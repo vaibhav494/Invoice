@@ -2,7 +2,6 @@ import { FC, useState, useEffect } from "react";
 import { invoice, product_line_1 } from "../data/types";
 import { initial_invoice, initial_product_line } from "../data/initial_data";
 import { Font } from "@react-pdf/renderer";
-// import { useCommonContext } from "../context_common/context";
 import axios from "axios";
 import Axios from "axios";
 import { ToWords } from "to-words";
@@ -55,19 +54,19 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   );
   // will be using this seller_name here
 
-  //  const { sname } = useCommonContext();
-
   const customer_name_list = fstate.map((seller: any) => ({
     value: seller.id,
     text: seller.name,
   }));
-
+  const [productLines, setProductLines] = useState([
+    { id: 1, rate: 0, qty: 0, amount: 0 },
+  ]);
+ 
   const [subTotal, setSubTotal] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
   const [Total_GST, setTotalGST] = useState<number>(0);
   const toWords = new ToWords();
 
-  let words = toWords.convert(subTotal, { currency: true });
   const date_format = "MMM dd, yyyy";
   const invoiceDate =
     invoiceState.invoice_date !== ""
@@ -97,115 +96,44 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
     }
   };
 
-  const handleProductLineChange = (
-    index: number,
-    name: keyof product_line_1,
-    value: string
-  ) => {
-    const product_all_detail = invoiceState.product_all_detail.map(
-      (Product_line_1, i) => {
-        if (i === index) {
-          const newProductLine = { ...Product_line_1 };
+  const calculateTotalGST = () => {
+    return productLines.reduce((total, line) => total + line.amount * 0.18, 0); // Assuming 18% GST
+  };
 
-          if (name === "particulars") {
-            newProductLine[name] = value;
-          } else {
-            if (
-              value[value.length - 1] === "." ||
-              (value[value.length - 1] === "0" && value.includes("."))
-            ) {
-              newProductLine[name] = value;
-            } else {
-              const n = parseFloat(value);
+  const calculateSubTotal = () => {
+    return productLines.reduce((total, line) => total + line.amount, 0);
+  };
 
-              newProductLine[name] = (n ? n : 0).toString();
-            }
-          }
+  const calculateTotalAmount = () => {
+    return  productLines.reduce((total, line) => total + line.amount, 0);
+  };
+  let words = toWords.convert(subTotal, { currency: true });
 
-          return newProductLine;
+
+
+  useEffect(() => {
+    setSubTotal(calculateTotalAmount());
+    setTotalGST(calculateTotalGST());
+  }, [productLines]);
+
+  const handleProductLineChange = (id: any, field: any, value: any) => {
+    setProductLines((prevLines) =>
+      prevLines.map((line) => {
+        if (line.id === id) {
+          const updatedLine = { ...line, [field]: value };
+          updatedLine.amount = updatedLine.rate * updatedLine.qty;
+          return updatedLine;
         }
-
-        return { ...Product_line_1 };
-      }
+        return line;
+      })
     );
-
-    setInvoiceState({ ...invoiceState, product_all_detail });
   };
-
-  const handleRemove = (i: number) => {
-    const product_all_detail = invoiceState.product_all_detail.filter(
-      (_, index) => index !== i
-    );
-
-    setInvoiceState({ ...invoiceState, product_all_detail });
-  };
-
-  const handleAdd = () => {
-    const product_all_detail = [
-      ...invoiceState.product_all_detail,
-      { ...initial_product_line },
-    ];
-
-    setInvoiceState({ ...invoiceState, product_all_detail });
-  };
-
-  const calculateAmount = (quantity: string, rate: string) => {
-    const quantityNumber = parseFloat(quantity);
-    const rateNumber = parseFloat(rate);
-    const amount =
-      quantityNumber && rateNumber ? quantityNumber * rateNumber : 0;
-
-    return amount.toFixed(2);
-  };
-
-  //GST Calculation
-  useEffect(() => {
-    let gst = 0;
-    invoiceState.product_all_detail?.forEach((Product_line_1) => {
-      const quantityNumber = parseFloat(Product_line_1.quantity);
-      const rateNumber = parseFloat(Product_line_1.rate);
-      const amount =
-        quantityNumber && rateNumber ? quantityNumber * rateNumber : 0;
-      if (rateNumber < 1000) {
-        gst += (amount * 5) / 100;
-      }
-      if (rateNumber > 1000) {
-        gst += (amount * 12) / 100;
-      }
-    });
-    setTotalGST(gst);
-    console.log("this is gst" + Total_GST);
-  }, [invoiceState.product_all_detail]);
-  useEffect(() => {
-    let sub_total = 0;
-
-    invoiceState.product_all_detail?.forEach((Product_line_1) => {
-      const quantityNumber = parseFloat(Product_line_1.quantity);
-      const rateNumber = parseFloat(Product_line_1.rate);
-      const amount =
-        quantityNumber && rateNumber ? quantityNumber * rateNumber : 0;
-
-      sub_total += amount;
-    });
-
-    setSubTotal(sub_total);
-  }, [invoiceState.product_all_detail]);
-
-  useEffect(() => {
-    if (subTotal && invoiceState.product_discount) {
-      const discount =
-        (subTotal * parseFloat(invoiceState.product_discount)) / 100;
-      setDiscount(discount);
-    } else {
-      setDiscount(0);
-    }
-  }, [subTotal, invoiceState.product_discount]);
-
-  useEffect(() => {
-    if (onChange) {
-      onChange(invoiceState);
-    }
-  }, [onChange, invoiceState]);
+  function handleAdd() {
+    setProductLines((prevLines) => [
+      ...prevLines,
+      { id: prevLines.length + 1, rate: 0, qty: 0, amount: 0 },
+    ]);
+  }
 
   // customer billing details update based on customer name
   useEffect(() => {
@@ -439,7 +367,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
                 onChange={(e) =>
                   handleChange("customer_billing_gstin", e.target.value)
                 }
-              > 
+              >
                 {gst_list?.map((option) => (
                   <option key={option.text} value={option.value}>
                     {option.text}
@@ -626,56 +554,55 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
         {/* Second Table */}
         <table border={1}>
           {/* Duplicate the first table structure here */}
-          <tr>
-            <td className="sr-no">sr no</td>
-            <td className="particulars">particulars</td>
+          <tr id="product">
+            <td className="sr-no">Sr No</td>
+            <td className="particulars">Particulars</td>
             <td className="HSN-SAC">HSN/SAC</td>
-            <td className="qty">qty</td>
-            <td className="rate">rate</td>
-
+            <td className="qty">Qty</td>
+            <td className="rate">Rate</td>
             <td className="per">%</td>
-            <td className="amount">amount</td>
+            <td className="amount">Amount</td>
           </tr>
+          {productLines.map((line) => (
+            <tr key={line.id} id={`${line.id}-product`}>
+              <td className="items">{line.id}</td>
+              <td className="items"></td>
+              <td className="items"></td>
+              <td className="items">
+                <input
+                  type="number"
+                  value={line.qty}
+                  onChange={(e) =>
+                    handleProductLineChange(line.id, "qty", +e.target.value)
+                  }
+                />
+              </td>
+              <td className="items">
+                <input
+                  type="number"
+                  value={line.rate}
+                  onChange={(e) =>
+                    handleProductLineChange(line.id, "rate", +e.target.value)
+                  }
+                />
+              </td>
+              <td className="items"></td>
+              <td className="items">{line.amount.toFixed(2)}</td>
+            </tr>
+          ))}
+
           <tr>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-          </tr>
-          <tr>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-          </tr>
-          <tr>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-          </tr>
-          <tr>
-            <td className="items"></td>
-            <td className="total">Total</td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="items"></td>
-            <td className="total-amount">10000</td>
+            <td colSpan={6} className="total">
+              Total
+            </td>
+            <td className="total-amount">
+              {subTotal.toFixed(2)}
+            </td>
           </tr>
           <tr>
             <td colSpan={7}>
               Amount Chargeable(in words) <br />
-              AMOUNT
+              {words}
             </td>
           </tr>
         </table>
@@ -735,6 +662,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
         </table>
       </div>
       <button onClick={downloadPDF}>Download PDF</button>
+      <button onClick={handleAdd}>Add</button>
     </>
   );
 };

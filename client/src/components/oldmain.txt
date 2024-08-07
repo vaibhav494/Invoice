@@ -858,3 +858,117 @@ return (
       </Document>
     </>
   );
+
+
+
+  // const handleProductLineChange = (
+  //   index: number,
+  //   name: keyof product_line_1,
+  //   value: string
+  // ) => {
+  //   const product_all_detail = invoiceState.product_all_detail.map(
+  //     (Product_line_1, i) => {
+  //       if (i === index) {
+  //         const newProductLine = { ...Product_line_1 };
+
+  //         if (name === "particulars") {
+  //           newProductLine[name] = value;
+  //         } else {
+  //           if (
+  //             value[value.length - 1] === "." ||
+  //             (value[value.length - 1] === "0" && value.includes("."))
+  //           ) {
+  //             newProductLine[name] = value;
+  //           } else {
+  //             const n = parseFloat(value);
+
+  //             newProductLine[name] = (n ? n : 0).toString();
+  //           }
+  //         }
+
+  //         return newProductLine;
+  //       }
+
+  //       return { ...Product_line_1 };
+  //     }
+  //   );
+
+  //   setInvoiceState({ ...invoiceState, product_all_detail });
+  // };
+
+  // const handleRemove = (i: number) => {
+  //   const product_all_detail = invoiceState.product_all_detail.filter(
+  //     (_, index) => index !== i
+  //   );
+
+  //   setInvoiceState({ ...invoiceState, product_all_detail });
+  // };
+
+  // const handleAdd = () => {
+  //   const product_all_detail = [
+  //     ...invoiceState.product_all_detail,
+  //     { ...initial_product_line },
+  //   ];
+
+  //   setInvoiceState({ ...invoiceState, product_all_detail });
+  // };
+
+
+
+  const calculateAmount = (quantity: string, rate: string) => {
+    const quantityNumber = parseFloat(quantity);
+    const rateNumber = parseFloat(rate);
+    const amount =
+      quantityNumber && rateNumber ? quantityNumber * rateNumber : 0;
+
+    return amount.toFixed(2);
+  };
+
+  //GST Calculation
+  useEffect(() => {
+    let gst = 0;
+    invoiceState.product_all_detail?.forEach((Product_line_1) => {
+      const quantityNumber = parseFloat(Product_line_1.quantity);
+      const rateNumber = parseFloat(Product_line_1.rate);
+      const amount =
+        quantityNumber && rateNumber ? quantityNumber * rateNumber : 0;
+      if (rateNumber < 1000) {
+        gst += (amount * 5) / 100;
+      }
+      if (rateNumber > 1000) {
+        gst += (amount * 12) / 100;
+      }
+    });
+    setTotalGST(gst);
+    console.log("this is gst" + Total_GST);
+  }, [invoiceState.product_all_detail]);
+  useEffect(() => {
+    let sub_total = 0;
+
+    invoiceState.product_all_detail?.forEach((Product_line_1) => {
+      const quantityNumber = parseFloat(Product_line_1.quantity);
+      const rateNumber = parseFloat(Product_line_1.rate);
+      const amount =
+        quantityNumber && rateNumber ? quantityNumber * rateNumber : 0;
+
+      sub_total += amount;
+    });
+
+    setSubTotal(sub_total);
+  }, [invoiceState.product_all_detail]);
+
+  useEffect(() => {
+    if (subTotal && invoiceState.product_discount) {
+      const discount =
+        (subTotal * parseFloat(invoiceState.product_discount)) / 100;
+      setDiscount(discount);
+    } else {
+      setDiscount(0);
+    }
+  }, [subTotal, invoiceState.product_discount]);
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(invoiceState);
+    }
+  }, [onChange, invoiceState]);

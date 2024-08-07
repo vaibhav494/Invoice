@@ -43,7 +43,10 @@ td.narrow {
   width: 25%;
   height: 50px;
 }
-
+#items{
+  height: 30px;
+  text-align: center;
+}
 .innertd {
   width: 50vw;
   height: 5vh;
@@ -52,6 +55,8 @@ td.narrow {
 }
 .items {
   height: 30px;
+  text-align: center;
+
 }
 .noborder {
   border: 0px;
