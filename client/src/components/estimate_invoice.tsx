@@ -1,9 +1,29 @@
+import React from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import "../style/table_style.css";
 
 function Estimate_Invoice() {
+  const downloadPDF = () => {
+    const input = document.getElementById('invoice-table');
+    if (input) {  // Add null check here
+      html2canvas(input).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save("invoice.pdf");
+      });
+    } else {
+      console.error('Element not found!');
+    }
+  };
+
   return (
     <>
-      <div className="table-div">
+      <div className="table-div" id="invoice-table">
         <table border={1}>
           {/* First Table */}
           <tr>
@@ -226,15 +246,26 @@ function Estimate_Invoice() {
             <td className="tax">16,200</td>
           </tr>
           <tr>
-            <td colSpan={5} className="noborder">Tax Amount (in Words): Indian Rupee Sixteen Thousand Two Hundred Only</td>
-          </tr><br /><br /><br />
-          <br /><br /><br /><br /><br />
+            <td colSpan={5} className="noborder">
+              Tax Amount (in Words): Indian Rupee Sixteen Thousand Two Hundred
+              Only
+            </td>
+          </tr>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
           <tr>
             <td className="noborder"></td>
             <td colSpan={4}>hello</td>
           </tr>
         </table>
       </div>
+      <button onClick={downloadPDF}>Download PDF</button>
     </>
   );
 }

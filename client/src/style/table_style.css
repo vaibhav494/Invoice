@@ -2,18 +2,22 @@ input, textarea {
   border: none;
   outline: none;
 }
+html,body{
+  overflow:auto;
+  }
 td {
   padding: 5px;
   vertical-align: top;
   border: 2px solid black;
 }
 .table-div {
+  margin-top: 10%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  overflow-y: scroll;
+
 }
 
 table {
