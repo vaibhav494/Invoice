@@ -4,11 +4,13 @@ import { initial_invoice, initial_product_line } from "../data/initial_data";
 import { Font } from "@react-pdf/renderer";
 // import { useCommonContext } from "../context_common/context";
 import axios from "axios";
-import Axios  from "axios";
-import { ToWords } from 'to-words';
+import Axios from "axios";
+import { ToWords } from "to-words";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "../style/table_style.css";
+import gst_list from "../data/dropdown_data/gst_list";
+import state_list from "../data/dropdown_data/state_list";
 
 Font.register({
   family: "Nunito",
@@ -25,24 +27,25 @@ interface Props {
   data?: invoice;
   pdfMode?: boolean;
   onChange?: (invoice: invoice) => void;
-  fstate:string[];
+  fstate: string[];
 }
 
 const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
   const downloadPDF = () => {
-    const input = document.getElementById('invoice-table');
-    if (input) {  // Add null check here
+    const input = document.getElementById("invoice-table");
+    if (input) {
+      // Add null check here
       html2canvas(input).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
+        const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF();
         const imgProps = pdf.getImageProperties(imgData);
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
         pdf.save("invoice.pdf");
       });
     } else {
-      console.error('Element not found!');
+      console.error("Element not found!");
     }
   };
   const [invoiceState, setInvoiceState] = useState<invoice>(
@@ -71,19 +74,18 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
       ? new Date(invoiceState.invoice_date)
       : new Date();
 
-  const data_add_db = (e : any)=>{
+  const data_add_db = (e: any) => {
     e.preventDefault();
     Axios.post("http://localhost:4000/insert_full_invoice_detail", {
-      Supplier_name:invoiceState.supplier_company_name,
-      Customer_name:invoiceState.customer_billing_company_name,
+      Supplier_name: invoiceState.supplier_company_name,
+      Customer_name: invoiceState.customer_billing_company_name,
       Invoice_number: invoiceState.invoice_number,
-      Invoice_date:invoiceState.invoice_date,
-      Total_amount:subTotal
-    
+      Invoice_date: invoiceState.invoice_date,
+      Total_amount: subTotal,
     }).then((data) => {
       console.log(data);
     });
-  }
+  };
 
   const handleChange = (name: keyof invoice, value: string | number) => {
     if (name !== "product_all_detail") {
@@ -155,25 +157,25 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
 
     return amount.toFixed(2);
   };
-  
+
   //GST Calculation
-  useEffect(()=>{
+  useEffect(() => {
     let gst = 0;
-    invoiceState.product_all_detail?.forEach((Product_line_1) => {  
+    invoiceState.product_all_detail?.forEach((Product_line_1) => {
       const quantityNumber = parseFloat(Product_line_1.quantity);
       const rateNumber = parseFloat(Product_line_1.rate);
       const amount =
         quantityNumber && rateNumber ? quantityNumber * rateNumber : 0;
-      if (rateNumber < 1000){
-        gst += amount * 5 / 100
+      if (rateNumber < 1000) {
+        gst += (amount * 5) / 100;
       }
-      if (rateNumber > 1000){
-        gst += amount * 12 /100
+      if (rateNumber > 1000) {
+        gst += (amount * 12) / 100;
       }
     });
     setTotalGST(gst);
-    console.log('this is gst'+Total_GST)
-  },[invoiceState.product_all_detail])
+    console.log("this is gst" + Total_GST);
+  }, [invoiceState.product_all_detail]);
   useEffect(() => {
     let sub_total = 0;
 
@@ -234,7 +236,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
   useEffect(() => {
     if (invoiceState.customer_shipping_company_name) {
       const url = `http://localhost:4000/get_seller_detail/${invoiceState.customer_shipping_company_name}`;
-      
+
       axios
         .get(url)
         .then((response: any) => {
@@ -255,132 +257,303 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
     }
   }, [invoiceState.customer_shipping_company_name]);
 
-  return(
+  return (
     <>
       <div className="table-div" id="invoice-table">
         <table border={1}>
           {/* First Table */}
           <tr>
             <td rowSpan={3}>
-              <input type="text" placeholder="Enter Business Name" value={invoiceState.supplier_company_name}
-                onChange={(e) => handleChange("supplier_company_name", e.target.value)} />
+              <input
+                type="text"
+                placeholder="Enter Business Name"
+                value={invoiceState.supplier_company_name}
+                onChange={(e) =>
+                  handleChange("supplier_company_name", e.target.value)
+                }
+              />
               <br />
               <textarea
+                value={invoiceState.supplier_billing_address}
+                onChange={(e) =>
+                  handleChange("supplier_billing_address", e.target.value)
+                }
                 name="address"
                 id="address"
                 placeholder="Enter Address"
               ></textarea>
               <br />
-              GST: <input type="text" placeholder="Enter GST" />
+              GST:{" "}
+              <select name="gst" id="gst">
+                {gst_list?.map((option) => (
+                  <option key={option.text} value={option.value}>
+                    {option.text}
+                  </option>
+                ))}
+              </select>
               <br />
-              State Code: <input type="text" placeholder="Enter State Code" />
+              State Code:{" "}
+              <select name="state" id="state">
+                {state_list?.map((option) => (
+                  <option key={option.text} value={option.value}>
+                    {option.text}
+                  </option>
+                ))}
+              </select>
             </td>
 
             <td className="top-right-td">
-              Invoice Number
-              <br />
-              <input type="text" placeholder="Enter" />
+              Invoice Number <br />
+              <input
+                type="text"
+                name="invoice-number"
+                id="invoice-number"
+                value={invoiceState.invoice_number}
+                placeholder="Enter"
+                onChange={(e) => handleChange("invoice_number", e.target.value)}
+              />
             </td>
             <td className="top-right-td">
-              Dated
-              <br />
-              <input type="text" placeholder="Enter" />
+              Dated <br />
+              <input
+                type="text"
+                name="invoice-date"
+                id="invoice-date"
+                value={invoiceState.invoice_date}
+                placeholder="Enter"
+                onChange={(e) => handleChange("invoice_date", e.target.value)}
+              />
             </td>
           </tr>
           <tr>
             <td className="top-right-td">
               Delivery Note
               <br />
-              <input type="text" placeholder="Enter" />
+              <input
+                type="text"
+                name="delivery-note"
+                id="delivery-note"
+                value={invoiceState.delivery_note}
+                placeholder="Enter"
+                onChange={(e) => handleChange("delivery_note", e.target.value)}
+              />
             </td>
             <td className="top-right-td">
               Mode/Terms of Payment
               <br />
-              <input type="text" placeholder="Enter" />
+              <input
+                type="text"
+                name="mode-terms-of-payment"
+                id="mode-terms-of-payment-note"
+                value={invoiceState.mode_terms_of_payment}
+                placeholder="Enter"
+                onChange={(e) =>
+                  handleChange("mode_terms_of_payment", e.target.value)
+                }
+              />
             </td>
           </tr>
           <tr>
             <td className="top-right-td">
               Reference No. & Date.
               <br />
-              <input type="text" placeholder="Enter" />
+              <input
+                type="text"
+                name="reference-number-and-date"
+                id="reference-number-and-date"
+                value={invoiceState.reference_number_and_date}
+                placeholder="Enter"
+                onChange={(e) =>
+                  handleChange("reference_number_and_date", e.target.value)
+                }
+              />
             </td>
             <td className="top-right-td">
               Other References
               <br />
-              <input type="text" placeholder="Enter" />
+              <input
+                type="text"
+                name="other-references"
+                id="other-references"
+                value={invoiceState.other_references}
+                placeholder="Enter"
+                onChange={(e) =>
+                  handleChange("other_references", e.target.value)
+                }
+              />
             </td>
           </tr>
 
           <tr>
             <td rowSpan={3}>
-              <input type="text" placeholder="Enter Business Name" />
+              <input
+                type="text"
+                placeholder="Enter Business Name"
+                value={invoiceState.customer_billing_company_name}
+                onChange={(e) =>
+                  handleChange("customer_billing_company_name", e.target.value)
+                }
+              />
               <br />
               <textarea
+                value={invoiceState.customer_billing_address}
+                onChange={(e) =>
+                  handleChange("customer_billing_address", e.target.value)
+                }
                 name="address"
                 id="address"
                 placeholder="Enter Address"
               ></textarea>
               <br />
-              GST: <input type="text" placeholder="Enter GST" />
+              GST:{" "}
+              <select name="gst" id="gst">
+                {gst_list?.map((option) => (
+                  <option key={option.text} value={option.value}>
+                    {option.text}
+                  </option>
+                ))}
+              </select>
               <br />
-              State Code: <input type="text" placeholder="Enter State Code" />
+              State Code:
+              <select name="state" id="state">
+                {state_list?.map((option) => (
+                  <option key={option.text} value={option.value}>
+                    {option.text}
+                  </option>
+                ))}
+              </select>
             </td>
 
             <td className="top-right-td">
               Buyer's Order No.
               <br />
-              <input type="text" placeholder="Enter" />
+              <input
+                type="text"
+                name="buyers-order-number"
+                id="buyers-order-number"
+                value={invoiceState.buyers_order_number}
+                placeholder="Enter"
+                onChange={(e) =>
+                  handleChange("buyers_order_number", e.target.value)
+                }
+              />
             </td>
             <td className="top-right-td">
               Dated
               <br />
-              <input type="text" placeholder="Enter" />
+              <input
+                type="text"
+                name="dated-customer"
+                id="dated-customer"
+                value={invoiceState.dated_customer}
+                placeholder="Enter"
+                onChange={(e) =>
+                  handleChange("dated_customer", e.target.value)
+                }></input>
             </td>
           </tr>
           <tr>
             <td className="top-right-td">
               Dispatch Doc
               <br />
-              <input type="text" placeholder="Enter" />
+              <input
+                type="text"
+                name="dispatch-doc"
+                id="dispatch-doc"
+                value={invoiceState.dispatch_doc_number}
+                placeholder="Enter"
+                onChange={(e) =>
+                  handleChange("dispatch_doc_number", e.target.value)
+                }/>
             </td>
             <td className="top-right-td">
               Delivery Note Date
-              <br />
-              <input type="text" placeholder="Enter" />
+              <input
+                type="text"
+                name="delivery-note-date"
+                id="delivery-note-date"
+                value={invoiceState.delivery_note_date}
+                placeholder="Enter"
+                onChange={(e) =>
+                  handleChange("delivery_note_date", e.target.value)
+                }/>
             </td>
           </tr>
           <tr>
             <td className="top-right-td">
               Dispatched through
-              <br />
-              <input type="text" placeholder="Enter" />
+              <input
+                type="text"
+                name="dispatched-through"
+                id="dispatched-through"
+                value={invoiceState.dispatched_through}
+                placeholder="Enter"
+                onChange={(e) =>
+                  handleChange("dispatched_through", e.target.value)
+                }/>
             </td>
             <td className="top-right-td">
               Destination
-              <br />
-              <input type="text" placeholder="Enter" />
+              <input
+                type="text"
+                name="destination"
+                id="destination"
+                value={invoiceState.destination}
+                placeholder="Enter"
+                onChange={(e) =>
+                  handleChange("destination", e.target.value)
+                }/>
+              
             </td>
           </tr>
 
           <tr>
             <td>
-              <input type="text" placeholder="Enter Business Name" />
+            <input
+                type="text"
+                placeholder="Enter Business Name"
+                value={invoiceState.customer_shipping_company_name}
+                onChange={(e) =>
+                  handleChange("customer_shipping_company_name", e.target.value)
+                }
+              />
               <br />
               <textarea
-                name="address"
-                id="address"
+                value={invoiceState.customer_shipping_address}
+                onChange={(e) =>
+                  handleChange("customer_shipping_address", e.target.value)
+                }
+                name="customer-shipping-address"
+                id="customer-shipping-address"
                 placeholder="Enter Address"
               ></textarea>
               <br />
-              GST: <input type="text" placeholder="Enter GST" />
+              GST:{" "}
+              <select name="gst" id="gst">
+                {gst_list?.map((option) => (
+                  <option key={option.text} value={option.value}>
+                    {option.text}
+                  </option>
+                ))}
+              </select>
               <br />
-              State Code: <input type="text" placeholder="Enter State Code" />
+              State Code:{" "}
+              <select name="state" id="state">
+                {state_list?.map((option) => (
+                  <option key={option.text} value={option.value}>
+                    {option.text}
+                  </option>
+                ))}
+              </select>
             </td>
             <td colSpan={2} className="terms-of-delivery">
               Terms of Delivery
               <br />
               <textarea
+                value={invoiceState.terms_of_delivery}
+                onChange={(e) =>
+                  handleChange("terms_of_delivery", e.target.value)
+                }
                 name="terms-of-delivery"
                 id="terms-of-delivery"
                 placeholder="Enter"
@@ -502,7 +675,6 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
       </div>
       <button onClick={downloadPDF}>Download PDF</button>
     </>
-  
   );
 };
 

@@ -11,7 +11,6 @@ export const initial_product_line: product_line_1 = {
 export const initial_invoice: invoice = {
   supplier_company_name : "",
   supplier_billing_address : "",
-  supplier_shipping_address : "",
   supplier_gstin_label : "GSTIN/UIN",
   supplier_gstin : "",
   supplier_state_name_label : "State Name",

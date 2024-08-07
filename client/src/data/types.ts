@@ -36,7 +36,6 @@ export const t_product_line_1 = z.object({
 export const t_invoice = z.object({
     supplier_company_name : z.string(),
     supplier_billing_address : z.string(),
-    supplier_shipping_address : z.string(),
     supplier_gstin_label : z.string(),
     supplier_gstin : z.string(),
     supplier_state_name_label : z.string(),
