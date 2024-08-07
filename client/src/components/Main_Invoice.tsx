@@ -30,7 +30,7 @@ interface Props {
   fstate: string[];
 }
 
-const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
+const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   const downloadPDF = () => {
     const input = document.getElementById("invoice-table");
     if (input) {
@@ -234,7 +234,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
 
   // seller shipping details update based on seller name
   useEffect(() => {
-    console.log(invoiceState.customer_shipping_company_name)
+    console.log(invoiceState.customer_shipping_company_name);
     if (invoiceState.customer_shipping_company_name) {
       const url = `http://localhost:4000/get_seller_detail/${invoiceState.customer_shipping_company_name}`;
 
@@ -285,7 +285,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
               ></textarea>
               <br />
               GST:{" "}
-              <select name="gst" id="gst">
+              <select name="gst" id="gst" value={invoiceState.supplier_gstin}>
                 {gst_list?.map((option) => (
                   <option key={option.text} value={option.value}>
                     {option.text}
@@ -294,7 +294,11 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
               </select>
               <br />
               State Code:{" "}
-              <select name="state" id="state">
+              <select
+                name="state"
+                id="state"
+                value={invoiceState.supplier_state_name}
+              >
                 {state_list?.map((option) => (
                   <option key={option.text} value={option.value}>
                     {option.text}
@@ -396,11 +400,14 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 }
 
               /> */}
-              <select name="customer-company-name" id="customer-company-name" value={invoiceState.customer_billing_company_name}
-              onChange={(e) =>
-                handleChange("customer_billing_company_name", e.target.value)
-              }>
-                
+              <select
+                name="customer-billing-company-name"
+                id="customer-billing-company-name"
+                value={invoiceState.customer_billing_company_name}
+                onChange={(e) =>
+                  handleChange("customer_billing_company_name", e.target.value)
+                }
+              >
                 <option>Select Company Name</option>
                 {customer_name_list?.map((option) => (
                   <option key={option.text} value={option.value}>
@@ -420,9 +427,14 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
               ></textarea>
               <br />
               GST:{" "}
-              <select name="gst" id="gst" value={invoiceState.customer_billing_gstin} onChange={(e) =>
+              <select
+                name="gst"
+                id="gst"
+                value={invoiceState.customer_billing_gstin}
+                onChange={(e) =>
                   handleChange("customer_billing_gstin", e.target.value)
-                }>
+                }
+              >
                 {gst_list?.map((option) => (
                   <option key={option.text} value={option.value}>
                     {option.text}
@@ -431,7 +443,14 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
               </select>
               <br />
               State Code:
-              <select name="state" id="state">
+              <select
+                name="state"
+                id="state"
+                value={invoiceState.customer_billing_state_name}
+                onChange={(e) =>
+                  handleChange("customer_billing_state_name", e.target.value)
+                }
+              >
                 {state_list?.map((option) => (
                   <option key={option.text} value={option.value}>
                     {option.text}
@@ -463,9 +482,8 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 id="dated-customer"
                 value={invoiceState.dated_customer}
                 placeholder="Enter"
-                onChange={(e) =>
-                  handleChange("dated_customer", e.target.value)
-                }></input>
+                onChange={(e) => handleChange("dated_customer", e.target.value)}
+              ></input>
             </td>
           </tr>
           <tr>
@@ -480,7 +498,8 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 placeholder="Enter"
                 onChange={(e) =>
                   handleChange("dispatch_doc_number", e.target.value)
-                }/>
+                }
+              />
             </td>
             <td className="top-right-td">
               Delivery Note Date
@@ -492,7 +511,8 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 placeholder="Enter"
                 onChange={(e) =>
                   handleChange("delivery_note_date", e.target.value)
-                }/>
+                }
+              />
             </td>
           </tr>
           <tr>
@@ -506,7 +526,8 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 placeholder="Enter"
                 onChange={(e) =>
                   handleChange("dispatched_through", e.target.value)
-                }/>
+                }
+              />
             </td>
             <td className="top-right-td">
               Destination
@@ -516,23 +537,27 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
                 id="destination"
                 value={invoiceState.destination}
                 placeholder="Enter"
-                onChange={(e) =>
-                  handleChange("destination", e.target.value)
-                }/>
-              
+                onChange={(e) => handleChange("destination", e.target.value)}
+              />
             </td>
           </tr>
 
           <tr>
             <td>
-            <input
-                type="text"
-                placeholder="Enter Business Name"
+            <select
+                name="customer-shipping-company-name"
+                id="customer-shipping-company-name"
                 value={invoiceState.customer_shipping_company_name}
                 onChange={(e) =>
                   handleChange("customer_shipping_company_name", e.target.value)
                 }
-              />
+              ><option>Select Company Name</option>
+              {customer_name_list?.map((option) => (
+                <option key={option.text} value={option.value}>
+                  {option.text}
+                </option>
+              ))}
+            </select>
               <br />
               <textarea
                 value={invoiceState.customer_shipping_address}
@@ -545,7 +570,14 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
               ></textarea>
               <br />
               GST:{" "}
-              <select name="gst" id="gst">
+              <select
+                name="gst"
+                id="gst"
+                value={invoiceState.customer_shipping_gstin}
+                onChange={(e) =>
+                  handleChange("customer_shipping_gstin", e.target.value)
+                }
+              >
                 {gst_list?.map((option) => (
                   <option key={option.text} value={option.value}>
                     {option.text}
@@ -554,7 +586,14 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
               </select>
               <br />
               State Code:{" "}
-              <select name="state" id="state">
+              <select
+                name="state"
+                id="state"
+                value={invoiceState.customer_shipping_state_name}
+                onChange={(e) =>
+                  handleChange("customer_shipping_state_name", e.target.value)
+                }
+              >
                 {state_list?.map((option) => (
                   <option key={option.text} value={option.value}>
                     {option.text}
