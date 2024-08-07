@@ -9,31 +9,31 @@ export const initial_product_line: product_line_1 = {
 }
 
 export const initial_invoice: invoice = {
-  buyer_company_name : "",
-  buyer_billing_address : "",
-  buyer_shipping_address : "",
-  buyer_gstin_label : "GSTIN/UIN",
-  buyer_gstin : "",
-  buyer_state_name_label : "State Name",
-  buyer_state_name : "",
+  supplier_company_name : "",
+  supplier_billing_address : "",
+  supplier_shipping_address : "",
+  supplier_gstin_label : "GSTIN/UIN",
+  supplier_gstin : "",
+  supplier_state_name_label : "State Name",
+  supplier_state_name : "",
   
 
-  seller_consignee_label : "Consignee (Ship to)",
-  seller_shipping_company_name : "",
-  seller_shipping_address : "",
-  seller_shipping_gstin_label : "GSTIN/UIN",
-  seller_shipping_gstin : "",
-  seller_shipping_state_name_label : "State Name",
-  seller_shipping_state_name : "",
+  customer_consignee_label : "Consignee (Ship to)",
+  customer_shipping_company_name : "",
+  customer_shipping_address : "",
+  customer_shipping_gstin_label : "GSTIN/UIN",
+  customer_shipping_gstin : "",
+  customer_shipping_state_name_label : "State Name",
+  customer_shipping_state_name : "",
 
 
-  buyer_ship_to_label : "Buyer (Bill to)",
-  seller_billing_company_name : "",
-  seller_billing_address : "",
-  seller_billing_gstin_label : "GSTIN/UIN",
-  seller_billing_gstin : "",
-  seller_billing_state_name_label : "State Name",
-  seller_billing_state_name : "",
+  customer_ship_to_label : "Buyer (Bill to)",
+  customer_billing_company_name : "",
+  customer_billing_address : "",
+  customer_billing_gstin_label : "GSTIN/UIN",
+  customer_billing_gstin : "",
+  customer_billing_state_name_label : "State Name",
+  customer_billing_state_name : "",
 
 
   invoice_number_label : "Invoice Number",
@@ -60,8 +60,8 @@ export const initial_invoice: invoice = {
   buyers_order_number_label : "Buyer's Order Number",
   buyers_order_number : "",
   
-  dated_buyer_label : "Dated",
-  dated_buyer : "",
+  dated_customer_label : "Dated",
+  dated_customer : "",
   
   dispatch_doc_number_label : "Dispatch Doc Number",
   dispatch_doc_number : "",

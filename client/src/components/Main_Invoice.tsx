@@ -1,19 +1,7 @@
 import { FC, useState, useEffect } from "react";
 import { invoice, product_line_1 } from "../data/types";
 import { initial_invoice, initial_product_line } from "../data/initial_data";
-import Input from "./input";
-import Select from "./select";
-import Textarea from "./textarea";
-import Calendar from "./calendar";
-import gst_list from "../data/dropdown_data/gst_list";
-import state_list from "../data/dropdown_data/state_list";
-import Document from "./document";
-import Page from "./page";
-import View from "./view";
-import Text from "./text";
 import { Font } from "@react-pdf/renderer";
-import Download from "./download_pdf";
-import { format } from "date-fns/format";
 // import { useCommonContext } from "../context_common/context";
 import axios from "axios";
 import Axios  from "axios";
@@ -58,8 +46,8 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
     }
   };
   const [invoiceState, setInvoiceState] = useState<invoice>(
-    //use the comment section to remember data when reload
-    //data ? { ...data } : { ...initial_invoice }
+    // use the comment section to remember data when reload
+    // data ? { ...data } : { ...initial_invoice }
     initial_invoice
   );
   // will be using this seller_name here
@@ -274,7 +262,8 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
           {/* First Table */}
           <tr>
             <td rowSpan={3}>
-              <input type="text" placeholder="Enter Business Name" />
+              <input type="text" placeholder="Enter Business Name" value={invoiceState.buyer_company_name}
+                onChange={(e) => handleChange("buyer_company_name", e.target.value)} />
               <br />
               <textarea
                 name="address"

@@ -34,37 +34,37 @@ export const t_product_line_1 = z.object({
 // })
 
 export const t_invoice = z.object({
-    buyer_company_name : z.string(),
-    buyer_billing_address : z.string(),
-    buyer_shipping_address : z.string(),
-    buyer_gstin_label : z.string(),
-    buyer_gstin : z.string(),
-    buyer_state_name_label : z.string(),
-    buyer_state_name : z.string(),
+    supplier_company_name : z.string(),
+    supplier_billing_address : z.string(),
+    supplier_shipping_address : z.string(),
+    supplier_gstin_label : z.string(),
+    supplier_gstin : z.string(),
+    supplier_state_name_label : z.string(),
+    supplier_state_name : z.string(),
     
-    seller_consignee_label : z.string(),
-    seller_shipping_company_name : z.string(),
-    seller_shipping_address : z.string(),
-    seller_shipping_gstin_label : z.string(),
-    seller_shipping_gstin : z.string(),
-    seller_shipping_state_name_label : z.string(),
-    seller_shipping_state_name : z.string(),
+    customer_consignee_label : z.string(),
+    customer_shipping_company_name : z.string(),
+    customer_shipping_address : z.string(),
+    customer_shipping_gstin_label : z.string(),
+    customer_shipping_gstin : z.string(),
+    customer_shipping_state_name_label : z.string(),
+    customer_shipping_state_name : z.string(),
 
 
-    buyer_ship_to_label : z.string(),
-    seller_billing_company_name : z.string(),
-    seller_billing_address : z.string(),
-    seller_billing_gstin_label : z.string(),
-    seller_billing_gstin : z.string(),
-    seller_billing_state_name_label : z.string(),
-    seller_billing_state_name : z.string(),
+    customer_ship_to_label : z.string(),
+    customer_billing_company_name : z.string(),
+    customer_billing_address : z.string(),
+    customer_billing_gstin_label : z.string(),
+    customer_billing_gstin : z.string(),
+    customer_billing_state_name_label : z.string(),
+    customer_billing_state_name : z.string(),
 
 
     invoice_number_label : z.string(),
     invoice_number : z.string(),
 
-    // dated_seller_label : z.string(),
-    // dated_seller : z.string(),
+    // dated_supplier_label : z.string(),
+    // dated_supplier : z.string(),
 
     invoice_date_label : z.string(),
     invoice_date : z.string(),
@@ -84,8 +84,8 @@ export const t_invoice = z.object({
     buyers_order_number_label : z.string(),
     buyers_order_number : z.string(),
     
-    dated_buyer_label : z.string(),
-    dated_buyer : z.string(),
+    dated_customer_label : z.string(),
+    dated_customer : z.string(),
     
     dispatch_doc_number_label : z.string(),
     dispatch_doc_number : z.string(),
