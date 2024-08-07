@@ -18,6 +18,12 @@ convert frontend to table
 
 add vouchers
 
+get all the gst and state list from server and not from frontend (delete frontend gst and state file)
+
+
+
+
+
 
 
 import "../style/table_style.css";

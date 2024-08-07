@@ -285,7 +285,12 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
               ></textarea>
               <br />
               GST:{" "}
-              <select name="gst" id="gst" value={invoiceState.supplier_gstin}>
+              <select
+                name="gst"
+                id="gst"
+                value={invoiceState.supplier_gstin}
+                onChange={(e) => handleChange("supplier_gstin", e.target.value)}
+              >
                 {gst_list?.map((option) => (
                   <option key={option.text} value={option.value}>
                     {option.text}
@@ -434,7 +439,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
                 onChange={(e) =>
                   handleChange("customer_billing_gstin", e.target.value)
                 }
-              >
+              > 
                 {gst_list?.map((option) => (
                   <option key={option.text} value={option.value}>
                     {option.text}
@@ -544,20 +549,21 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
 
           <tr>
             <td>
-            <select
+              <select
                 name="customer-shipping-company-name"
                 id="customer-shipping-company-name"
                 value={invoiceState.customer_shipping_company_name}
                 onChange={(e) =>
                   handleChange("customer_shipping_company_name", e.target.value)
                 }
-              ><option>Select Company Name</option>
-              {customer_name_list?.map((option) => (
-                <option key={option.text} value={option.value}>
-                  {option.text}
-                </option>
-              ))}
-            </select>
+              >
+                <option>Select Company Name</option>
+                {customer_name_list?.map((option) => (
+                  <option key={option.text} value={option.value}>
+                    {option.text}
+                  </option>
+                ))}
+              </select>
               <br />
               <textarea
                 value={invoiceState.customer_shipping_address}
