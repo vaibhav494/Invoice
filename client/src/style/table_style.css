@@ -4,7 +4,7 @@ input, textarea {
 }
 td {
   padding: 5px;
-  vertical-align: top; /* Align content to the top */
+  vertical-align: top;
 }
 .table-div{
   display: flex;
@@ -42,8 +42,6 @@ width: 50vw;
 height: 5vh;
 padding: 0px;
 border-collapse: collapse;
-/* border-top: 1px;
-border-bottom: 1px; */
 }
 .items{
 height: 30px;

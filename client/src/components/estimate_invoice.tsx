@@ -2,6 +2,7 @@ import "../style/table_style.css";
 
 function Estimate_Invoice() {
   return (
+    <>
     <div className="table-div">
       <table border={1}>
         <tr>
@@ -78,7 +79,9 @@ function Estimate_Invoice() {
           </td>
         </tr>
       </table>
+      
     </div>
+  </>
   );
 }
 export default Estimate_Invoice;
