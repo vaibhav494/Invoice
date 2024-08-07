@@ -6,52 +6,79 @@ td {
   padding: 5px;
   vertical-align: top;
 }
-.table-div{
+.table-div {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 
 table {
-width: 60%;
-border-collapse: collapse;
+  width: 60%;
+  border-collapse: collapse;
+  margin-bottom: -1px; /* Remove gap between tables */
 }
 
 td.wide {
-width: 50%;
-padding: 0px;
+  width: 50%;
+  padding: 0px;
 }
 td.narrow {
-width: 25%;
+  width: 25%;
 }
 
 .detail {
   margin-bottom: 10px; /* Add space between items */
 }
 
-
-.top-right-td{
+.top-right-td {
   width: 25%;
   height: 50px;
 }
 
-
-.innertd{
-width: 50vw;
-height: 5vh;
-padding: 0px;
-border-collapse: collapse;
+.innertd {
+  width: 50vw;
+  height: 5vh;
+  padding: 0px;
+  border-collapse: collapse;
 }
-.items{
-height: 30px;
+.items {
+  height: 30px;
 }
-.noborder{
-border: 0px;
+.noborder {
+  border: 0px;
 }
 
-
-.terms-of-delivery{
+.terms-of-delivery {
   height: 150px;
-
 }
+
+.sr-no{
+  width: 40px;
+  text-align: center;
+}
+.particulars{
+  width: 493px;
+  text-align: center;
+}
+.HSN-SAC{
+  text-align: center;
+}
+.qunatity{
+  text-align:center;
+}
+.rate{text-align: center;}
+.per{
+  text-align: center;
+}
+.amount{
+  text-align: right;
+}
+.total{
+  text-align: right;
+}
+.total-amount{
+  text-align: right;
+}
+
