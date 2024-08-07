@@ -74,8 +74,8 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
   const data_add_db = (e : any)=>{
     e.preventDefault();
     Axios.post("http://localhost:4000/insert_full_invoice_detail", {
-      Seller_name:invoiceState.buyer_company_name,
-      Buyer_name:invoiceState.seller_billing_company_name,
+      Supplier_name:invoiceState.supplier_company_name,
+      Customer_name:invoiceState.customer_billing_company_name,
       Invoice_number: invoiceState.invoice_number,
       Invoice_date:invoiceState.invoice_date,
       Total_amount:subTotal
@@ -205,21 +205,21 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
     }
   }, [onChange, invoiceState]);
 
-  // seller billing details update based on seller name
+  // customer billing details update based on customer name
   useEffect(() => {
-    if (invoiceState.seller_billing_company_name) {
-      const url = `http://localhost:4000/get_seller_detail/${invoiceState.seller_billing_company_name}`;
+    if (invoiceState.customer_billing_company_name) {
+      const url = `http://localhost:4000/get_seller_detail/${invoiceState.customer_billing_company_name}`;
 
       axios
         .get(url)
         .then((response: any) => {
-          const sellerDetail = response.data;
+          const customerDetail = response.data;
 
           const updatedInvoiceState = {
             ...invoiceState,
-            seller_billing_address: sellerDetail.address || "",
-            seller_billing_gstin: sellerDetail.gst || "",
-            seller_billing_state_name: sellerDetail.state || "",
+            customer_billing_address: customerDetail.address || "",
+            customer_billing_gstin: customerDetail.gst || "",
+            customer_billing_state_name: customerDetail.state || "",
           };
 
           setInvoiceState(updatedInvoiceState);
@@ -228,23 +228,23 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
           console.log(err);
         });
     }
-  }, [invoiceState.seller_billing_company_name]);
+  }, [invoiceState.customer_billing_company_name]);
 
   // seller shipping details update based on seller name
   useEffect(() => {
-    if (invoiceState.seller_shipping_company_name) {
-      const url = `http://localhost:4000/get_seller_detail/${invoiceState.seller_shipping_company_name}`;
+    if (invoiceState.customer_shipping_company_name) {
+      const url = `http://localhost:4000/get_seller_detail/${invoiceState.customer_shipping_company_name}`;
       
       axios
         .get(url)
         .then((response: any) => {
-          const sellerDetail = response.data;
+          const customerDetail = response.data;
 
           const updatedInvoiceState = {
             ...invoiceState,
-            seller_shipping_address: sellerDetail.address || "",
-            seller_shipping_gstin: sellerDetail.gst || "",
-            seller_shipping_state_name: sellerDetail.state || "",
+            customer_shipping_address: customerDetail.address || "",
+            customer_shipping_gstin: customerDetail.gst || "",
+            customer_shipping_state_name: customerDetail.state || "",
           };
 
           setInvoiceState(updatedInvoiceState);
@@ -253,7 +253,7 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
           console.log(err);
         });
     }
-  }, [invoiceState.seller_shipping_company_name]);
+  }, [invoiceState.customer_shipping_company_name]);
 
   return(
     <>
@@ -262,8 +262,8 @@ const MainInvoice: FC<Props> = ({ data, pdfMode, onChange, fstate }) => {
           {/* First Table */}
           <tr>
             <td rowSpan={3}>
-              <input type="text" placeholder="Enter Business Name" value={invoiceState.buyer_company_name}
-                onChange={(e) => handleChange("buyer_company_name", e.target.value)} />
+              <input type="text" placeholder="Enter Business Name" value={invoiceState.supplier_company_name}
+                onChange={(e) => handleChange("supplier_company_name", e.target.value)} />
               <br />
               <textarea
                 name="address"
