@@ -5,101 +5,77 @@ function Estimate_Invoice() {
     <div className="table-div">
       <table border={1}>
         <tr>
-          <td rowSpan={3} colSpan={2}>
-            <p>name: vaibhav</p>
-            <p>address: vile parle</p>
+          <td rowSpan={3}>
+            <input type="text" placeholder="Enter Business Name" />
+            <br />
+            <textarea
+              name="address"
+              id="address"
+              placeholder="Enter Address"
+            ></textarea>
+            <br />
+            GST: <input type="text" placeholder="Enter GST" />
+            <br />
+            State Code: <input type="text" placeholder="Enter GST" />
           </td>
-          <td >hello</td>
-          <td>world</td>
+
+          <td className="top-right-td">Invoice Number<br/><input type="text" placeholder="Enter" /></td>
+          <td className="top-right-td">Dated<br/><input type="text" placeholder="Enter" /></td>
         </tr>
         <tr>
-          <td>hello</td>
-          <td>world</td>
+          <td className="top-right-td">Delivery Note<br/><input type="text" placeholder="Enter" /></td>
+          <td className="top-right-td">Mode/Terms of Payment<br/><input type="text" placeholder="Enter" /></td>
         </tr>
         <tr>
-          <td>hello</td>
-          <td>world</td>
+          <td className="top-right-td">Reference No. & Date.<br/><input type="text" placeholder="Enter" /></td>
+          <td className="top-right-td">Other References<br/><input type="text" placeholder="Enter" /></td>
         </tr>
 
         <tr>
-          <td className="wide" colSpan={2}>
-            name:vaibhav <br />
-            address:vile parle
+          <td rowSpan={3}>
+            <input type="text" placeholder="Enter Business Name" />
+            <br />
+            <textarea
+              name="address"
+              id="address"
+              placeholder="Enter Address"
+            ></textarea>
+            <br />
+            GST: <input type="text" placeholder="Enter GST" />
+            <br />
+            State Code: <input type="text" placeholder="Enter GST" />
           </td>
-          <td colSpan={3} className="wide">
-            <tr>
-              <td className="innertd">hello</td>
-              <td className="innertd">world</td>
-            </tr>
-            <tr>
-              <td className="innertd">hello</td>
-              <td className="innertd">world</td>
-            </tr>
-            <tr>
-              <td className="innertd">hello</td>
-              <td className="innertd">world</td>
-            </tr>
-          </td>
+
+          <td className="top-right-td">Buyer's Order No. <br/><input type="text" placeholder="Enter" /></td>
+          <td className="top-right-td">Dated<br/><input type="text" placeholder="Enter" /></td>
+        </tr>
+        <tr>
+          <td className="top-right-td">Dispatch Doc<br/><input type="text" placeholder="Enter" /></td>
+          <td className="top-right-td">Delivery Note Date<br/><input type="text" placeholder="Enter" /></td>
+        </tr>
+        <tr>
+          <td className="top-right-td">Dispatched through<br/><input type="text" placeholder="Enter" /></td>
+          <td className="top-right-td">Destination<br/><input type="text" placeholder="Enter" /></td>
         </tr>
 
         <tr>
-          <td className="wide" colSpan={2}>
-            name:vaibhav <br />
-            address:vile parle
+          <td>
+            <input type="text" placeholder="Enter Business Name" />
+            <br />
+            <textarea
+              name="address"
+              id="address"
+              placeholder="Enter Address"
+            ></textarea>
+            <br />
+            GST: <input type="text" placeholder="Enter GST" />
+            <br />
+            State Code: <input type="text" placeholder="Enter GST" />
           </td>
-          <td className="innertd" colSpan={3}>
+          <td colSpan={2} className="terms-of-delivery">
             Terms of Delivery
+            <br /><textarea name="terms-of-delivery" id="terms-of-delivery" placeholder="Enter"></textarea>
           </td>
-        </tr>
-
-        <tr>
-          <td className="items">sr no</td>
-          <td className="items">particulars</td>
-          <td className="items">rate</td>
-          <td className="items">qty</td>
-          <td className="items">amount</td>
-        </tr>
-        <tr>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-        </tr>
-        <tr>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-        </tr>
-        <tr>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-        </tr>
-        <tr>
-          <td className="noborder"></td>
-          <td className="noborder"></td>
-          <td className="noborder"></td>
-          <td className="noborder"></td>
-          <td>SubTotal: 20000rs</td>
-        </tr>
-        <tr>
-          <td className="noborder"></td>
-          <td className="noborder"></td>
-          <td className="noborder"></td>
-          <td className="noborder"></td>
-          <td>GST: 20000rs</td>
-        </tr>
-        <tr>
-          <td className="noborder"></td>
-          <td className="noborder"></td>
-          <td className="noborder"></td>
-          <td className="noborder"></td>
-          <td>Total: 20000rs</td>
         </tr>
       </table>
     </div>

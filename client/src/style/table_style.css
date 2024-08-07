@@ -2,7 +2,10 @@ input, textarea {
   border: none;
   outline: none;
 }
-
+td {
+  padding: 5px;
+  vertical-align: top; /* Align content to the top */
+}
 .table-div{
   display: flex;
   justify-content: center;
@@ -27,6 +30,13 @@ width: 25%;
   margin-bottom: 10px; /* Add space between items */
 }
 
+
+.top-right-td{
+  width: 25%;
+  height: 50px;
+}
+
+
 .innertd{
 width: 50vw;
 height: 5vh;
@@ -40,4 +50,10 @@ height: 30px;
 }
 .noborder{
 border: 0px;
+}
+
+
+.terms-of-delivery{
+  height: 150px;
+
 }
