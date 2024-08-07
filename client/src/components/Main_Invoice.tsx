@@ -59,7 +59,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
     text: seller.name,
   }));
   const [productLines, setProductLines] = useState([
-    { id: 1, rate: 0, qty: 0, amount: 0 },
+    { id: 1, particulars:'',HSN:'',  qty: 0, rate: 0, per:0, amount: 0 },
   ]);
  
   const [subTotal, setSubTotal] = useState<number>(0);
@@ -127,11 +127,12 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
         return line;
       })
     );
+
   };
   function handleAdd() {
     setProductLines((prevLines) => [
       ...prevLines,
-      { id: prevLines.length + 1, rate: 0, qty: 0, amount: 0 },
+      { id: prevLines.length + 1, particulars:'',HSN:'', qty: 0, rate: 0, per:0, amount: 0  },
     ]);
   }
 
@@ -324,15 +325,6 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
 
           <tr>
             <td rowSpan={3}>
-              {/* <input
-                type="text"
-                placeholder="Enter Business Name"
-                value={invoiceState.customer_billing_company_name}
-                onChange={(e) =>
-                  handleChange("customer_billing_company_name", e.target.value)
-                }
-
-              /> */}
               <select
                 name="customer-billing-company-name"
                 id="customer-billing-company-name"
@@ -566,8 +558,16 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
           {productLines.map((line) => (
             <tr key={line.id} id={`${line.id}-product`}>
               <td className="items">{line.id}</td>
-              <td className="items"></td>
-              <td className="items"></td>
+              <td className="items">
+                <input type="text" value={line.particulars} placeholder="Enter" onChange={(e) =>
+                  handleProductLineChange(line.id, "particulars", e.target.value)
+                } />
+              </td>
+              <td className="items">
+                <input type="text" value={line.HSN} placeholder="Enter" onChange={(e) =>
+                  handleProductLineChange(line.id, "HSN", e.target.value)
+                } />
+              </td>
               <td className="items">
                 <input
                   type="number"
@@ -586,7 +586,9 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
                   }
                 />
               </td>
-              <td className="items"></td>
+              <td className="items">
+                
+              </td>
               <td className="items">{line.amount.toFixed(2)}</td>
             </tr>
           ))}
