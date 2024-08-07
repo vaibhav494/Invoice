@@ -10,7 +10,11 @@ function Estimate_Invoice() {
             <td rowSpan={3}>
               <input type="text" placeholder="Enter Business Name" />
               <br />
-              <textarea name="address" id="address" placeholder="Enter Address"></textarea>
+              <textarea
+                name="address"
+                id="address"
+                placeholder="Enter Address"
+              ></textarea>
               <br />
               GST: <input type="text" placeholder="Enter GST" />
               <br />
@@ -57,7 +61,11 @@ function Estimate_Invoice() {
             <td rowSpan={3}>
               <input type="text" placeholder="Enter Business Name" />
               <br />
-              <textarea name="address" id="address" placeholder="Enter Address"></textarea>
+              <textarea
+                name="address"
+                id="address"
+                placeholder="Enter Address"
+              ></textarea>
               <br />
               GST: <input type="text" placeholder="Enter GST" />
               <br />
@@ -104,7 +112,11 @@ function Estimate_Invoice() {
             <td>
               <input type="text" placeholder="Enter Business Name" />
               <br />
-              <textarea name="address" id="address" placeholder="Enter Address"></textarea>
+              <textarea
+                name="address"
+                id="address"
+                placeholder="Enter Address"
+              ></textarea>
               <br />
               GST: <input type="text" placeholder="Enter GST" />
               <br />
@@ -113,7 +125,11 @@ function Estimate_Invoice() {
             <td colSpan={2} className="terms-of-delivery">
               Terms of Delivery
               <br />
-              <textarea name="terms-of-delivery" id="terms-of-delivery" placeholder="Enter"></textarea>
+              <textarea
+                name="terms-of-delivery"
+                id="terms-of-delivery"
+                placeholder="Enter"
+              ></textarea>
             </td>
           </tr>
         </table>
@@ -122,57 +138,101 @@ function Estimate_Invoice() {
         <table border={1}>
           {/* Duplicate the first table structure here */}
           <tr>
-          <td className="sr-no">sr no</td>
-          <td className="particulars">particulars</td>
-          <td className="HSN-SAC">HSN/SAC</td>
-          <td className="qty">qty</td>
-          <td className="rate">rate</td>
-          
-          <td className="per">%</td>
-          <td className="amount">amount</td>
-          
-        </tr>
-        <tr>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-        </tr>
-        <tr>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-        </tr>
-        <tr>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-        </tr>
-        <tr>
-          <td className="items"></td>
-          <td className="total">Total</td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="items"></td>
-          <td className="total-amount">10000</td>
-        </tr>
-        <tr>
-          <td colSpan={7}>Amount Chargeable(in words) <br />AMOUNT</td>
-        </tr>
-        
-        
+            <td className="sr-no">sr no</td>
+            <td className="particulars">particulars</td>
+            <td className="HSN-SAC">HSN/SAC</td>
+            <td className="qty">qty</td>
+            <td className="rate">rate</td>
+
+            <td className="per">%</td>
+            <td className="amount">amount</td>
+          </tr>
+          <tr>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+          </tr>
+          <tr>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+          </tr>
+          <tr>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+          </tr>
+          <tr>
+            <td className="items"></td>
+            <td className="total">Total</td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="items"></td>
+            <td className="total-amount">10000</td>
+          </tr>
+          <tr>
+            <td colSpan={7}>
+              Amount Chargeable(in words) <br />
+              AMOUNT
+            </td>
+          </tr>
+        </table>
+
+        {/* Third Table */}
+        <table border={1}>
+          <tr>
+            <td rowSpan={2} className="tax-hsn-sac">
+              HSN/SAC
+            </td>
+            <td rowSpan={2} className="tax">
+              Taxable Value
+            </td>
+            <td colSpan={2} className="tax">
+              Integrated Tax
+            </td>
+            <td rowSpan={2} className="tax">
+              Total Tax Amount
+            </td>
+          </tr>
+          <tr>
+            <td className="tax">Rate</td>
+            <td className="tax">Amount</td>
+          </tr>
+          <tr>
+            <td className="tax"></td>
+            <td className="tax">90,000</td>
+            <td className="tax">18%</td>
+            <td className="tax">16,200</td>
+            <td className="tax">16,200</td>
+          </tr>
+          <tr>
+            <td className="total">Total</td>
+            <td className="tax">90,000</td>
+            <td className="tax"></td>
+            <td className="tax">16,200</td>
+            <td className="tax">16,200</td>
+          </tr>
+          <tr>
+            <td colSpan={5} className="noborder">Tax Amount (in Words): Indian Rupee Sixteen Thousand Two Hundred Only</td>
+          </tr><br /><br /><br />
+          <br /><br /><br /><br /><br />
+          <tr>
+            <td className="noborder"></td>
+            <td colSpan={4}>hello</td>
+          </tr>
         </table>
       </div>
     </>

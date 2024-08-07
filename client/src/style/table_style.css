@@ -5,6 +5,7 @@ input, textarea {
 td {
   padding: 5px;
   vertical-align: top;
+  border: 2px solid black;
 }
 .table-div {
   display: flex;
@@ -12,9 +13,11 @@ td {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  overflow-y: scroll;
 }
 
 table {
+  border: 2px solid black;
   width: 60%;
   border-collapse: collapse;
   margin-bottom: -1px; /* Remove gap between tables */
@@ -82,3 +85,9 @@ td.narrow {
   text-align: right;
 }
 
+.tax{
+  text-align: center;
+}
+.tax-hsn-sac{
+  width: 535px;
+}
