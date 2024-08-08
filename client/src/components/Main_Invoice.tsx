@@ -59,9 +59,19 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
     text: seller.name,
   }));
   const [productLines, setProductLines] = useState([
-    { id: 1, particulars:'',HSN:'',  qty: 0, rate: 0, per:0, amount: 0 },
+    { id: 1, particulars: "", HSN: "", qty: 0, rate: 0, per: 0, amount: 0 },
   ]);
- 
+  const [taxproductLines, setTaxProductLines] = useState([
+    {
+      id: 1,
+      HSN: "",
+      taxable_value: 0,
+      rate: 0,
+      amount: 0,
+      total_tax_amount: 0,
+    },
+  ]);
+
   const [subTotal, setSubTotal] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
   const [Total_GST, setTotalGST] = useState<number>(0);
@@ -105,36 +115,93 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   };
 
   const calculateTotalAmount = () => {
-    return  productLines.reduce((total, line) => total + line.amount, 0);
+    return productLines.reduce((total, line) => total + line.amount, 0);
   };
   let words = toWords.convert(subTotal, { currency: true });
-
-
 
   useEffect(() => {
     setSubTotal(calculateTotalAmount());
     setTotalGST(calculateTotalGST());
   }, [productLines]);
 
-  const handleProductLineChange = (id: any, field: any, value: any) => {
+  const handleProductLineChange = (id:any, field:any, value:any) => {
     setProductLines((prevLines) =>
       prevLines.map((line) => {
         if (line.id === id) {
           const updatedLine = { ...line, [field]: value };
           updatedLine.amount = updatedLine.rate * updatedLine.qty;
+          let tax_rate;
+          if(updatedLine.rate > 1000 && field=='rate'){
+            tax_rate = 12;
+          }else{
+            tax_rate = 5;
+          }
+          setTaxProductLines((prevTaxLines) =>
+            prevTaxLines.map((taxLine) => {
+              if (taxLine.id === id) {
+                return {
+                  ...taxLine,
+                  HSN: updatedLine.HSN,
+                  taxable_value: updatedLine.amount,
+                  rate: tax_rate,
+                  amount: updatedLine.amount,
+                  total_tax_amount: updatedLine.amount * (updatedLine.rate / 100),
+                };
+              }
+              return taxLine;
+            })
+          );
+  
           return updatedLine;
         }
         return line;
       })
     );
-
   };
-  function handleAdd() {
-    setProductLines((prevLines) => [
-      ...prevLines,
-      { id: prevLines.length + 1, particulars:'',HSN:'', qty: 0, rate: 0, per:0, amount: 0  },
-    ]);
-  }
+  
+  const handleAdd = () => {
+    setProductLines((prevLines) => {
+      const newLine = {
+        id: prevLines.length + 1,
+        particulars: "",
+        HSN: "",
+        qty: 0,
+        rate: 0,
+        per: 0,
+        amount: 0,
+      };
+  
+      const newTaxLine = {
+        id: prevLines.length + 1,
+        HSN: "",
+        taxable_value: 0,
+        rate: 0,
+        amount: 0,
+        total_tax_amount: 0,
+      };
+  
+      setTaxProductLines((prevTaxLines) => [
+        ...prevTaxLines,
+        {
+          ...newTaxLine,
+          HSN: newLine.HSN,
+          taxable_value: newLine.amount,
+          rate: newTaxLine.rate,
+          amount: newLine.amount, 
+          total_tax_amount: newLine.amount * (newLine.rate / 100),
+        },
+      ]);
+  
+      return [...prevLines, newLine];
+    });
+  };
+  
+  // function handleTaxAdd(){
+  //   setTaxProductLines((productLines) => [
+  //     ...productLines,
+
+  //   ]);
+  // }
 
   // customer billing details update based on customer name
   useEffect(() => {
@@ -559,21 +626,35 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
             <tr key={line.id} id={`${line.id}-product`}>
               <td className="items">{line.id}</td>
               <td className="items">
-                <input type="text" value={line.particulars} placeholder="Enter" onChange={(e) =>
-                  handleProductLineChange(line.id, "particulars", e.target.value)
-                } />
+                <input
+                  type="text"
+                  value={line.particulars}
+                  placeholder="Enter"
+                  onChange={(e) =>
+                    handleProductLineChange(
+                      line.id,
+                      "particulars",
+                      e.target.value
+                    )
+                  }
+                />
               </td>
               <td className="items">
-                <input type="text" value={line.HSN} placeholder="Enter" onChange={(e) =>
-                  handleProductLineChange(line.id, "HSN", e.target.value)
-                } />
+                <input
+                  type="text"
+                  value={line.HSN}
+                  placeholder="Enter"
+                  onChange={(e) =>
+                    handleProductLineChange(line.id, "HSN", e.target.value)
+                  }
+                />
               </td>
               <td className="items">
                 <input
                   type="number"
                   value={line.qty}
                   onChange={(e) =>
-                    handleProductLineChange(line.id, "qty", +e.target.value)
+                    handleProductLineChange(line.id, "qty", e.target.value)
                   }
                 />
               </td>
@@ -582,13 +663,11 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
                   type="number"
                   value={line.rate}
                   onChange={(e) =>
-                    handleProductLineChange(line.id, "rate", +e.target.value)
+                    handleProductLineChange(line.id, "rate", e.target.value)
                   }
                 />
               </td>
-              <td className="items">
-                
-              </td>
+              <td className="items"></td>
               <td className="items">{line.amount.toFixed(2)}</td>
             </tr>
           ))}
@@ -597,9 +676,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
             <td colSpan={6} className="total">
               Total
             </td>
-            <td className="total-amount">
-              {subTotal.toFixed(2)}
-            </td>
+            <td className="total-amount">{subTotal.toFixed(2)}</td>
           </tr>
           <tr>
             <td colSpan={7}>
@@ -629,13 +706,18 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
             <td className="tax">Rate</td>
             <td className="tax">Amount</td>
           </tr>
-          <tr>
-            <td className="tax"></td>
-            <td className="tax">90,000</td>
-            <td className="tax">18%</td>
-            <td className="tax">16,200</td>
-            <td className="tax">16,200</td>
-          </tr>
+          {taxproductLines.map((taxLine) => (
+            <tr key={taxLine.id}>
+              <td className="tax">{taxLine.HSN}</td>
+              <td className="tax">{taxLine.taxable_value.toLocaleString()}</td>
+              <td className="tax">{taxLine.rate}%</td>
+              <td className="tax">{taxLine.amount.toLocaleString()}</td>
+              <td className="tax">
+                {taxLine.total_tax_amount.toLocaleString()}
+              </td>
+            </tr>
+          ))}
+
           <tr>
             <td className="total">Total</td>
             <td className="tax">90,000</td>
