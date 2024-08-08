@@ -75,6 +75,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   const [subTotal, setSubTotal] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
   const [Total_GST, setTotalGST] = useState<number>(0);
+  const [total_taxable_amount, setTotalTaxableAmount] = useState<number>(0);
   const toWords = new ToWords();
 
   const date_format = "MMM dd, yyyy";
@@ -107,7 +108,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   };
 
   const calculateTotalGST = () => {
-    return productLines.reduce((total, line) => total + line.amount * 0.18, 0); // Assuming 18% GST
+    return productLines.reduce((total, line) => total + line.amount * 0.18, 0); 
   };
 
   const calculateSubTotal = () => {
@@ -117,11 +118,16 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   const calculateTotalAmount = () => {
     return productLines.reduce((total, line) => total + line.amount, 0);
   };
+
+  const calculateTotalTaxableAmount = () => {
+    return taxproductLines.reduce((total, line) => total + line.taxable_value, 0);
+  }
   let words = toWords.convert(subTotal, { currency: true });
 
   useEffect(() => {
     setSubTotal(calculateTotalAmount());
     setTotalGST(calculateTotalGST());
+    setTotalTaxableAmount(calculateTotalTaxableAmount());
   }, [productLines]);
 
   const handleProductLineChange = (id:any, field:any, value:any) => {
@@ -130,12 +136,16 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
         if (line.id === id) {
           const updatedLine = { ...line, [field]: value };
           updatedLine.amount = updatedLine.rate * updatedLine.qty;
-          let tax_rate;
-          if(updatedLine.rate > 1000 && field=='rate'){
-            tax_rate = 12;
-          }else{
-            tax_rate = 5;
+          let tax_rate:any;
+          if (field==='rate'){
+            
+            if(updatedLine.rate > 1000){
+              tax_rate = 12;
+            }else{
+              tax_rate = 5;
+            }
           }
+          
           setTaxProductLines((prevTaxLines) =>
             prevTaxLines.map((taxLine) => {
               if (taxLine.id === id) {
@@ -720,7 +730,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
 
           <tr>
             <td className="total">Total</td>
-            <td className="tax">90,000</td>
+            <td className="tax">{total_taxable_amount}</td>
             <td className="tax"></td>
             <td className="tax">16,200</td>
             <td className="tax">16,200</td>
