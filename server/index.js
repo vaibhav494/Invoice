@@ -32,22 +32,28 @@ app.get('/get_seller_detail/:name', (req, res) => {
         .catch(err => res.status(500).json({ error: err.message }));
 });
 
+app.post('/')
 
 app.post('/insert_full_invoice_detail', async(req, res)=>{
     try {
-        const bn = req.body.Buyer_name;
-        const sn = req.body.Seller_name;
-        const In = req.body.Invoice_number;
-        const id = req.body.Invoice_date;
-        const ta = req.body.Total_amount;
+        // const bn = req.body.Buyer_name;
+        // const sn = req.body.Seller_name;
+        // const In = req.body.Invoice_number;
+        // const id = req.body.Invoice_date;
+        // const ta = req.body.Total_amount;
 
         const formData1 = await Invoice_detail.create({
 
-            Buyer_Name: bn,
-            Seller_Name: sn,
-            Invoice_Number: In,
-            Invoice_Date: id,
-            Total_Amount: ta,
+            // Buyer_Name: bn,
+            // Seller_Name: sn,
+            // Invoice_Number: In,
+            // Invoice_Date: id,
+            // Total_Amount: ta,
+            All_invoice_detail: req.body.all_data,
+            All_Product_detail: req.body.product_detail,
+            All_Tax_detail: req.body.tax_detail
+
+
         })
             await formData1.save();
             res.send("invoice data added..")

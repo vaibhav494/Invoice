@@ -76,6 +76,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   const [discount, setDiscount] = useState<number>(0);
   const [Total_GST, setTotalGST] = useState<number>(0);
   const [total_taxable_amount, setTotalTaxableAmount] = useState<number>(0);
+  const [total_tax_amount, setTotalTaxAmount] = useState<number>(0);
   const toWords = new ToWords();
 
   const date_format = "MMM dd, yyyy";
@@ -87,11 +88,14 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   const data_add_db = (e: any) => {
     e.preventDefault();
     Axios.post("http://localhost:4000/insert_full_invoice_detail", {
-      Supplier_name: invoiceState.supplier_company_name,
-      Customer_name: invoiceState.customer_billing_company_name,
-      Invoice_number: invoiceState.invoice_number,
-      Invoice_date: invoiceState.invoice_date,
-      Total_amount: subTotal,
+      // Supplier_name: invoiceState.supplier_company_name,
+      // Customer_name: invoiceState.customer_billing_company_name,
+      // Invoice_number: invoiceState.invoice_number,
+      // Invoice_date: invoiceState.invoice_date,
+      // Total_amount: subTotal,
+      all_data : invoiceState,
+      product_detail : productLines,
+      tax_detail: taxproductLines
     }).then((data) => {
       console.log(data);
     });
@@ -122,12 +126,16 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   const calculateTotalTaxableAmount = () => {
     return taxproductLines.reduce((total, line) => total + line.taxable_value, 0);
   }
+  const calculateTotalTaxAmount = () => {
+    return taxproductLines.reduce((total, line) => total + line.amount, 0 );
+  }
   let words = toWords.convert(subTotal, { currency: true });
 
   useEffect(() => {
     setSubTotal(calculateTotalAmount());
     setTotalGST(calculateTotalGST());
     setTotalTaxableAmount(calculateTotalTaxableAmount());
+    setTotalTaxAmount(calculateTotalTaxAmount());
   }, [productLines]);
 
   const handleProductLineChange = (id:any, field:any, value:any) => {
@@ -732,7 +740,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
             <td className="total">Total</td>
             <td className="tax">{total_taxable_amount}</td>
             <td className="tax"></td>
-            <td className="tax">16,200</td>
+            <td className="tax">{total_tax_amount}</td>
             <td className="tax">16,200</td>
           </tr>
           <tr>
@@ -757,6 +765,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
       </div>
       <button onClick={downloadPDF}>Download PDF</button>
       <button onClick={handleAdd}>Add</button>
+      <button onClick={data_add_db}>addData</button>
     </>
   );
 };
