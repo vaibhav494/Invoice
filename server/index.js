@@ -74,14 +74,6 @@ app.get('/insert', (req, res)=>{
     .catch(err => res.json(err))
 })
 
-app.get('/test', async (req, res) => {
-    try {
-        const invoices = await Invoice_detail.find({});
-        res.status(200).json(invoices);
-    } catch (err) {
-        res.status(500).json({ message: 'Error retrieving invoices', error: err.message });
-    }
-});
 
 
 app.get('/get_invoice_number', async (req, res) => {

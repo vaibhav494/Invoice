@@ -34,10 +34,10 @@ function App() {
           
        
           <div className="main-div">
-              <div className="seller-entry-main">
+              {/* <div className="seller-entry-main">
                 <h1 className="center fs-30">Seller Entry</h1>
                 <Seller_entry fstate={sssname} fsetState={setSssname} />
-              </div>
+              </div> */}
               <div className="app">
                 <h1 className="center fs-30">Generate Invoice Here</h1>
                 <Main_Invoice
@@ -53,6 +53,12 @@ function App() {
         }
         />
         <Route
+        path='/customer-entry'
+        element={
+          <Seller_entry fstate={sssname} fsetState={setSssname}></Seller_entry>
+        }
+        ></Route>
+        {/* <Route
           path="/invoice"
           element={
    
@@ -72,7 +78,7 @@ function App() {
               <div className="clear"></div>
             </div>
           }
-        />
+        /> */}
         <Route path="/bill_detail" element={<Bill_detail />} />
         <Route path="/estimate_invoice" element={<><Estimate_Invoice/></>} />
       </Routes>

@@ -2,28 +2,22 @@
   width: 100%;
 }
 .seller-entry-main{
-  margin: 30px auto 50px auto;
-  width: 500px;
+
   height: 800px;
-  margin-left: 26px;
-  // background: #837272;
-  float: left;
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .seller-entry-box{
-  padding: 40px 35px;
-  width: 500px;
-  height:800px;
-  margin-top: -28px;
-  box-shadow: 0 0 17px 0 rgba(16, 40, 73, 0.09);
+  border: 1px solid black;
+  padding: 20px;
 }
-
 .app {
   margin: 30px auto 50px auto;
-  margin-right: 50px;
+
   width: 900px;
-  float: right;
+ 
 }
 
 .input,
