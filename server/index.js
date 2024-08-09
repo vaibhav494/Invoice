@@ -74,6 +74,48 @@ app.get('/insert', (req, res)=>{
     .catch(err => res.json(err))
 })
 
+app.get('/test', async (req, res) => {
+    try {
+        const invoices = await Invoice_detail.find({});
+        res.status(200).json(invoices);
+    } catch (err) {
+        res.status(500).json({ message: 'Error retrieving invoices', error: err.message });
+    }
+});
+
+
+app.get('/get_invoice_number', async (req, res) => {
+    try {
+        const result = await Invoice_detail.aggregate([
+            {
+                $project: {
+                    invoiceNumberAsInt: {
+                        $toInt: "$All_invoice_detail.invoice_number"
+                    },
+                    originalInvoiceNumber: "$All_invoice_detail.invoice_number"
+                }
+            },
+            {
+                $sort: { invoiceNumberAsInt: -1 }
+            },
+            {
+                $limit: 1
+            }
+        ]);
+
+        // Extract the highest invoice number from the result
+        const maxInvoiceNumber = result.length > 0 ? result[0].originalInvoiceNumber : "0";
+        
+        // Send the invoice number as the response
+        res.status(200).json({ maxInvoiceNumber });
+    } catch (err) {
+        console.error('Error retrieving invoice number:', err);  // Log the error for debugging
+        res.status(500).json({ message: 'Error retrieving invoice number', error: err.message });
+    }
+});
+
+
+
 app.post('/insert', async(req, res) => {
     try {
     const formData = await User.create({

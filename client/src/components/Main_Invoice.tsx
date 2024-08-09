@@ -272,6 +272,29 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
     }
   }, [invoiceState.customer_shipping_company_name]);
 
+  // updating invoice number by fetching the latest invoice number and adding it by 1
+  useEffect(() => {
+    
+      const url = `http://localhost:4000/get_invoice_number`;
+
+      axios
+        .get(url)
+        .then((response: any) => {
+          const invoice_number = response.data.maxInvoiceNumber;
+
+          const updatedInvoiceState = {
+            ...invoiceState,
+            invoice_number : String(Number(invoice_number) + 1)
+          };
+
+          setInvoiceState(updatedInvoiceState);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    
+  }, []); 
+
   return (
     <>
       <div className="table-div" id="invoice-table">
