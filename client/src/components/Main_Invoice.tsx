@@ -29,7 +29,7 @@ interface Props {
   fstate: string[];
 }
 
-const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
+const MainInvoice: FC<Props> = ({ data, onChange, fstate }) => {
   const downloadPDF = () => {
     const input = document.getElementById("invoice-table");
     if (input) {
@@ -50,9 +50,11 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   const [invoiceState, setInvoiceState] = useState<invoice>(
     // use the comment section to remember data when reload
     // data ? { ...data } : { ...initial_invoice }
-    initial_invoice
+     initial_invoice
   );
   // will be using this seller_name here
+
+  const inv_date = new Date();
 
   const customer_name_list = fstate.map((seller: any) => ({
     value: seller.id,
@@ -79,12 +81,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   const [total_tax_amount, setTotalTaxAmount] = useState<number>(0);
   const toWords = new ToWords();
 
-  const date_format = "MMM dd, yyyy";
-  const invoiceDate =
-    invoiceState.invoice_date !== ""
-      ? new Date(invoiceState.invoice_date)
-      : new Date();
-
+  // adding all data in db 
   const data_add_db = (e: any) => {
     e.preventDefault();
     Axios.post("http://localhost:4000/insert_full_invoice_detail", {
@@ -93,14 +90,15 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
       // Invoice_number: invoiceState.invoice_number,
       // Invoice_date: invoiceState.invoice_date,
       // Total_amount: subTotal,
-      all_data : invoiceState,
-      product_detail : productLines,
-      tax_detail: taxproductLines
+      all_data: invoiceState,
+      product_detail: productLines,
+      tax_detail: taxproductLines,
     }).then((data) => {
       console.log(data);
     });
   };
 
+  // handling change in invoice 
   const handleChange = (name: keyof invoice, value: string | number) => {
     if (name !== "product_all_detail") {
       const newInvoice = { ...invoiceState };
@@ -112,7 +110,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   };
 
   const calculateTotalGST = () => {
-    return productLines.reduce((total, line) => total + line.amount * 0.18, 0); 
+    return productLines.reduce((total, line) => total + line.amount * 0.18, 0);
   };
 
   const calculateSubTotal = () => {
@@ -124,13 +122,17 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
   };
 
   const calculateTotalTaxableAmount = () => {
-    return taxproductLines.reduce((total, line) => total + line.taxable_value, 0);
-  }
+    return taxproductLines.reduce(
+      (total, line) => total + line.taxable_value,
+      0
+    );
+  };
   const calculateTotalTaxAmount = () => {
-    return taxproductLines.reduce((total, line) => total + line.amount, 0 );
-  }
+    return taxproductLines.reduce((total, line) => total + line.amount, 0);
+  };
   let words = toWords.convert(subTotal, { currency: true });
 
+  // setting product and tax line general amount
   useEffect(() => {
     setSubTotal(calculateTotalAmount());
     setTotalGST(calculateTotalGST());
@@ -138,22 +140,22 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
     setTotalTaxAmount(calculateTotalTaxAmount());
   }, [productLines]);
 
-  const handleProductLineChange = (id:any, field:any, value:any) => {
+  // updating product and tax line
+  const handleProductLineChange = (id: any, field: any, value: any) => {
     setProductLines((prevLines) =>
       prevLines.map((line) => {
         if (line.id === id) {
           const updatedLine = { ...line, [field]: value };
           updatedLine.amount = updatedLine.rate * updatedLine.qty;
-          let tax_rate:any;
-          if (field==='rate'){
-            
-            if(updatedLine.rate > 1000){
+          let tax_rate: any;
+          if (field === "rate") {
+            if (updatedLine.rate > 1000) {
               tax_rate = 12;
-            }else{
+            } else {
               tax_rate = 5;
             }
           }
-          
+
           setTaxProductLines((prevTaxLines) =>
             prevTaxLines.map((taxLine) => {
               if (taxLine.id === id) {
@@ -163,20 +165,22 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
                   taxable_value: updatedLine.amount,
                   rate: tax_rate,
                   amount: updatedLine.amount,
-                  total_tax_amount: updatedLine.amount * (updatedLine.rate / 100),
+                  total_tax_amount:
+                    updatedLine.amount * (updatedLine.rate / 100),
                 };
               }
               return taxLine;
             })
           );
-  
+
           return updatedLine;
         }
         return line;
       })
     );
   };
-  
+
+  // adding product and tax line
   const handleAdd = () => {
     setProductLines((prevLines) => {
       const newLine = {
@@ -188,7 +192,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
         per: 0,
         amount: 0,
       };
-  
+
       const newTaxLine = {
         id: prevLines.length + 1,
         HSN: "",
@@ -197,7 +201,7 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
         amount: 0,
         total_tax_amount: 0,
       };
-  
+
       setTaxProductLines((prevTaxLines) => [
         ...prevTaxLines,
         {
@@ -205,21 +209,14 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
           HSN: newLine.HSN,
           taxable_value: newLine.amount,
           rate: newTaxLine.rate,
-          amount: newLine.amount, 
+          amount: newLine.amount,
           total_tax_amount: newLine.amount * (newLine.rate / 100),
         },
       ]);
-  
+
       return [...prevLines, newLine];
     });
   };
-  
-  // function handleTaxAdd(){
-  //   setTaxProductLines((productLines) => [
-  //     ...productLines,
-
-  //   ]);
-  // }
 
   // customer billing details update based on customer name
   useEffect(() => {
@@ -274,26 +271,38 @@ const MainInvoice: FC<Props> = ({ onChange, fstate }) => {
 
   // updating invoice number by fetching the latest invoice number and adding it by 1
   useEffect(() => {
+    const url = `http://localhost:4000/get_invoice_number`;
+
+    axios
+      .get(url)
+      .then((response: any) => {
+        const invoice_number = response.data.maxInvoiceNumber;
+
+        const updatedInvoiceState = {
+          ...invoiceState,
+          invoice_number: String(Number(invoice_number) + 1),
+        };
+
+        setInvoiceState(updatedInvoiceState);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [productLines]);
+
+  // updating date
+  useEffect(() => {
+    const inv_date = new Date();
+    const day = inv_date.getDate();
+    const month = inv_date.getMonth() + 1; // Months are zero-based
+    const year = inv_date.getFullYear();
     
-      const url = `http://localhost:4000/get_invoice_number`;
-
-      axios
-        .get(url)
-        .then((response: any) => {
-          const invoice_number = response.data.maxInvoiceNumber;
-
-          const updatedInvoiceState = {
-            ...invoiceState,
-            invoice_number : String(Number(invoice_number) + 1)
-          };
-
-          setInvoiceState(updatedInvoiceState);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    
-  }, []); 
+    const currentDate = `${day}-${month}-${year}`;
+    setInvoiceState(prevState => ({
+      ...prevState,
+      invoice_date: currentDate,
+    }));  
+  }, []);
 
   return (
     <>
