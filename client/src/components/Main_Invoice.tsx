@@ -288,7 +288,7 @@ const MainInvoice: FC<Props> = ({ data, onChange, fstate }) => {
       .catch((err) => {
         console.log(err);
       });
-  }, [productLines]);
+  }, []);
 
   // updating date
   useEffect(() => {
@@ -302,7 +302,7 @@ const MainInvoice: FC<Props> = ({ data, onChange, fstate }) => {
       ...prevState,
       invoice_date: currentDate,
     }));  
-  }, []);
+  }, [productLines]);
 
   return (
     <>

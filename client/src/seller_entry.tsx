@@ -17,14 +17,15 @@ const Seller_entry: FC<Props> = ({fstate,fsetState}) => {
   const [gst, setGst] = useState("");
   const [stat, setStat] = useState("");
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:4000/insert")
-      .then((seller_name) => fsetState(seller_name.data))
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []); 
+  // NO NEED OF THIS BECAUSE FETCHING DATA IN APP.TSX
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:4000/insert")
+  //     .then((seller_name) => fsetState(seller_name.data))
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []); 
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
