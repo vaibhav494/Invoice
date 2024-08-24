@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 interface InvoiceDetail {
-  Seller_Name: string;
-  Buyer_Name: string;
-  Invoice_Number: string;
-  Invoice_Date: string;
-  Total_Amount: number;
+  supplier_company_name: string;
+  customer_company_name: string;
+  invoice_number: string;
+  invoice_date: string;
+  //Total_Amount: number;
 }
 
 function Bill_detail() {
@@ -21,6 +21,7 @@ function Bill_detail() {
       .then((response) => {
         setDetail(response.data);
         // setFilteredDetail(response.data);
+        console.log('this is the data available'+detail)
       })
     
       .catch((err) => {
@@ -31,14 +32,14 @@ function Bill_detail() {
   useEffect(() => {
     let data = [...detail];
     if (sellerName !== "all") {
-      data = data.filter((invoice) => invoice.Seller_Name === sellerName);
+      data = data.filter((invoice) => invoice.supplier_company_name === sellerName);
     }
     if (buyerName !== "all") {
-      data = data.filter((invoice) => invoice.Buyer_Name === buyerName);
+      data = data.filter((invoice) => invoice.customer_company_name === buyerName);
     }
-    if (sortOrder !== "none") {
-      data = data.sort((a, b) => sortOrder === "asc" ? a.Total_Amount - b.Total_Amount : b.Total_Amount - a.Total_Amount);
-    }
+    // if (sortOrder !== "none") {
+    //   data = data.sort((a, b) => sortOrder === "asc" ? a.Total_Amount - b.Total_Amount : b.Total_Amount - a.Total_Amount);
+    // }
     setFilteredDetail(data);
   }, [buyerName, sortOrder, sellerName, detail]);
 
@@ -55,7 +56,7 @@ function Bill_detail() {
               >
                 <option value="all">all</option>
                 {detail
-                  .map((invoice) => invoice.Seller_Name)
+                  .map((invoice) => invoice.supplier_company_name)
                   .filter((value, index, self) => self.indexOf(value) === index)
                   .map((sellerName, index) => (
                     <option key={index} value={sellerName}>
@@ -73,7 +74,7 @@ function Bill_detail() {
               >
                 <option value="all">all</option>
                 {detail
-                  .map((invoice) => invoice.Buyer_Name)
+                  .map((invoice) => invoice.supplier_company_name)
                   .filter((value, index, self) => self.indexOf(value) === index)
                   .map((buyerName, index) => (
                     <option key={index} value={buyerName}>
@@ -101,11 +102,11 @@ function Bill_detail() {
         <tbody className="bill_detail_content">
           {filteredDetail.map((invoice, index) => (
             <tr key={index}>
-              <td>{invoice.Seller_Name}</td>
-              <td>{invoice.Buyer_Name}</td>
-              <td>{invoice.Invoice_Number}</td>
-              <td>{invoice.Invoice_Date}</td>
-              <td>{invoice.Total_Amount}</td>
+              <td>{invoice.supplier_company_name}</td>
+              <td>{invoice.customer_company_name}</td>
+              <td>{invoice.invoice_number}</td>
+              <td>{invoice.invoice_date}</td>
+              {/* <td>{invoice.Total_Amount}</td> */}
             </tr>
           ))}
         </tbody>

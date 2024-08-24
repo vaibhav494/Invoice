@@ -63,7 +63,10 @@ app.post('/insert_full_invoice_detail', async(req, res)=>{
 })
 
 app.get('/insert_full_invoice_detail', (req, res)=>{
-    Invoice_detail.find()
+
+    Invoice_detail.find({},
+        { "All_invoice_detail.supplier_company_name": 1, "All_invoice_detail.customer_billing_company_name": 1 ,"All_invoice_detail.invoice_number": 1,"All_invoice_detail.invoice_date_name": 1}
+    )
     .then(invoice_detail => res.json(invoice_detail))
     .catch(err => res.json(err))
 })

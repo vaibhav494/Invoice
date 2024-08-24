@@ -6,6 +6,7 @@ import Seller_entry from "./seller_entry";
 import Bill_detail from "./pages/bill_detail";
 import { invoice } from "./data/types";
 import axios from "axios";
+
 import { useEffect } from "react";
 import {
   SignedIn,
@@ -14,6 +15,7 @@ import {
   UserButton,
 } from "@clerk/clerk-react";
 import Estimate_Invoice from "./components/estimate_invoice";
+import Kaccha from "./pages/Kaccha";
 function App() {
   const [sssname, setSssname] = useState<string[]>([]);
 
@@ -57,7 +59,8 @@ function App() {
                 <Seller_entry fstate={sssname} fsetState={setSssname} />
               </div> */}
                 <div className="app">
-                  <h1 className="center fs-30">Generate Invoice Here</h1>
+                  {/* <h1 className="center fs-30">Generate Invoice Here</h1> */}
+                  <h1 className="text-center text-white">Generate Invoice Here</h1>
                   {sssname.length > 0 ? (
                     <Main_Invoice
                       data={data}
@@ -104,6 +107,7 @@ function App() {
           }
         /> */}
         <Route path="/bill_detail" element={<Bill_detail />} />
+        <Route path="/kaccha" element={<Kaccha />}></Route>
         <Route
           path="/estimate_invoice"
           element={
