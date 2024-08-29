@@ -6,8 +6,9 @@ import Seller_entry from "./seller_entry";
 import Bill_detail from "./pages/bill_detail";
 import { invoice } from "./data/types";
 import axios from "axios";
-
 import { useEffect } from "react";
+
+
 import {
   SignedIn,
   SignedOut,
@@ -68,7 +69,7 @@ function App() {
                       fstate={sssname}
                     />
                   ) : (
-                    <p>Loading...</p>
+<span className="align-center justify-center items-center loading loading-spinner loading-lg "></span>
                   )}
                 </div>
                 <div className="clear"></div>
