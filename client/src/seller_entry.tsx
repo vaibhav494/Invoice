@@ -4,7 +4,6 @@ import Axios from "axios";
 import axios from "axios";
 // import { useCommonContext } from "./context_common/context"; // Adjust the import path accordingly
 import state_list from "./data/dropdown_data/state_list";
-import { Button } from "@/components/ui/button"
 
 interface Props {
   fstate: string[];
@@ -69,7 +68,7 @@ const Seller_entry: FC<Props> = ({ fstate, fsetState }) => {
                 }}
               />
             </label>
-<br />
+            <br />
             <label className="input input-bordered flex items-center gap-2">
               Seller Address
               <input
@@ -81,7 +80,7 @@ const Seller_entry: FC<Props> = ({ fstate, fsetState }) => {
                 }}
               />
             </label>
-<br />
+            <br />
             <label className="input input-bordered flex items-center gap-2">
               Seller GST/UID
               <input
@@ -93,7 +92,7 @@ const Seller_entry: FC<Props> = ({ fstate, fsetState }) => {
                 }}
               />
             </label>
-<br />
+            <br />
             <label className="input input-bordered flex items-center gap-2">
               Seller State
               <input
@@ -121,11 +120,10 @@ const Seller_entry: FC<Props> = ({ fstate, fsetState }) => {
     </select>
     */}
             </label>
-<br />
+            <br />
             <button type="submit" className="btn btn-primary">
               Submit
             </button>
-
           </form>
         </div>
       </div>
