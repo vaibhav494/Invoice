@@ -60,7 +60,7 @@ function App() {
               </div> */}
                 <div className="app">
                   {/* <h1 className="center fs-30">Generate Invoice Here</h1> */}
-                  <h1 className="text-center text-white">Generate Invoice Here</h1>
+                  <h1 className="text-center text-red-800">Generate Invoice Here</h1>
                   {sssname.length > 0 ? (
                     <Main_Invoice
                       data={data}
