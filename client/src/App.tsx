@@ -17,6 +17,8 @@ import {
 } from "@clerk/clerk-react";
 import Estimate_Invoice from "./components/estimate_invoice";
 import Kaccha from "./pages/Kaccha";
+import LeftSidebar from "./components/LeftSidebar";
+import RootLayout from "./components/RootLayout";
 function App() {
   const [sssname, setSssname] = useState<string[]>([]);
 
@@ -50,11 +52,13 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route element={<RootLayout/>}>
         <Route
           path="/"
           element={
             <header>
               <div className="main-div">
+                
                 {/* <div className="seller-entry-main">
                 <h1 className="center fs-30">Seller Entry</h1>
                 <Seller_entry fstate={sssname} fsetState={setSssname} />
@@ -86,27 +90,7 @@ function App() {
             ></Seller_entry>
           }
         ></Route>
-        {/* <Route
-          path="/invoice"
-          element={
-   
-            <div className="main-div">
-              <div className="seller-entry-main">
-                <h1 className="center fs-30">Seller Entry</h1>
-                <Seller_entry fstate={sssname} fsetState={setSssname} />
-              </div>
-              <div className="app">
-                <h1 className="center fs-30">Generate Invoice Here</h1>
-                <Main_Invoice
-                  data={data}
-                  onChange={onInvoiceUpdated}
-                  fstate={sssname}
-                />
-              </div>
-              <div className="clear"></div>
-            </div>
-          }
-        /> */}
+        
         <Route path="/bill_detail" element={<Bill_detail />} />
         <Route path="/kaccha" element={<Kaccha />}></Route>
         <Route
@@ -117,6 +101,8 @@ function App() {
             </>
           }
         />
+
+        </Route>
       </Routes>
     </BrowserRouter>
   );
