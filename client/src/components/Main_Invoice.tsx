@@ -10,6 +10,7 @@ import html2canvas from "html2canvas";
 import "../style/table_style.css";
 import gst_list from "../data/dropdown_data/gst_list";
 import state_list from "../data/dropdown_data/state_list";
+import { Button } from "./ui/button";
 
 Font.register({
   family: "Nunito",
@@ -795,9 +796,12 @@ const MainInvoice: FC<Props> = ({ data, onChange, fstate }) => {
           </tr>
         </table>
       </div>
-      <button onClick={downloadPDF}>Download PDF</button>
-      <button onClick={handleAdd}>Add</button>
-      <button onClick={data_add_db}>addData</button>
+      <br /><br />
+
+      <Button onClick={downloadPDF}>Download PDF</Button><br />
+      <Button onClick={handleAdd}>Add</Button><br />
+      <Button onClick={data_add_db}>Database Add</Button>
+      
     </>
   );
 };

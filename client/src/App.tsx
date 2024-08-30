@@ -8,7 +8,6 @@ import { invoice } from "./data/types";
 import axios from "axios";
 import { useEffect } from "react";
 
-
 import {
   SignedIn,
   SignedOut,
@@ -19,6 +18,10 @@ import Estimate_Invoice from "./components/estimate_invoice";
 import Kaccha from "./pages/Kaccha";
 import LeftSidebar from "./components/LeftSidebar";
 import RootLayout from "./components/RootLayout";
+import { Navbar } from "./components/Navbar";
+import Payment from "./components/Payment";
+import Dashboard from "./pages/Dashboard";
+import Component from "./pages/Custom React Invoice Dashboard";
 function App() {
   const [sssname, setSssname] = useState<string[]>([]);
 
@@ -52,56 +55,64 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<RootLayout/>}>
-        <Route
-          path="/"
-          element={
-            <header>
-              <div className="main-div">
-                
-                {/* <div className="seller-entry-main">
+        <Route element={<RootLayout />}>
+          <Route
+            path="/"
+            element={
+              <header>
+                <div className="main-div">
+                  {/* <div className="seller-entry-main">
                 <h1 className="center fs-30">Seller Entry</h1>
                 <Seller_entry fstate={sssname} fsetState={setSssname} />
               </div> */}
-                <div className="app">
-                  {/* <h1 className="center fs-30">Generate Invoice Here</h1> */}
-                  <h1 className="text-center text-red-800">Generate Invoice Here</h1>
-                  {sssname.length > 0 ? (
-                    <Main_Invoice
-                      data={data}
-                      onChange={onInvoiceUpdated}
-                      fstate={sssname}
-                    />
-                  ) : (
-<span className="align-center justify-center items-center loading loading-spinner loading-lg "></span>
-                  )}
+                  <div className="app">
+                    {/* <h1 className="center fs-30">Generate Invoice Here</h1> */}
+                    <h1 className="text-center text-red-800">
+                      Generate Invoice Here
+                    </h1>
+                    {sssname.length > 0 ? (
+                      <Main_Invoice
+                        data={data}
+                        onChange={onInvoiceUpdated}
+                        fstate={sssname}
+                      />
+                    ) : (
+                      <span className="align-center justify-center items-center loading loading-spinner loading-lg "></span>
+                    )}
+                  </div>
+                  <div className="clear"></div>
                 </div>
-                <div className="clear"></div>
-              </div>
-            </header>
-          }
-        />
-        <Route
-          path="/customer-entry"
-          element={
-            <Seller_entry
-              fstate={sssname}
-              fsetState={setSssname}
-            ></Seller_entry>
-          }
-        ></Route>
-        
-        <Route path="/bill_detail" element={<Bill_detail />} />
-        <Route path="/kaccha" element={<Kaccha />}></Route>
-        <Route
-          path="/estimate_invoice"
-          element={
-            <>
-              <Estimate_Invoice />
-            </>
-          }
-        />
+              </header>
+            }
+          />
+          <Route
+            path="/customer-entry"
+            element={
+              <Seller_entry
+                fstate={sssname}
+                fsetState={setSssname}
+              ></Seller_entry>
+            }
+          ></Route>
 
+          <Route path="/bill_detail" element={<Bill_detail />} />
+          <Route path="/kaccha" element={<Kaccha />}></Route>
+          <Route
+            path="/estimate_invoice"
+            element={
+              <>
+                <Estimate_Invoice />
+              </>
+            }
+          />
+          * <Route
+            path="/dashboard"
+            element={
+              <>
+                <Dashboard />
+              </>
+            }
+          /> 
         </Route>
       </Routes>
     </BrowserRouter>
