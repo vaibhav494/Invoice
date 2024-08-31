@@ -36,22 +36,22 @@ app.post('/')
 
 app.post('/insert_full_invoice_detail', async(req, res)=>{
     try {
-        // const bn = req.body.Buyer_name;
-        // const sn = req.body.Seller_name;
-        // const In = req.body.Invoice_number;
-        // const id = req.body.Invoice_date;
-        // const ta = req.body.Total_amount;
+        const sn = req.body.Supplier_name;
+        const cn = req.body.Customer_name;
+        const In = req.body.Invoice_number;
+        const id = req.body.Invoice_date;
+        const ta = req.body.Total_amount;
 
         const formData1 = await Invoice_detail.create({
 
-            // Buyer_Name: bn,
-            // Seller_Name: sn,
-            // Invoice_Number: In,
-            // Invoice_Date: id,
-            // Total_Amount: ta,
-            All_invoice_detail: req.body.all_data,
-            All_Product_detail: req.body.product_detail,
-            All_Tax_detail: req.body.tax_detail
+            Supplier_Name: sn,
+            Customer_Name: cn,
+            Invoice_Number: In,
+            Invoice_Date: id,
+            Total_Amount: ta,
+            // All_invoice_detail: req.body.all_data,
+            // All_Product_detail: req.body.product_detail,
+            // All_Tax_detail: req.body.tax_detail
 
 
         })
@@ -64,9 +64,7 @@ app.post('/insert_full_invoice_detail', async(req, res)=>{
 
 app.get('/insert_full_invoice_detail', (req, res)=>{
 
-    Invoice_detail.find({},
-        { "All_invoice_detail.supplier_company_name": 1, "All_invoice_detail.customer_billing_company_name": 1 ,"All_invoice_detail.invoice_number": 1,"All_invoice_detail.invoice_date_name": 1}
-    )
+    Invoice_detail.find()
     .then(invoice_detail => res.json(invoice_detail))
     .catch(err => res.json(err))
 })

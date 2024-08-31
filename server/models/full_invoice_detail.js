@@ -2,15 +2,15 @@
 const mongoose = require('mongoose');
 
 const invoiceDetailSchema = new mongoose.Schema({
-  // Buyer_Name: { type: String, required: true, unique:false },
-  // Seller_Name: { type: String, required: true, unique:false },
-  // Invoice_Number: { type: String, required: true, unique:false },
-  // Invoice_Date: { type: Date, required: true, unique:false },
-  // Total_Amount: { type: Number, required: true, unique:false },
+  Supplier_Name: { type: String, unique:false },
+  Customer_Name: { type: String, unique:false },
+  Invoice_Number: { type: String,  unique:false },
+  Invoice_Date: { type: String, unique:false },
+  Total_Amount: { type: Number, unique:false },
   // Ensure there's no unique: true for Seller_Name
-  All_invoice_detail: {type: Object, required:true},
-  All_Product_detail: {type: Object, required:true},
-  All_Tax_detail: {type:Object, required:true}
+  // All_invoice_detail: {type: Object, required:true},
+  // All_Product_detail: {type: Object, required:true},
+  // All_Tax_detail: {type:Object, required:true}
 
 });
 
