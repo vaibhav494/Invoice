@@ -169,8 +169,9 @@
 //   )
 // }
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Bell, ChevronDown, MoreHorizontal, Search } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -183,9 +184,55 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import axios from "axios";
+import { link } from "fs";
+interface InvoiceDetail {
+  Supplier_Name: string;
+  Customer_Name: string;
+  Invoice_Number: string;
+  Invoice_Date: string;
+  Total_Amount: number;
+}
 export default function Dashboard() {
+  
+  const [detail, setDetail] = useState<InvoiceDetail[]>([]);
+  const [filteredDetail, setFilteredDetail] = useState<InvoiceDetail[]>([]);
+  const [buyerName, setBuyerName] = useState("all");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "none">("none");
+  const [sellerName, setSellerName] = useState("all");
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/insert_full_invoice_detail")
+      .then((response) => {
+        setDetail(response.data);
+        // setFilteredDetail(response.data);
+        console.log('this is the data available'+detail)
+      })
+    
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  useEffect(() => {
+    let data = [...detail];
+    if (sellerName !== "all") {
+      data = data.filter((invoice) => invoice.Supplier_Name === sellerName);
+    }
+    if (buyerName !== "all") {
+      data = data.filter((invoice) => invoice.Customer_Name === buyerName);
+    }
+    if (sortOrder !== "none") {
+      data = data.sort((a, b) => 
+        sortOrder === "asc" ? a.Total_Amount - b.Total_Amount : b.Total_Amount - a.Total_Amount
+      );
+    }
+    setFilteredDetail(data);
+  }, [buyerName, sortOrder, sellerName, detail]);
+
+
+
   return (
-    <div className="container h-full mx-auto p-4 ">
+    <div className="container mx-auto p-4 ">
       {/* <header className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-8">
           <h1 className="text-2xl font-bold">ENVOICE</h1>
@@ -240,7 +287,9 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold text-blue-600">Invoices</h2>
             <h2 className="text-xl font-semibold text-gray-400">Draft</h2>
           </div>
+          <Link to={"/"}>
           <Button className="bg-blue-600 text-white">+ New Invoice</Button>
+          </Link>
         </div>
 
         <div className="flex justify-between items-center mb-4">
@@ -283,7 +332,7 @@ export default function Dashboard() {
 
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow >
               <TableHead className="w-[40px]"></TableHead>
               <TableHead>Invoice#</TableHead>
               <TableHead>Invoice Date</TableHead>
