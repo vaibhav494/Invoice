@@ -1,6 +1,7 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { sidebarLinks } from "@/utils/links";
+import { Bell, ChevronDown } from "lucide-react";
 
 const LeftSidebar = () => {
 
@@ -58,6 +59,7 @@ const LeftSidebar = () => {
         <p className="small-medium lg:base-medium">Logout</p>
       </Button>
     </nav>
+ 
   );
 };
 export default LeftSidebar
