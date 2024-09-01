@@ -172,6 +172,7 @@ export default function Bill_detail() {
   }, [buyerName, sortOrder, sellerName, detail]);
 
   return (
+    <div className="h-full w-full">
     <Table>
       <TableHeader>
         <TableRow>
@@ -238,5 +239,6 @@ export default function Bill_detail() {
         ))}
       </TableBody>
     </Table>
+    </div>
   );
 }

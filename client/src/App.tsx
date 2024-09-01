@@ -21,7 +21,7 @@ import RootLayout from "./components/RootLayout";
 import { Navbar } from "./components/Navbar";
 import Payment from "./components/Payment";
 import Dashboard from "./pages/Dashboard";
-import Component from "./pages/Custom React Invoice Dashboard";
+
 function App() {
   const [sssname, setSssname] = useState<string[]>([]);
 

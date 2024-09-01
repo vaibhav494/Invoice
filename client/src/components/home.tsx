@@ -1,10 +1,3 @@
-// /**
-//  * v0 by Vercel.
-//  * @see https://v0.dev/t/ErdtH3ZavQH
-//  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
-//  */
-// "use client"
-
 // import { useState } from "react"
 // import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 // import { Button } from "@/components/ui/button"
