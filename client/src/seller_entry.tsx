@@ -3,7 +3,7 @@ import { FC } from "react";
 import Axios from "axios";
 import axios from "axios";
 // import { useCommonContext } from "./context_common/context"; // Adjust the import path accordingly
-import state_list from "./data/dropdown_data/state_list";
+// import state_list from "./data/dropdown_data/state_list";
 
 interface Props {
   fstate: string[];
