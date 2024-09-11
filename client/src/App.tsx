@@ -21,6 +21,8 @@ import RootLayout from "./components/RootLayout";
 import { Navbar } from "./components/Navbar";
 import Payment from "./components/Payment";
 import Dashboard from "./pages/Dashboard";
+import DynamicTaxInvoice from "./components/dynamic-tax-invoice";
+import Dash from "./components/dash";
 
 function App() {
   const [sssname, setSssname] = useState<string[]>([]);
@@ -102,6 +104,22 @@ function App() {
             element={
               <>
                 <Estimate_Invoice />
+              </>
+            }
+          />
+          <Route
+            path="/invoice"
+            element={
+              <>
+                <DynamicTaxInvoice />
+              </>
+            }
+          />
+          <Route
+            path="/dash"
+            element={
+              <>
+                <Dash />
               </>
             }
           />
