@@ -1,13 +1,22 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
+import axios from 'axios'
 
-type ProductLine = {
+interface CompanyDetails {
+  name: string
+  address: string[]
+  gstin: string
+  state: string
+  stateCode: string
+}
+
+interface ProductLine {
   id: number
   description: string
   hsn: string
@@ -17,7 +26,7 @@ type ProductLine = {
   amount: number
 }
 
-type TaxLine = {
+interface TaxLine {
   hsn: string
   taxableValue: number
   cgstRate: number
@@ -27,15 +36,11 @@ type TaxLine = {
   totalTaxAmount: number
 }
 
-type CompanyDetails = {
-  name: string
-  address: string[]
-  gstin: string
-  state: string
-  stateCode: string
+interface Props {
+  fstate: string[];
 }
 
-export default function DynamicTaxInvoice() {
+export default function DynamicTaxInvoice({ fstate }: Props) {
   const [invoiceNumber, setInvoiceNumber] = useState('71')
   const [invoiceDate, setInvoiceDate] = useState('31-May-24')
   const [buyerOrderNo, setBuyerOrderNo] = useState('')
@@ -79,6 +84,44 @@ export default function DynamicTaxInvoice() {
     state: 'Maharashtra',
     stateCode: '27'
   })
+
+  const [supplierList, setSupplierList] = useState<{ id: string, name: string }[]>([])
+  const [customerList, setCustomerList] = useState<{ id: string, name: string }[]>([])
+
+  useEffect(() => {
+    // Convert fstate to the required format
+    const formattedList = fstate.map((seller: any) => ({
+      id: seller.id,
+      name: seller.name
+    }))
+    setSupplierList(formattedList)
+    setCustomerList(formattedList)
+  }, [fstate])
+
+  const fetchCompanyDetails = (company: 'supplier' | 'customer', id: string) => {
+    axios.get(`http://localhost:4000/get_seller_detail/${id}`)
+      .then(response => {
+        const details = response.data
+        if (company === 'supplier') {
+          setSupplier({
+            name: details.name,
+            address: details.address.split('\n'),
+            gstin: details.gst,
+            state: details.state,
+            stateCode: details.stateCode
+          })
+        } else {
+          setCustomer({
+            name: details.name,
+            address: details.address.split('\n'),
+            gstin: details.gst,
+            state: details.state,
+            stateCode: details.stateCode
+          })
+        }
+      })
+      .catch(error => console.error(`Error fetching ${company} details:`, error))
+  }
 
   const addProductLine = () => {
     setProductLines([...productLines, {
@@ -136,23 +179,6 @@ export default function DynamicTaxInvoice() {
   const numberToWords = (num: number) => {
     // This is a placeholder. Implement a proper number to words conversion here.
     return `INR ${num.toFixed(2)} Only`
-  }
-
-  const updateCompanyDetails = (company: 'supplier' | 'customer', field: keyof CompanyDetails, value: string) => {
-    if (field === 'address') {
-      const updatedAddress = value.split('\n')
-      if (company === 'supplier') {
-        setSupplier(prev => ({ ...prev, address: updatedAddress }))
-      } else {
-        setCustomer(prev => ({ ...prev, address: updatedAddress }))
-      }
-    } else {
-      if (company === 'supplier') {
-        setSupplier(prev => ({ ...prev, [field]: value }))
-      } else {
-        setCustomer(prev => ({ ...prev, [field]: value }))
-      }
-    }
   }
 
   const downloadInvoice = () => {
@@ -264,7 +290,7 @@ export default function DynamicTaxInvoice() {
     doc.setFontSize(8)
     doc.text('Bank Name : HDFC 9588', 20, taxFinalY + 20)
     doc.text('A/c No. : 50200067469585', 20, taxFinalY + 25)
-    doc.text('Branch & IFS Code : Nallasopra East & HDFC0001808', 20, taxFinalY + 30)
+    doc.text('Branch & IFS Code : Nallasopara East & HDFC0001808', 20, taxFinalY + 30)
 
     // Company's PAN and Declaration
     doc.text("Company's PAN : CHLPP2269J", 20, taxFinalY + 40)
@@ -291,33 +317,38 @@ export default function DynamicTaxInvoice() {
         <div className="flex justify-between items-center">
           <div>
             <CardTitle className="text-2xl font-bold">Tax Invoice</CardTitle>
-            <Input
+            <select
               value={supplier.name}
-              onChange={(e) => updateCompanyDetails('supplier', 'name', e.target.value)}
+              onChange={(e) => fetchCompanyDetails('supplier', e.target.value)}
               className="font-semibold"
-            />
+            >
+              <option value="">Select Supplier</option>
+              {supplierList.map(s => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
+            </select>
             <textarea
               value={supplier.address.join('\n')}
-              onChange={(e) => updateCompanyDetails('supplier', 'address', e.target.value)}
+              readOnly
               className="text-xs text-muted-foreground w-full"
               rows={2}
             />
             <Input
               value={supplier.gstin}
-              onChange={(e) => updateCompanyDetails('supplier', 'gstin', e.target.value)}
+              readOnly
               className="text-xs text-muted-foreground"
               placeholder="GSTIN/UIN"
             />
             <div className="flex gap-2">
               <Input
                 value={supplier.state}
-                onChange={(e) => updateCompanyDetails('supplier', 'state', e.target.value)}
+                readOnly
                 className="text-xs text-muted-foreground"
                 placeholder="State"
               />
               <Input
                 value={supplier.stateCode}
-                onChange={(e) => updateCompanyDetails('supplier', 'stateCode', e.target.value)}
+                readOnly
                 className="text-xs text-muted-foreground w-16"
                 placeholder="Code"
               />
@@ -326,8 +357,7 @@ export default function DynamicTaxInvoice() {
           <div className="text-right">
             <Label htmlFor="invoiceNumber">Invoice No:</Label>
             <Input
-              id="invoiceNumber"
-              value={invoiceNumber}
+              id="invoiceNumber"              value={invoiceNumber}
               onChange={(e) => setInvoiceNumber(e.target.value)}
               className="w-24 text-right"
             />
@@ -347,33 +377,38 @@ export default function DynamicTaxInvoice() {
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
             <h3 className="font-semibold mb-2">Consignee (Ship to)</h3>
-            <Input
+            <select
               value={customer.name}
-              onChange={(e) => updateCompanyDetails('customer', 'name', e.target.value)}
+              onChange={(e) => fetchCompanyDetails('customer', e.target.value)}
               className="font-semibold"
-            />
+            >
+              <option value="">Select Customer</option>
+              {customerList.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
             <textarea
               value={customer.address.join('\n')}
-              onChange={(e) => updateCompanyDetails('customer', 'address', e.target.value)}
+              readOnly
               className="text-sm w-full"
               rows={3}
             />
             <Input
               value={customer.gstin}
-              onChange={(e) => updateCompanyDetails('customer', 'gstin', e.target.value)}
+              readOnly
               className="text-sm"
               placeholder="GSTIN/UIN"
             />
             <div className="flex gap-2">
               <Input
                 value={customer.state}
-                onChange={(e) => updateCompanyDetails('customer', 'state', e.target.value)}
+                readOnly
                 className="text-sm"
                 placeholder="State"
               />
               <Input
                 value={customer.stateCode}
-                onChange={(e) => updateCompanyDetails('customer', 'stateCode', e.target.value)}
+                readOnly
                 className="text-sm w-16"
                 placeholder="Code"
               />
@@ -381,33 +416,38 @@ export default function DynamicTaxInvoice() {
           </div>
           <div>
             <h3 className="font-semibold mb-2">Buyer (Bill to)</h3>
-            <Input
+            <select
               value={customer.name}
-              onChange={(e) => updateCompanyDetails('customer', 'name', e.target.value)}
+              onChange={(e) => fetchCompanyDetails('customer', e.target.value)}
               className="font-semibold"
-            />
+            >
+              <option value="">Select Customer</option>
+              {customerList.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
             <textarea
               value={customer.address.join('\n')}
-              onChange={(e) => updateCompanyDetails('customer', 'address', e.target.value)}
+              readOnly
               className="text-sm w-full"
               rows={3}
             />
             <Input
               value={customer.gstin}
-              onChange={(e) => updateCompanyDetails('customer', 'gstin', e.target.value)}
+              readOnly
               className="text-sm"
               placeholder="GSTIN/UIN"
             />
             <div className="flex gap-2">
               <Input
                 value={customer.state}
-                onChange={(e) => updateCompanyDetails('customer', 'state', e.target.value)}
+                readOnly
                 className="text-sm"
                 placeholder="State"
               />
               <Input
                 value={customer.stateCode}
-                onChange={(e) => updateCompanyDetails('customer', 'stateCode', e.target.value)}
+                readOnly
                 className="text-sm w-16"
                 placeholder="Code"
               />

@@ -111,7 +111,7 @@ function App() {
             path="/invoice"
             element={
               <>
-                <DynamicTaxInvoice />
+                <DynamicTaxInvoice fstate={sssname} />
               </>
             }
           />

@@ -1,18 +1,19 @@
 import React from 'react'
-import LeftSidebar from './LeftSidebar'
+import Sidebar from './sidebar'
 import { Outlet } from 'react-router-dom'
 import { Navbar } from './Navbar'
 
 const RootLayout = () => {
   return (
-    <main className='w-full flex flex-col'>
-        {/* <LeftSidebar/> */}
-        <Navbar/>
-        
-        <section className='flex h-full w-full justify-center items-center'>
-            <Outlet />
+    <div className='flex h-screen w-screen bg-gray-100'>
+      <Sidebar />
+      <main className='flex-1 overflow-auto'>
+        <Navbar />
+        <section className='p-6'>
+          <Outlet />
         </section>
-    </main>
+      </main>
+    </div>
   )
 }
 

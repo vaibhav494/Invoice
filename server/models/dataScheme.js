@@ -4,25 +4,27 @@ const ReactFormDataSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        unique:true
+        unique: true
     },
     address: {
         type: String,
-        required: true,
-        unique:true
+        required: true
     },
     gst: {
         type: String,
         required: true,
-        unique:true
+        unique: true
     },
     state: {
         type: String,
-        required: true,
-        unique:true
+        required: true
     },
-
+    stateCode: {
+        type: String,
+        required: true
+    }
 });
+
 const User = mongoose.model('Users', ReactFormDataSchema);
 
-module.exports=User
+module.exports = User;

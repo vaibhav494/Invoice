@@ -113,10 +113,10 @@ export const Navbar = () => {
     <div className="container mx-auto p-4">
     <header className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-8">
-          <h1 className="text-2xl font-bold">ENVOICE</h1>
+          <h1 className="text-2xl font-bold"></h1>
           <nav>
             <ul className="flex space-x-4">
-              <li><a href="#" className="text-blue-600 border-b-2 border-blue-600 pb-1">Invoices</a></li>
+              <li><a href="#" className="text-[#0A3A2A] border-b-2 border-[#0A3A2A] pb-1">Invoices</a></li>
               <li><a href="#" className="text-gray-600">Clients</a></li>
               <li><a href="#" className="text-gray-600">Service Items</a></li>
             </ul>
