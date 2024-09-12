@@ -7,13 +7,24 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
 
-const User = require('./models/dataScheme')
+const Customer = require('./models/dataScheme')
 const Invoice_detail = require('./models/full_invoice_detail')
+const User = require('./models/UserModel')
 app.use(express.json());
 
 app.use(cors());
 console.log("before mongo conn")
 mongoose.connect('mongodb://localhost:27017/invoice')
+
+
+app.post('/users', async (req, res) => {
+    const { clerkId, firstName, lastName, email } = req.body;
+  
+    const newUser = new User({ clerkId, firstName, lastName, email });
+    await newUser.save();
+    res.status(201).send('User created');
+  });
+
 
 app.get('/get_seller_detail/:name', (req, res) => {
     const { name } = req.params;
@@ -22,7 +33,7 @@ app.get('/get_seller_detail/:name', (req, res) => {
         return res.status(400).json({ error: 'Name query parameter is required' });
     }
 
-    User.findOne({ name: name })
+    Customer.findOne({ name: name })
         .then(seller_detail => {
             if (!seller_detail) {
                 return res.status(404).json({ error: 'Seller not found' });
@@ -70,8 +81,8 @@ app.get('/insert_full_invoice_detail', (req, res)=>{
 })
 
 app.get('/insert', (req, res)=>{
-    User.find({},'name')
-    .then(seller_name => res.json(seller_name))
+    Customer.find({},'name')
+    .then(customer_name => res.json(customer_name))
     .catch(err => res.json(err))
 })
 
@@ -111,17 +122,16 @@ app.get('/get_invoice_number', async (req, res) => {
 
 app.post('/insert', async(req, res) => {
     try {
-    const formData = await User.create({
-        name: req.body.seller_name,
-        address: req.body.seller_address,
-        gst: req.body.seller_gst,
-        state: req.body.seller_state,
-        stateCode: req.body.seller_state_code   
+    const formData = await Customer.create({
+        name: req.body.customer_name,
+        address: req.body.customer_address,
+        gst: req.body.customer_gst,
+        state: req.body.customer_state,
+        stateCode: req.body.customer_state_code   
     })
 
-
-        await formData.save();
-        res.send("inserted data..")
+    await formData.save();
+    res.send("inserted data..")
     } catch(err) {
         console.log(err)
     }

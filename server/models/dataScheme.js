@@ -25,6 +25,6 @@ const ReactFormDataSchema = new mongoose.Schema({
     }
 });
 
-const User = mongoose.model('Users', ReactFormDataSchema);
+const Customer = mongoose.model('Customers', ReactFormDataSchema);
 
-module.exports = User;
+module.exports = Customer;

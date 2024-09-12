@@ -1,11 +1,14 @@
 import { ArrowDownIcon, ArrowUpIcon, ArchiveIcon, DownloadIcon, BarChartIcon, TrendingUpIcon, HomeIcon, FileTextIcon, ShoppingBagIcon, ReceiptIcon, MessageSquareIcon, CreditCardIcon } from 'lucide-react'
+import { UserButton } from '@clerk/clerk-react'
+import { useUser } from '@clerk/clerk-react';
 
 export default function Dash() {
+  const { user } = useUser();
   return (
-    <div className="p-10">
+    <div>
       <header className="flex justify-between items-center mb-10">
         <div>
-          <h2 className="text-3xl font-bold">Hello, Brian</h2>
+          <h2 className="text-3xl font-bold">Hello, {user.firstName} {user.lastName}</h2>
           <p className="text-gray-600">Your current sales summary and activity.</p>
         </div>
         <div className="space-x-4">

@@ -1,3 +1,4 @@
+import { UserButton } from "@clerk/clerk-react";
 import { Bell, ChevronDown } from "lucide-react";
 
 export const Navbar = () => {
@@ -110,8 +111,8 @@ export const Navbar = () => {
     // </div>
     //   </div>
     // </div>
-    <div className="container mx-auto p-4">
-    <header className="flex items-center justify-between mb-8">
+    <div className="container mx-auto p-4 pl-0 mr-2">
+    <header className="flex items-center justify-between ">
         <div className="flex items-center space-x-8">
           <h1 className="text-2xl font-bold"></h1>
           <nav>
@@ -124,8 +125,9 @@ export const Navbar = () => {
         </div>
         <div className="flex items-center space-x-4">
           <Bell className="h-6 w-6 text-gray-600" />
-          <img src="/placeholder.svg?height=32&width=32" alt="User avatar" className="w-8 h-8 rounded-full" />
-          <ChevronDown className="h-4 w-4 text-gray-600" />
+          <UserButton></UserButton>
+          {/* <img src="/placeholder.svg?height=32&width=32" alt="User avatar" className="w-8 h-8 rounded-full" /> */}
+          {/* <ChevronDown className="h-4 w-4 text-gray-600" /> */}
         </div>
       </header> </div>
   );
