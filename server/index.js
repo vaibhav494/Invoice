@@ -116,6 +116,7 @@ app.post('/insert', async(req, res) => {
         address: req.body.seller_address,
         gst: req.body.seller_gst,
         state: req.body.seller_state,
+        stateCode: req.body.seller_state_code   
     })
 
 

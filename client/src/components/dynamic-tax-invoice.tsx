@@ -52,7 +52,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
   const [productLines, setProductLines] = useState<ProductLine[]>([
     {
       id: 1,
-      description: 'Pluto New - Denim Fabrics',
+      description: 'Demo Product Line',
       hsn: '52094200',
       quantity: 585,
       rate: 92,
