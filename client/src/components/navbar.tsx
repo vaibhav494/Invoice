@@ -1,5 +1,5 @@
 import { UserButton } from "@clerk/clerk-react";
-import { Bell, ChevronDown } from "lucide-react";
+import { Bell } from "lucide-react";
 
 export const Navbar = () => {
   return (

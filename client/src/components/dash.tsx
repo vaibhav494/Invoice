@@ -61,7 +61,7 @@ export default function Dash() {
               <tr className="text-left text-gray-500">
                 <th className="pb-2">Invoice ID</th>
                 <th className="pb-2">Status</th>
-                <th className="pb-2">Company</th>
+                <th className="pb-2">Company</th> 
                 <th className="pb-2">Action</th>
                 <th className="pb-2"></th>
               </tr>
