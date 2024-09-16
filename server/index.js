@@ -2,7 +2,10 @@ console.log("index js started");
 
 const express = require("express");
 const dotenv = require('dotenv');
+dotenv.config();
 
+console.log('CLERK_WEBHOOK_SECRET_KEY:', process.env.CLERK_WEBHOOK_SECRET_KEY ? 'Set' : 'Not set');
+console.log(process.env.CLERK_WEBHOOK_SECRET_KEY)
 const mongoose = require("mongoose");
 const { Webhook } = require('svix');
 const bodyParser = require('body-parser');
@@ -20,49 +23,67 @@ console.log("before mongo conn");
 mongoose.connect("mongodb://localhost:27017/invoice");
 
 
-
+app.get('/',(req, res) => {
+  res.send('hello world');
+})
 app.post(
-    '/api/webhooks',
-    bodyParser.raw({ type: 'application/json' }),
-    async function (req, res) {
-      try {
-        const payloadString = req.body.toString();
-        const svixHeaders = req.headers;
+  '/api/webhooks',
+  bodyParser.raw({ type: 'application/json' }), // Parse raw payload as a buffer
+  async function (req, res) {
+    try {
+      console.log('hoooooooo')
+      
+      const payloadBuffer = req.body; // This is a Buffer because of bodyParser.raw()
+      const payloadString = JSON.stringify(payloadBuffer) // Convert Buffer to string for verification
+      const svixHeaders = req.headers;
 
-        const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET_KEY);
-        const evt = wh.verify(payloadString, svixHeaders);
-        const { id, ...attributes } = evt.data;
-        console.log('error')
-        // Handle the webhooks
-        const eventType = evt.type;
-        if (eventType === 'user.created') {
-          console.log(`User ${id} was ${eventType}`);
-            console.log(attributes)
-          const firstName = attributes.first_name;
-          const lastName = attributes.last_name;
-            // const email = attributes.email;
-          const user = new User({
-            clerkUserId: id,
-            firstName: firstName,
-            lastName: lastName,
-            // email: email,
-          });
+      const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET_KEY);
+      console.log(wh)
+      console.log(svixHeaders)
+      console.log(payloadString)
+      const evt = wh.verify(payloadString, svixHeaders); // Verifies the incoming webhook payload
+      console.log(svixHeaders)
+      const { id, ...attributes } = evt.data;
 
-          await user.save();
-          console.log('User saved to database');
-        }
-        res.status(200).json({
-          success: true,
-          message: 'Webhook received',
+      // Handle the webhook event
+      const eventType = evt.type;
+      if (eventType === 'user.created') {
+        console.log(`User ${id} was created`);
+        console.log(attributes);
+
+        const firstName = attributes.first_name;
+        const lastName = attributes.last_name;
+
+        const user = new User({
+          clerkUserId: id,
+          firstName: firstName,
+          lastName: lastName,
         });
-      } catch (err) {
-        res.status(400).json({
-          success: false,
-          message: err.message,
-        });
+
+        await user.save();
+        console.log('User saved to database');
       }
+      if (eventType === 'user.deleted') {
+        console.log(`User ${id} deleted`);
+        User.deleteOne( { clerkUserId: id } )
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Webhook received and verified',
+      });
+    } catch (err) {
+      console.error("Webhook verification failed:", err.message); // Detailed error message
+      res.status(400).json({
+        success: false,
+        message: err.message,
+      });
     }
-  );
+  }
+);
+
+
+
 
 
 app.post("/addinvoicedatabase", async (req, res) => {
@@ -78,6 +99,7 @@ app.post("/addinvoicedatabase", async (req, res) => {
     dispatchedThrough: req.body.DispatchedThrough,
     destination: req.body.Destination,
     taxLines: req.body.TaxLines,
+    userId:req.body.UserId
   });
   await newInvoice.save();
 });
@@ -135,9 +157,23 @@ app.post("/insert_full_invoice_detail", async (req, res) => {
 });
 
 app.get("/insert_full_invoice_detail", (req, res) => {
-  Invoice_detail.find()
-    .then((invoice_detail) => res.json(invoice_detail))
-    .catch((err) => res.json(err));
+  Invoice.find({}, 'customer.name supplier.name invoiceNumber invoiceDate productLines')
+    .then((invoices) => {
+      const formattedInvoices = invoices.map(invoice => {
+        const totalAmount = invoice.productLines && invoice.productLines.length > 0
+          ? invoice.productLines.reduce((sum, product) => sum + (product.amount || 0), 0)
+          : 0;
+        return {
+          customerName: invoice.customer?.name || '',
+          sellerName: invoice.supplier?.name || '',
+          invoiceNumber: invoice.invoiceNumber || '',
+          invoiceDate: invoice.invoiceDate || '',
+          totalAmount: totalAmount
+        };
+      });
+      res.json(formattedInvoices);
+    })
+    .catch((err) => res.status(500).json({ error: err.message }));
 });
 
 app.get("/insert", (req, res) => {
@@ -187,6 +223,7 @@ app.post("/insert", async (req, res) => {
       gst: req.body.customer_gst,
       state: req.body.customer_state,
       stateCode: req.body.customer_state_code,
+      userId: req.body.userId
     });
 
     await formData.save();

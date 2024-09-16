@@ -33,6 +33,9 @@ const NewInvoice = new mongoose.Schema({
     },
     taxLines: {
         type: Array,
+    },
+    userId:{
+        type: String
     }
     
 });

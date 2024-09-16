@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { FC } from 'react';
 import axios from 'axios';
-
+import { useUser } from '@clerk/clerk-react';
 interface Props {
   fstate: string[];
   fsetState: (value: string[]) => void;
 }
 
 const CustomerEntry: FC<Props> = ({ fstate, fsetState }) => {
+  const {user} = useUser();
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [gst, setGst] = useState('');
@@ -22,7 +23,8 @@ const CustomerEntry: FC<Props> = ({ fstate, fsetState }) => {
         customer_address: address,
         customer_gst: gst,
         customer_state: stat,
-        customer_state_code: stateCode
+        customer_state_code: stateCode,
+        userId : user?.id,
       });
       const response = await axios.get('http://localhost:4000/insert');
       fsetState(response.data);

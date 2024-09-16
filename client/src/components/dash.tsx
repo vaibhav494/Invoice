@@ -1,14 +1,22 @@
-import { ArrowDownIcon, ArrowUpIcon, ArchiveIcon, DownloadIcon, BarChartIcon, TrendingUpIcon, HomeIcon, FileTextIcon, ShoppingBagIcon, ReceiptIcon, MessageSquareIcon, CreditCardIcon } from 'lucide-react'
-import { UserButton } from '@clerk/clerk-react'
+import { ArrowDownIcon, ArrowUpIcon, ArchiveIcon, DownloadIcon, BarChartIcon, TrendingUpIcon, SquareArrowOutUpRight } from 'lucide-react';
+import { UserButton } from '@clerk/clerk-react';
 import { useUser } from '@clerk/clerk-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dash() {
+  const navigate = useNavigate();  // Initialize the navigate function at the top level
   const { user } = useUser();
+
+  // Function to handle redirection
+  function redirectSavedInvoices() {
+    navigate('/bill_detail');  // Programmatically navigate to the '/bill_detail' route
+  }
+
   return (
     <div>
       <header className="flex justify-between items-center mb-10">
         <div>
-          <h2 className="text-3xl font-bold">Hello, {user.firstName} {user.lastName}</h2>
+          <h2 className="text-3xl font-bold">Hello, {user?.firstName} {user?.lastName}</h2>
           <p className="text-gray-600">Your current sales summary and activity.</p>
         </div>
         <div className="space-x-4">
@@ -54,14 +62,17 @@ export default function Dash() {
 
       <div className="grid grid-cols-3 gap-6">
         <div className="col-span-2 bg-white rounded-lg shadow p-6">
-          <h3 className="text-xl font-bold mb-4">Invoices</h3>
+          <div className='flex justify-between items-center mb-4'>
+            <h3 className="text-xl font-bold">Invoices</h3>
+            <SquareArrowOutUpRight className="w-5 h-5 text-gray-700" onClick={redirectSavedInvoices}/>
+          </div>
           <p className="text-gray-500 mb-4">This data is reported once at 0700hrs local time every day</p>
           <table className="w-full">
             <thead>
               <tr className="text-left text-gray-500">
                 <th className="pb-2">Invoice ID</th>
                 <th className="pb-2">Status</th>
-                <th className="pb-2">Company</th> 
+                <th className="pb-2">Company</th>
                 <th className="pb-2">Action</th>
                 <th className="pb-2"></th>
               </tr>
@@ -99,6 +110,7 @@ export default function Dash() {
             </tbody>
           </table>
         </div>
+
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-xl font-bold mb-4">Recent Transactions</h3>
           <p className="text-gray-500 mb-4">Updated 20 mins ago</p>
@@ -124,5 +136,5 @@ export default function Dash() {
         </div>
       </div>
     </div>
-  )
+  );
 }

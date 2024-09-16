@@ -22,6 +22,10 @@ const ReactFormDataSchema = new mongoose.Schema({
     stateCode: {
         type: String,
         required: true
+    },
+    userId:{
+        type:String,
+        required:true
     }
 });
 

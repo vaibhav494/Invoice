@@ -15,7 +15,7 @@ import "jspdf-autotable";
 import axios from "axios";
 import { request } from "http";
 import { Button } from "@/components/ui/button";
-
+import { useUser } from "@clerk/clerk-react";
 
 interface CompanyDetails {
   name: string;
@@ -50,6 +50,7 @@ interface Props {
 }
 
 export default function DynamicTaxInvoice({ fstate }: Props) {
+  const { user } = useUser();
   const [invoiceNumber, setInvoiceNumber] = useState("71");
   const [invoiceDate, setInvoiceDate] = useState("31-May-24");
   const [buyerOrderNo, setBuyerOrderNo] = useState("");
@@ -123,7 +124,8 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
       DispatchDocNo: dispatchDocNo,
       DispatchedThrough: dispatchedThrough,
       Destination: destination,
-      TaxLines:taxLines
+      TaxLines:taxLines,
+      UserId: user?.id
     });
   }
   const fetchCompanyDetails = (

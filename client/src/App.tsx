@@ -70,32 +70,7 @@ function App() {
           <Route
             path="/"
             element={
-              <header>
-             
-                  <div className="main-div">
-                    {/* <div className="seller-entry-main">
-                <h1 className="center fs-30">Seller Entry</h1>
-                <Seller_entry fstate={sssname} fsetState={setSssname} />
-              </div> */}
-                    <div className="app">
-                      {/* <h1 className="center fs-30">Generate Invoice Here</h1> */}
-                      <h1 className="text-center text-red-800">
-                        Generate Invoice Here
-                      </h1>
-                      {sssname.length > 0 ? (
-                        <Main_Invoice
-                          data={data}
-                          onChange={onInvoiceUpdated}
-                          fstate={sssname}
-                        />
-                      ) : (
-                        <span className="align-center justify-center items-center loading loading-spinner loading-lg "></span>
-                      )}
-                    </div>
-                    <div className="clear"></div>
-                  </div>
-
-              </header>
+              <Dash></Dash>
             }
           />
           <Route
