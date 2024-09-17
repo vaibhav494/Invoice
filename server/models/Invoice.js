@@ -33,11 +33,13 @@ const NewInvoice = new mongoose.Schema({
     },
     taxLines: {
         type: Array,
-    },
+    },  
     userId:{
         type: String
+    },
+    status:{
+        type:String
     }
-    
 });
 
 const Invoice = mongoose.model('Invoice', NewInvoice);

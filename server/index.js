@@ -82,10 +82,6 @@ app.post(
   }
 );
 
-
-
-
-
 app.post("/addinvoicedatabase", async (req, res) => {
   const newInvoice = new Invoice({
     supplier: req.body.Supplier,
@@ -99,7 +95,8 @@ app.post("/addinvoicedatabase", async (req, res) => {
     dispatchedThrough: req.body.DispatchedThrough,
     destination: req.body.Destination,
     taxLines: req.body.TaxLines,
-    userId:req.body.UserId
+    userId:req.body.UserId,
+    status:req.body.Status
   });
   await newInvoice.save();
 });
@@ -157,7 +154,7 @@ app.post("/insert_full_invoice_detail", async (req, res) => {
 });
 
 app.get("/insert_full_invoice_detail", (req, res) => {
-  Invoice.find({}, 'customer.name supplier.name invoiceNumber invoiceDate productLines')
+  Invoice.find({}, 'customer.name supplier.name invoiceNumber invoiceDate productLines status userId')
     .then((invoices) => {
       const formattedInvoices = invoices.map(invoice => {
         const totalAmount = invoice.productLines && invoice.productLines.length > 0
@@ -168,7 +165,9 @@ app.get("/insert_full_invoice_detail", (req, res) => {
           sellerName: invoice.supplier?.name || '',
           invoiceNumber: invoice.invoiceNumber || '',
           invoiceDate: invoice.invoiceDate || '',
-          totalAmount: totalAmount
+          totalAmount: totalAmount,
+          status: invoice.status, 
+          userId: invoice.userId
         };
       });
       res.json(formattedInvoices);
@@ -230,6 +229,27 @@ app.post("/insert", async (req, res) => {
     res.send("inserted data..");
   } catch (err) {
     console.log(err);
+  }
+});
+
+app.put("/update_invoice_status", async (req, res) => {
+  try {
+    const { invoiceNumber, newStatus, userId } = req.body;
+
+    const updatedInvoice = await Invoice.findOneAndUpdate(
+      { invoiceNumber: invoiceNumber, userId: userId },
+      { $set: { status: newStatus } },
+      { new: true }
+    );
+
+    if (!updatedInvoice) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
+
+    res.status(200).json({ message: "Invoice status updated successfully", invoice: updatedInvoice });
+  } catch (error) {
+    console.error("Error updating invoice status:", error);
+    res.status(500).json({ message: "Error updating invoice status", error: error.message });
   }
 });
 

@@ -50,6 +50,7 @@ interface Props {
 }
 
 export default function DynamicTaxInvoice({ fstate }: Props) {
+  const status = 'Pending';
   const { user } = useUser();
   const [invoiceNumber, setInvoiceNumber] = useState("71");
   const [invoiceDate, setInvoiceDate] = useState("31-May-24");
@@ -125,7 +126,8 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
       DispatchedThrough: dispatchedThrough,
       Destination: destination,
       TaxLines:taxLines,
-      UserId: user?.id
+      UserId: user?.id,
+      Status:status
     });
   }
   const fetchCompanyDetails = (
