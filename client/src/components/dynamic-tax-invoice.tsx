@@ -44,6 +44,13 @@ interface TaxLine {
   totalTaxAmount: number;
 }
 
+interface BankDetail {
+  name: string;
+  Ac_No: string;
+  branch_ifsc: string;
+  userId: string;
+}
+
 interface Props {
   fstate: string[];
 }
@@ -102,6 +109,8 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
     { id: string; name: string }[]
   >([]);
   const taxLines: TaxLine[] = [];
+  const [bankDetails, setBankDetails] = useState<BankDetail[]>([]);
+  const [selectedBankDetail, setSelectedBankDetail] = useState<BankDetail | null>(null);
 
   useEffect(() => {
     // Convert fstate to the required format
@@ -112,6 +121,28 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
     setSupplierList(formattedList);
     setCustomerList(formattedList);
   }, [fstate]);
+
+  useEffect(() => {
+    const fetchBankDetails = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/bank-details?userId=${user?.id}`);
+        setBankDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching bank details:", error);
+      }
+    };
+
+    if (user) {
+      fetchBankDetails();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (bankDetails.length > 0) {
+      setSelectedBankDetail(bankDetails[0]); // Set default selection
+    }
+  }, [bankDetails]);
+
   function AddInvoiceDatabase() {
     axios.post("http://localhost:4000/addinvoicedatabase", {
       Supplier: supplier,
@@ -381,13 +412,13 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
     doc.setFontSize(9);
     doc.text("Company's Bank Details", 20, taxFinalY + 15);
     doc.setFontSize(8);
-    doc.text("Bank Name : HDFC 9588", 20, taxFinalY + 20);
-    doc.text("A/c No. : 50200067469585", 20, taxFinalY + 25);
-    doc.text(
-      "Branch & IFS Code : Nallasopara East & HDFC0001808",
-      20,
-      taxFinalY + 30
-    );
+    if (selectedBankDetail) {
+      doc.text(`Bank Name: ${selectedBankDetail.name}`, 20, taxFinalY + 20);
+      doc.text(`A/c No.: ${selectedBankDetail.Ac_No}`, 20, taxFinalY + 25);
+      doc.text(`Branch & IFS Code: ${selectedBankDetail.branch_ifsc}`, 20, taxFinalY + 30);
+    } else {
+      doc.text("No bank details available.", 20, taxFinalY + 20);
+    }
 
     // Company's PAN and Declaration
     doc.text("Company's PAN : CHLPP2269J", 20, taxFinalY + 40);
@@ -747,11 +778,31 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
             Tax Amount (in words) : {numberToWords(calculateTotalTax())}
           </p>
           <p className="text-sm font-semibold mt-4">Company's Bank Details</p>
-          <p className="text-sm">Bank Name : HDFC 9588</p>
-          <p className="text-sm">A/c No. : 50200067469585</p>
-          <p className="text-sm">
-            Branch & IFS Code : Nallasopara East & HDFC0001808
-          </p>
+          <div className="mt-6">
+            <Label htmlFor="bankDetails">Select Bank Account</Label>
+            <select
+              id="bankDetails"
+              value={selectedBankDetail?.Ac_No || ""}
+              onChange={(e) => {
+                const selected = bankDetails.find(bank => bank.Ac_No === e.target.value);
+                setSelectedBankDetail(selected || null);
+              }}
+            >
+              <option value="">Select Bank Account</option>
+              {bankDetails.map((bank) => (
+                <option key={bank.Ac_No} value={bank.Ac_No}>
+                  {bank.name} - {bank.Ac_No}
+                </option>
+              ))}
+            </select>
+            {selectedBankDetail && (
+              <div>
+                <p>Bank Name: {selectedBankDetail.name}</p>
+                <p>A/c No.: {selectedBankDetail.Ac_No}</p>
+                <p>Branch & IFS Code: {selectedBankDetail.branch_ifsc}</p>
+              </div>
+            )}
+          </div>
         </div>
         <div className="mt-6 border-t pt-4">
           <p className="text-sm font-semibold">Company's PAN : CHLPP2269J</p>

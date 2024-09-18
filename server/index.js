@@ -18,6 +18,7 @@ const User = require("./models/UserModel");
 const Invoice = require("./models/Invoice");
 const Expense = require("./models/Expense"); // Make sure to create this model
 const ExpenseName = require("./models/ExpenseName"); // Make sure to create this model
+const BankDetail = require("./models/BankDetail");
 
 app.use(express.json());
 
@@ -316,6 +317,38 @@ app.post("/api/expense-names", async (req, res) => {
     res.status(500).json({ message: "Error adding expense name", error: error.message });
   }
 });
+
+// GET /api/bank-details: Returns all bank details for a specific user
+app.get("/api/bank-details", async (req, res) => {
+  try {
+    const userId = req.query.userId; // Assuming userId is passed as a query parameter
+    if (!userId) {
+      return res.status(400).json({ message: "userId is required" });
+    }
+    const bankDetails = await BankDetail.find({ userId });
+    res.json(bankDetails);
+  } catch (error) {
+    console.error("Error fetching bank details:", error);
+    res.status(500).json({ message: "Error fetching bank details", error: error.message });
+  }
+});
+
+// POST /api/bank-details: Adds a new bank detail for a specific user
+app.post("/api/bank-details", async (req, res) => {
+  try {
+    const { name, Ac_No, branch_ifsc, userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ message: "userId is required" });
+    }
+    const newBankDetail = new BankDetail({ name, Ac_No, branch_ifsc, userId });
+    await newBankDetail.save();
+    res.status(201).json(newBankDetail);
+  } catch (error) {
+    console.error("Error adding bank detail:", error);
+    res.status(500).json({ message: "Error adding bank detail", error: error.message });
+  }
+});
+
 app.get('/getCustomer', (req, res) => {
   const userId = req.query.userId;
   

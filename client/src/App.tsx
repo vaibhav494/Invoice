@@ -23,6 +23,7 @@ import Dash from "./components/dash";
 import AuthPage from "./Auth/AuthPage";
 import Customer from "./pages/customer";
 import OtherExpense from "./pages/OtherExpense";
+import BankDetail from "./pages/BankDetail";
 
 function App() {
   const [sssname, setSssname] = useState<string[]>([]);
@@ -124,6 +125,14 @@ function App() {
             element={
               <>
                 <OtherExpense />
+              </>
+            }
+          />
+          <Route
+            path="/add-bank-detail"
+            element={
+              <>
+                <BankDetail />
               </>
             }
           />
