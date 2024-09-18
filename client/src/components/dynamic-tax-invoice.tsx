@@ -13,7 +13,6 @@ import {
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import axios from "axios";
-import { request } from "http";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/clerk-react";
 
@@ -141,7 +140,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
         if (company === "supplier") {
           setSupplier({
             name: details.name,
-            address: details.address.split("\n"),
+            address: Array.isArray(details.address) ? details.address : [details.address], // Ensure address is an array
             gstin: details.gst,
             state: details.state,
             stateCode: details.stateCode,
@@ -149,7 +148,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
         } else {
           setCustomer({
             name: details.name,
-            address: details.address.split("\n"),
+            address: Array.isArray(details.address) ? details.address : [details.address], // Ensure address is an array
             gstin: details.gst,
             state: details.state,
             stateCode: details.stateCode,
@@ -327,7 +326,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
     const finalY = (doc as any).lastAutoTable.finalY + 10;
     doc.setFontSize(10);
     doc.text(
-      `Total: ${productLines.reduce((sum, line) => sum + line.quantity, 0)} ${
+      `Total: Rs{productLines.reduce((sum, line) => sum + line.quantity, 0)} ${
         productLines[0]?.per
       }`,
       130,

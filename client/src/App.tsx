@@ -22,6 +22,7 @@ import DynamicTaxInvoice from "./components/dynamic-tax-invoice";
 import Dash from "./components/dash";
 import AuthPage from "./Auth/AuthPage";
 import Customer from "./pages/customer";
+import OtherExpense from "./pages/OtherExpense";
 
 function App() {
   const [sssname, setSssname] = useState<string[]>([]);
@@ -115,6 +116,14 @@ function App() {
             element={
               <>
                 <Customer />
+              </>
+            }
+          />
+          <Route
+            path="/other-expense"
+            element={
+              <>
+                <OtherExpense />
               </>
             }
           />

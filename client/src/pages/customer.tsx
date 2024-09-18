@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,44 +22,84 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useUser } from '@clerk/clerk-react'
 
 interface Client {
-  id: number
-  name: string
-  address: string
-  gst: string
-  state: string
+  _id: string;
+  name: string;
+  address: [];
+  gst: string;
+  state: string;
+  stateCode: string;
 }
 
 export default function ClientManagement() {
-  const [clients, setClients] = useState<Client[]>([
-    { id: 1, name: "Tech Solutions Ltd", address: "123 Tech Park, Bangalore", gst: "29ABCDE1234F1Z5", state: "Karnataka" },
-    { id: 2, name: "Green Energies Corp", address: "456 Eco Boulevard, Mumbai", gst: "27FGHIJ5678G1Z3", state: "Maharashtra" },
-    { id: 3, name: "Foodie Delights Pvt Ltd", address: "789 Flavor Street, Delhi", gst: "07KLMNO9012H1Z1", state: "Delhi" },
-    { id: 4, name: "Innovative Systems Inc", address: "101 Innovation Ave, Hyderabad", gst: "36PQRST3456I1Z7", state: "Telangana" },
-    { id: 5, name: "Global Traders Co", address: "202 Export Lane, Chennai", gst: "33UVWXY7890J1Z9", state: "Tamil Nadu" },
-    { id: 6, name: "Eco Friendly Products", address: "303 Green Road, Pune", gst: "27ZABCD1234K1Z2", state: "Maharashtra" },
-    { id: 7, name: "Digital Solutions Ltd", address: "404 Cyber Street, Gurugram", gst: "06EFGHI5678L1Z4", state: "Haryana" },
-    { id: 8, name: "Textile Exporters Pvt Ltd", address: "505 Fabric Lane, Surat", gst: "24JKLMN9012M1Z6", state: "Gujarat" },
-    { id: 9, name: "Automotive Parts Co", address: "606 Engine Road, Coimbatore", gst: "33OPQRS3456N1Z8", state: "Tamil Nadu" },
-    { id: 10, name: "Healthcare Innovations", address: "707 Wellness Ave, Ahmedabad", gst: "24TUVWX7890O1Z0", state: "Gujarat" },
-    { id: 11, name: "Agro Products Ltd", address: "808 Farm Street, Chandigarh", gst: "04YZABC1234P1Z3", state: "Punjab" },
-    { id: 12, name: "Education Tech Solutions", address: "909 Learning Lane, Kolkata", gst: "19DEFGH5678Q1Z5", state: "West Bengal" },
-  ])
+  const [clients, setClients] = useState<Client[]>([])
   const [isOpen, setIsOpen] = useState(false)
-  const [newClient, setNewClient] = useState({ name: '', address: '', gst: '', state: '' })
+  const [newClient, setNewClient] = useState({ 
+    name: '', 
+    addressLine1: '', // First line (required)
+    addressLine2: '', // Second line (optional)
+    addressLine3: '', // Third line (optional)
+    gst: '', 
+    state: '', 
+    stateCode: '' 
+  })
   const [currentPage, setCurrentPage] = useState(1)
   const clientsPerPage = 10
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      fetchClients();
+    }
+  }, [user]);
+
+  const fetchClients = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/getCustomer?userId=${user?.id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch clients');
+      }
+      const data = await response.json();
+      setClients(data);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewClient({ ...newClient, [e.target.name]: e.target.value })
+    setNewClient({ ...newClient, [e.target.name]: e.target.value });
   }
 
-  const handleAddClient = () => {
-    if (newClient.name && newClient.address && newClient.gst && newClient.state) {
-      setClients([...clients, { ...newClient, id: clients.length + 1 }])
-      setNewClient({ name: '', address: '', gst: '', state: '' })
-      setIsOpen(false)
+  const handleAddClient = async () => {
+    if (newClient.name && newClient.addressLine1 && newClient.gst && newClient.state && newClient.stateCode) {
+      try {
+        const response = await fetch('http://localhost:4000/insert', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            customer_name: newClient.name,
+            customer_address: [newClient.addressLine1, newClient.addressLine2, newClient.addressLine3], // Send as an array
+            customer_gst: newClient.gst,
+            customer_state: newClient.state,
+            customer_state_code: newClient.stateCode,
+            userId: user?.id,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to add client');
+        }
+
+        fetchClients(); // Refresh the client list
+        setNewClient({ name: '', addressLine1: '', addressLine2: '', addressLine3: '', gst: '', state: '', stateCode: '' });
+        setIsOpen(false);
+      } catch (error) {
+        console.error('Error adding client:', error);
+      }
     }
   }
 
@@ -107,13 +147,38 @@ export default function ClientManagement() {
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="address" className="text-right">
-                  Address
+                <Label htmlFor="addressLine1" className="text-right">
+                  Address Line 1*
                 </Label>
                 <Input
-                  id="address"
-                  name="address"
-                  value={newClient.address}
+                  id="addressLine1"
+                  name="addressLine1"
+                  value={newClient.addressLine1}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="addressLine2" className="text-right">
+                  Address Line 2
+                </Label>
+                <Input
+                  id="addressLine2"
+                  name="addressLine2"
+                  value={newClient.addressLine2}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="addressLine3" className="text-right">
+                  Address Line 3
+                </Label>
+                <Input
+                  id="addressLine3"
+                  name="addressLine3"
+                  value={newClient.addressLine3}
                   onChange={handleInputChange}
                   className="col-span-3"
                 />
@@ -142,6 +207,18 @@ export default function ClientManagement() {
                   className="col-span-3"
                 />
               </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="stateCode" className="text-right">
+                  State Code
+                </Label>
+                <Input
+                  id="stateCode"
+                  name="stateCode"
+                  value={newClient.stateCode}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                />
+              </div>
             </div>
             <DialogFooter>
               <Button type="submit" onClick={handleAddClient}>Save changes</Button>
@@ -157,15 +234,17 @@ export default function ClientManagement() {
               <TableHead>Address</TableHead>
               <TableHead>GST</TableHead>
               <TableHead>State</TableHead>
+              <TableHead>State Code</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {currentClients.map((client) => (
-              <TableRow key={client.id}>
+              <TableRow key={client._id}>
                 <TableCell className="font-medium">{client.name}</TableCell>
                 <TableCell>{client.address}</TableCell>
                 <TableCell>{client.gst}</TableCell>
                 <TableCell>{client.state}</TableCell>
+                <TableCell>{client.stateCode}</TableCell>
               </TableRow>
             ))}
           </TableBody>

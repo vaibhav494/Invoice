@@ -16,12 +16,14 @@ const Customer = require("./models/Customer");
 const Invoice_detail = require("./models/full_invoice_detail");
 const User = require("./models/UserModel");
 const Invoice = require("./models/Invoice");
+const Expense = require("./models/Expense"); // Make sure to create this model
+const ExpenseName = require("./models/ExpenseName"); // Make sure to create this model
+
 app.use(express.json());
 
 app.use(cors());
 console.log("before mongo conn");
 mongoose.connect("mongodb://localhost:27017/invoice");
-
 
 app.get('/',(req, res) => {
   res.send('hello world');
@@ -253,13 +255,80 @@ app.put("/update_invoice_status", async (req, res) => {
   }
 });
 
+// GET /api/expenses: Returns all expenses for a specific user
+app.get("/api/expenses", async (req, res) => {
+  try {
+    const userId = req.query.userId; // Assuming userId is passed as a query parameter
+    if (!userId) {
+      return res.status(400).json({ message: "userId is required" });
+    }
+    const expenses = await Expense.find({ userId });
+    res.json(expenses);
+  } catch (error) {
+    console.error("Error fetching expenses:", error);
+    res.status(500).json({ message: "Error fetching expenses", error: error.message });
+  }
+});
+
+// POST /api/expenses: Adds a new expense for a specific user
+app.post("/api/expenses", async (req, res) => {
+  try {
+    const { name, amount, date, userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ message: "userId is required" });
+    }
+    const newExpense = new Expense({ name, amount, date, userId });
+    await newExpense.save();
+    res.status(201).json(newExpense);
+  } catch (error) {
+    console.error("Error adding expense:", error);
+    res.status(500).json({ message: "Error adding expense", error: error.message });
+  }
+});
+
+// GET /api/expense-names: Returns all expense names for a specific user
+app.get("/api/expense-names", async (req, res) => {
+  try {
+    const userId = req.query.userId; // Assuming userId is passed as a query parameter
+    if (!userId) {
+      return res.status(400).json({ message: "userId is required" });
+    }
+    const expenseNames = await ExpenseName.find({ userId });
+    res.json(expenseNames.map(expenseName => expenseName.name));
+  } catch (error) {
+    console.error("Error fetching expense names:", error);
+    res.status(500).json({ message: "Error fetching expense names", error: error.message });
+  }
+});
+
+// POST /api/expense-names: Adds a new expense name for a specific user
+app.post("/api/expense-names", async (req, res) => {
+  try {
+    const { name, userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ message: "userId is required" });
+    }
+    const newExpenseName = new ExpenseName({ name, userId });
+    await newExpenseName.save();
+    res.status(201).json(newExpenseName);
+  } catch (error) {
+    console.error("Error adding expense name:", error);
+    res.status(500).json({ message: "Error adding expense name", error: error.message });
+  }
+});
+app.get('/getCustomer', (req, res) => {
+  const userId = req.query.userId;
+  
+  if (!userId) {
+    return res.status(400).json({ error: "userId is required" });
+  }
+
+  Customer.find({ userId: userId })
+    .then((customers) => res.json(customers))
+    .catch((err) => res.status(500).json({ error: err.message }));
+})
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
-app.get('/getCustomer',(req,res)=>{
-  Customer.find({})
-  .then((customer) => res.json(customer))
-  .catch((err) => res.json(err));
-})

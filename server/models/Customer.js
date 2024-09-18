@@ -7,7 +7,7 @@ const ReactFormDataSchema = new mongoose.Schema({
         unique: true
     },
     address: {
-        type: String,
+        type: Array,
         required: true
     },
     gst: {
