@@ -1,0 +1,4 @@
+1)   add other expense in the app - done
+2)   add bank detail of supplier - not done
+
+
