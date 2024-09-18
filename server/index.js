@@ -12,7 +12,7 @@ const bodyParser = require('body-parser');
 const cors = require("cors");
 const app = express();
 
-const Customer = require("./models/dataScheme");
+const Customer = require("./models/Customer");
 const Invoice_detail = require("./models/full_invoice_detail");
 const User = require("./models/UserModel");
 const Invoice = require("./models/Invoice");
@@ -258,3 +258,8 @@ const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
+app.get('/getCustomer',(req,res)=>{
+  Customer.find({})
+  .then((customer) => res.json(customer))
+  .catch((err) => res.json(err));
+})

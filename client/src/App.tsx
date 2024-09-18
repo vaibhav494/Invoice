@@ -14,7 +14,6 @@ import {
 } from "@clerk/clerk-react";
 import Estimate_Invoice from "./components/estimate_invoice";
 import Kaccha from "./pages/Kaccha";
-import LeftSidebar from "./components/LeftSidebar";
 import RootLayout from "./components/RootLayout";
 import { Navbar } from "./components/Navbar";
 import Payment from "./components/Payment";
@@ -22,6 +21,7 @@ import Dashboard from "./pages/Dashboard";
 import DynamicTaxInvoice from "./components/dynamic-tax-invoice";
 import Dash from "./components/dash";
 import AuthPage from "./Auth/AuthPage";
+import Customer from "./pages/customer";
 
 function App() {
   const [sssname, setSssname] = useState<string[]>([]);
@@ -107,6 +107,14 @@ function App() {
             element={
               <>
                 <Dash />
+              </>
+            }
+          />
+          <Route
+            path="/customer"
+            element={
+              <>
+                <Customer />
               </>
             }
           />

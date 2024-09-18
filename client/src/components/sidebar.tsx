@@ -7,11 +7,11 @@ export default function Sidebar() {
         <span className="text-[#ADFF2F]">Vaibhav</span>App
       </h1>
       <nav className="space-y-6">
-        <a href="#" className="flex items-center space-x-2 text-[#ADFF2F]">
+        <a href="/dash" className="flex items-center space-x-2 text-[#ADFF2F]">
           <HomeIcon className="w-6 h-6" />
           <span>Dashboard</span>
         </a>
-        <a href="#" className="flex items-center space-x-2 text-gray-300 hover:text-white">
+        <a href="/bill_detail" className="flex items-center space-x-2 text-gray-300 hover:text-white">
           <FileTextIcon className="w-6 h-6" />
           <span>Invoices</span>
         </a>
