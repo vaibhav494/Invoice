@@ -118,7 +118,7 @@ export const Navbar = () => {
           <nav>
             <ul className="flex space-x-4">
               <li><a href="#" className="text-[#0A3A2A] border-b-2 border-[#0A3A2A] pb-1">Invoices</a></li>
-              <li><a href="#" className="text-gray-600">Clients</a></li>
+              <li><a href="/customer" className="text-gray-600">Clients</a></li>
               <li><a href="#" className="text-gray-600">Service Items</a></li>
             </ul>
           </nav>

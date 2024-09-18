@@ -2,7 +2,6 @@ import React from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-
 function Estimate_Invoice() {
   const downloadPDF = () => {
     const input = document.getElementById('invoice-table');

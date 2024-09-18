@@ -19,6 +19,7 @@ const Invoice = require("./models/Invoice");
 const Expense = require("./models/Expense"); // Make sure to create this model
 const ExpenseName = require("./models/ExpenseName"); // Make sure to create this model
 const BankDetail = require("./models/BankDetail");
+const Supplier = require("./models/Supplier");
 
 app.use(express.json());
 
@@ -88,7 +89,8 @@ app.post(
 app.post("/addinvoicedatabase", async (req, res) => {
   const newInvoice = new Invoice({
     supplier: req.body.Supplier,
-    customer: req.body.Customer,
+    customer_billing: req.body.CustomerBilling,
+    customer_shipping: req.body.CustomerShipping,
     productLines: req.body.ProductLine,
     invoiceNumber: req.body.InvoiceNumber,
     invoiceDate: req.body.InvoiceDate,
@@ -112,70 +114,90 @@ app.post("/users", async (req, res) => {
   res.status(201).send("User created");
 });
 
-app.get("/get_seller_detail/:name", (req, res) => {
-  const { name } = req.params;
+app.get("/get_seller_detail", (req, res) => {
+  const { name, company } = req.query;
 
-  if (!name) {
-    return res.status(400).json({ error: "Name query parameter is required" });
+  if (!name || !company) {
+    return res.status(400).json({ error: "Name and company query parameters are required" });
   }
 
-  Customer.findOne({ name: name })
-    .then((seller_detail) => {
-      if (!seller_detail) {
+  const query = { name: name };
+  if (company === 'supplier') {
+    Supplier.findOne(query)
+    .then((supplier_detail) => {
+      if (!supplier_detail) {
         return res.status(404).json({ error: "Seller not found" });
       }
-      res.json(seller_detail);
+      res.json(supplier_detail);
     })
     .catch((err) => res.status(500).json({ error: err.message }));
+  } else if (company === 'customer_billing' || company === 'customer_shipping'){
+    Customer.findOne(query)
+    .then((customer_detail) => {
+      if (!customer_detail) {
+        return res.status(404).json({ error: "Seller not found" });
+      }
+      res.json(customer_detail);
+    })
+    .catch((err) => res.status(500).json({ error: err.message }));
+  } else {
+    return res.status(400).json({ error: "Invalid company type" });
+  }
+
+  
 });
+
 
 app.post("/");
 
-app.post("/insert_full_invoice_detail", async (req, res) => {
+// app.post("/insert_full_invoice_detail", async (req, res) => {
+//   try {
+//     const sn = req.body.Supplier_name;
+//     const cn = req.body.Customer_name;
+//     const In = req.body.Invoice_number;
+//     const id = req.body.Invoice_date;
+//     const ta = req.body.Total_amount;
+
+//     const formData1 = await Invoice_detail.create({
+//       Supplier_Name: sn,
+//       Customer_Name: cn,
+//       Invoice_Number: In,
+//       Invoice_Date: id,
+//       Total_Amount: ta,
+//       // All_invoice_detail: req.body.all_data,
+//       // All_Product_detail: req.body.product_detail,
+//       // All_Tax_detail: req.body.tax_detail
+//     });
+//     await formData1.save();
+//     res.send("invoice data added..");
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
+
+app.get("/insert_full_invoice_detail", async (req, res) => {
+  const userId = req.query.userId; // Get userId from query parameters
   try {
-    const sn = req.body.Supplier_name;
-    const cn = req.body.Customer_name;
-    const In = req.body.Invoice_number;
-    const id = req.body.Invoice_date;
-    const ta = req.body.Total_amount;
-
-    const formData1 = await Invoice_detail.create({
-      Supplier_Name: sn,
-      Customer_Name: cn,
-      Invoice_Number: In,
-      Invoice_Date: id,
-      Total_Amount: ta,
-      // All_invoice_detail: req.body.all_data,
-      // All_Product_detail: req.body.product_detail,
-      // All_Tax_detail: req.body.tax_detail
+    const invoices = await Invoice.find({ userId }); // Filter invoices by userId
+    const formattedInvoices = invoices.map(invoice => {
+      const totalAmount = invoice.productLines && invoice.productLines.length > 0
+        ? invoice.productLines.reduce((sum, product) => sum + (product.amount || 0), 0)
+        : 0;
+      return {
+        sellerName: invoice.supplier?.name || '',
+        customerName: invoice.customer_billing?.name,
+        invoiceNumber: invoice.invoiceNumber || '',
+        invoiceDate: invoice.invoiceDate || '',
+        totalAmount: totalAmount,
+        status: invoice.status, 
+        userId: invoice.userId
+      };
     });
-    await formData1.save();
-    res.send("invoice data added..");
+    res.json(formattedInvoices);
   } catch (err) {
-    console.log(err);
+    console.error("Error fetching invoices:", err);
+    res.status(500).json({ error: err.message });
   }
-});
-
-app.get("/insert_full_invoice_detail", (req, res) => {
-  Invoice.find({}, 'customer.name supplier.name invoiceNumber invoiceDate productLines status userId')
-    .then((invoices) => {
-      const formattedInvoices = invoices.map(invoice => {
-        const totalAmount = invoice.productLines && invoice.productLines.length > 0
-          ? invoice.productLines.reduce((sum, product) => sum + (product.amount || 0), 0)
-          : 0;
-        return {
-          customerName: invoice.customer?.name || '',
-          sellerName: invoice.supplier?.name || '',
-          invoiceNumber: invoice.invoiceNumber || '',
-          invoiceDate: invoice.invoiceDate || '',
-          totalAmount: totalAmount,
-          status: invoice.status, 
-          userId: invoice.userId
-        };
-      });
-      res.json(formattedInvoices);
-    })
-    .catch((err) => res.status(500).json({ error: err.message }));
 });
 
 app.get("/insert", (req, res) => {
@@ -217,7 +239,7 @@ app.get("/get_invoice_number", async (req, res) => {
   }
 });
 
-app.post("/insert", async (req, res) => {
+app.post("/insertCustomer", async (req, res) => {
   try {
     const formData = await Customer.create({
       name: req.body.customer_name,
@@ -225,6 +247,23 @@ app.post("/insert", async (req, res) => {
       gst: req.body.customer_gst,
       state: req.body.customer_state,
       stateCode: req.body.customer_state_code,
+      userId: req.body.userId
+    });
+
+    await formData.save();
+    res.send("inserted data..");
+  } catch (err) {
+    console.log(err);
+  }
+});
+app.post("/insertSupplier", async (req, res) => {
+  try {
+    const formData = await Supplier.create({
+      name: req.body.supplier_name,
+      address: req.body.supplier_address,
+      gst: req.body.supplier_gst,
+      state: req.body.supplier_state,
+      stateCode: req.body.supplier_state_code,
       userId: req.body.userId
     });
 
@@ -360,6 +399,59 @@ app.get('/getCustomer', (req, res) => {
     .then((customers) => res.json(customers))
     .catch((err) => res.status(500).json({ error: err.message }));
 })
+app.get('/getSupplier', (req, res) => {
+  const userId = req.query.userId;
+  
+  if (!userId) {
+    return res.status(400).json({ error: "userId is required" });
+  }
+
+  Supplier.find({ userId: userId })
+    .then((supplier) => res.json(supplier))
+    .catch((err) => res.status(500).json({ error: err.message }));
+})
+
+
+app.get('/getCustomerName', (req, res) => {
+  const userId = req.query.userId;
+  
+  if (!userId) {
+    return res.status(400).json({ error: "userId is required" });
+  }
+
+  // Find all customers with the given userId and select only the 'name' field
+  Customer.find({ userId: userId }, 'name')
+    .then((customers) => {
+      if (customers.length === 0) {
+        return res.status(404).json({ error: "Customers not found" });
+      }
+      // Return an array of customer names
+      const customerNames = customers.map(customer => customer.name);
+      res.json(customerNames);
+    })
+    .catch((err) => res.status(500).json({ error: err.message }));
+});
+
+app.get('/getSupplierName', (req, res) => {
+  const userId = req.query.userId;
+  
+  if (!userId) {
+    return res.status(400).json({ error: "userId is required" });
+  }
+
+  // Find all suppliers with the given userId and select only the 'name' field
+  Supplier.find({ userId: userId }, 'name')
+    .then((suppliers) => {
+      if (suppliers.length === 0) {
+        return res.status(404).json({ error: "Suppliers not found" });
+      }
+      // Return an array of supplier names
+      const supplierNames = suppliers.map(supplier => supplier.name);
+      res.json(supplierNames);
+    })
+    .catch((err) => res.status(500).json({ error: err.message }));
+});
+
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => {

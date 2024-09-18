@@ -1,4 +1,4 @@
 1)   add other expense in the app - done
 2)   add bank detail of supplier - done
-
-
+3)   main invoice changes (details diff option for shipping and billing) - not done
+4)   adding graph - not done

@@ -24,6 +24,8 @@ import AuthPage from "./Auth/AuthPage";
 import Customer from "./pages/customer";
 import OtherExpense from "./pages/OtherExpense";
 import BankDetail from "./pages/BankDetail";
+import Demo from "./chart/demo";
+import Supplier from "./pages/supplier";
 
 function App() {
   const [sssname, setSssname] = useState<string[]>([]);
@@ -86,6 +88,13 @@ function App() {
               
             }
           ></Route>
+          <Route
+            path="/supplier-entry"
+            element={
+       
+                  <Supplier/>
+            }
+          ></Route>
           <Route path="/bill_detail" element={<Bill_detail />} />
           <Route path="/kaccha" element={<Kaccha />}></Route>
           <Route
@@ -120,6 +129,15 @@ function App() {
               </>
             }
           />
+          <Route
+            path="/chart"
+            element={
+              <>
+                <Demo />
+              </>
+            }
+          />
+          
           <Route
             path="/other-expense"
             element={

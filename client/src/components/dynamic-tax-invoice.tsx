@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast"; // Make sure to import the correct path
+
 import {
   Table,
   TableBody,
@@ -90,7 +92,18 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
     stateCode: "27",
   });
 
-  const [customer, setCustomer] = useState<CompanyDetails>({
+  const [customer_shipping, setCustomerShipping] = useState<CompanyDetails>({
+    name: "L. P. CREATION",
+    address: [
+      "CHANDRKANT CHAWL, ROOM NO 19, OPP",
+      "KHIRA NAGAR, S. V. ROAD, SANTACRUZ",
+      "WEST, Mumbai Suburban, 400054",
+    ],
+    gstin: "27AITPP7407M1ZE",
+    state: "Maharashtra",
+    stateCode: "27",
+  });
+  const [customer_billing, setCustomerBilling] = useState<CompanyDetails>({
     name: "L. P. CREATION",
     address: [
       "CHANDRKANT CHAWL, ROOM NO 19, OPP",
@@ -102,26 +115,53 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
     stateCode: "27",
   });
 
-  const [supplierList, setSupplierList] = useState<
-    { id: string; name: string }[]
-  >([]);
-  const [customerList, setCustomerList] = useState<
-    { id: string; name: string }[]
-  >([]);
+  const [supplierList, setSupplierList] = useState<[]>([]);
+  const [customerList, setCustomerList] = useState<[]>([]);
   const taxLines: TaxLine[] = [];
   const [bankDetails, setBankDetails] = useState<BankDetail[]>([]);
   const [selectedBankDetail, setSelectedBankDetail] = useState<BankDetail | null>(null);
 
-  useEffect(() => {
-    // Convert fstate to the required format
-    const formattedList = fstate.map((seller: any) => ({
-      id: seller.id,
-      name: seller.name,
-    }));
-    setSupplierList(formattedList);
-    setCustomerList(formattedList);
-  }, [fstate]);
+  // useEffect(() => {
+  //   // Convert fstate to the required format
+  //   const formattedList = fstate.map((seller: any) => ({
+  //     id: seller.id,
+  //     name: seller.name,
+  //   }));
+  //   setSupplierList(formattedList);
+  //   setCustomerList(formattedList);
+  // }, [fstate]);
 
+  useEffect(() => {
+    const fetchCustomer = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/getCustomerName?userId=${user?.id}`);
+        
+        setCustomerList(response.data);
+      } catch (error) {
+        console.error("Error fetching bank details:", error);
+      }
+    };
+
+    if (user) {
+      fetchCustomer();
+    }
+  }, []);
+
+
+  useEffect(() => {
+    const fetchSupplier = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/getSupplierName?userId=${user?.id}`);
+        setSupplierList(response.data);
+      } catch (error) {
+        console.error("Error fetching bank details:", error);
+      }
+    };
+
+    if (user) {
+      fetchSupplier();
+    }
+  }, []);
   useEffect(() => {
     const fetchBankDetails = async () => {
       try {
@@ -144,28 +184,36 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
   }, [bankDetails]);
 
   function AddInvoiceDatabase() {
+    
+  
     axios.post("http://localhost:4000/addinvoicedatabase", {
-      Supplier: supplier,
-      Customer: customer,
-      ProductLine: productLines,
-      InvoiceNumber: invoiceNumber,
-      InvoiceDate: invoiceDate,
-      BuyerOrderNo: buyerOrderNo,
-      BuyerOrderDate: buyerOrderDate,
-      DispatchDocNo: dispatchDocNo,
-      DispatchedThrough: dispatchedThrough,
-      Destination: destination,
-      TaxLines:taxLines,
-      UserId: user?.id,
-      Status:status
-    });
+        Supplier: supplier,
+        CustomerBilling: customer_billing,
+        CustomerShipping: customer_shipping,
+        ProductLine: productLines,
+        InvoiceNumber: invoiceNumber,
+        InvoiceDate: invoiceDate,
+        BuyerOrderNo: buyerOrderNo,
+        BuyerOrderDate: buyerOrderDate,
+        DispatchDocNo: dispatchDocNo,
+        DispatchedThrough: dispatchedThrough,
+        Destination: destination,
+        TaxLines:taxLines,
+        UserId: user?.id,
+        Status:status
+      })
   }
   const fetchCompanyDetails = (
-    company: "supplier" | "customer",
+    company: "supplier" | "customer_billing" | "customer_shipping",
     id: string
   ) => {
     axios
-      .get(`http://localhost:4000/get_seller_detail/${id}`)
+      .get(`http://localhost:4000/get_seller_detail`, {
+        params: {
+          name: id,
+          company: company
+        }
+      })
       .then((response) => {
         const details = response.data;
         if (company === "supplier") {
@@ -176,8 +224,16 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
             state: details.state,
             stateCode: details.stateCode,
           });
+        } else if (company === "customer_billing") {
+          setCustomerBilling({
+            name: details.name,
+            address: Array.isArray(details.address) ? details.address : [details.address], // Ensure address is an array
+            gstin: details.gst,
+            state: details.state,
+            stateCode: details.stateCode,
+          });
         } else {
-          setCustomer({
+          setCustomerShipping({
             name: details.name,
             address: Array.isArray(details.address) ? details.address : [details.address], // Ensure address is an array
             gstin: details.gst,
@@ -190,6 +246,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
         console.error(`Error fetching ${company} details:`, error)
       );
   };
+  
 
   const addProductLine = () => {
     setProductLines([
@@ -300,19 +357,22 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
     doc.text("Consignee (Ship to)", 20, 55);
     doc.text("Buyer (Bill to)", 110, 55);
     doc.setFontSize(8);
-    customer.address.forEach((line, index) => {
+    customer_shipping.address.forEach((line, index) => {
       doc.text(line, 20, 60 + index * 5);
-      doc.text(line, 110, 60 + index * 5);
+
     });
-    doc.text(`GSTIN/UIN : ${customer.gstin}`, 20, 75);
+    customer_billing.address.forEach((line, index)=>{
+      doc.text(line, 110, 60 + index * 5);
+    })
+    doc.text(`GSTIN/UIN : ${customer_shipping.gstin}`, 20, 75);
     doc.text(
-      `State Name : ${customer.state}, Code : ${customer.stateCode}`,
+      `State Name : ${customer_shipping.state}, Code : ${customer_shipping.stateCode}`,
       20,
       80
     );
-    doc.text(`GSTIN/UIN : ${customer.gstin}`, 110, 75);
+    doc.text(`GSTIN/UIN : ${customer_billing.gstin}`, 110, 75);
     doc.text(
-      `State Name : ${customer.state}, Code : ${customer.stateCode}`,
+      `State Name : ${customer_billing.state}, Code : ${customer_billing.stateCode}`,
       110,
       80
     );
@@ -459,8 +519,8 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
             >
               <option value="">Select Supplier</option>
               {supplierList.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
+                <option key={s} value={s}>
+                  {s}
                 </option>
               ))}
             </select>
@@ -468,7 +528,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
               value={supplier.address.join("\n")}
               readOnly
               className="text-xs text-muted-foreground w-full"
-              rows={2}
+              rows={3}
             />
             <Input
               value={supplier.gstin}
@@ -518,38 +578,38 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
           <div>
             <h3 className="font-semibold mb-2">Consignee (Ship to)</h3>
             <select
-              value={customer.name}
-              onChange={(e) => fetchCompanyDetails("customer", e.target.value)}
+              value={customer_shipping.name}
+              onChange={(e) => fetchCompanyDetails("customer_shipping", e.target.value)}
               className="font-semibold"
             >
               <option value="">Select Customer</option>
               {customerList.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
+                <option key={c} value={c}>
+                  {c}
                 </option>
               ))}
             </select>
             <textarea
-              value={customer.address.join("\n")}
+              value={customer_shipping.address.join("\n")}
               readOnly
               className="text-sm w-full"
               rows={3}
             />
             <Input
-              value={customer.gstin}
+              value={customer_shipping.gstin}
               readOnly
               className="text-sm"
               placeholder="GSTIN/UIN"
             />
             <div className="flex gap-2">
               <Input
-                value={customer.state}
+                value={customer_shipping.state}
                 readOnly
                 className="text-sm"
                 placeholder="State"
               />
               <Input
-                value={customer.stateCode}
+                value={customer_shipping.stateCode}
                 readOnly
                 className="text-sm w-16"
                 placeholder="Code"
@@ -559,38 +619,38 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
           <div>
             <h3 className="font-semibold mb-2">Buyer (Bill to)</h3>
             <select
-              value={customer.name}
-              onChange={(e) => fetchCompanyDetails("customer", e.target.value)}
+              value={customer_billing.name}
+              onChange={(e) => fetchCompanyDetails("customer_billing", e.target.value)}
               className="font-semibold"
             >
               <option value="">Select Customer</option>
               {customerList.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
+                <option key={c} value={c}>
+                  {c}
                 </option>
               ))}
             </select>
             <textarea
-              value={customer.address.join("\n")}
+              value={customer_billing.address.join("\n")}
               readOnly
               className="text-sm w-full"
               rows={3}
             />
             <Input
-              value={customer.gstin}
+              value={customer_billing.gstin}
               readOnly
               className="text-sm"
               placeholder="GSTIN/UIN"
             />
             <div className="flex gap-2">
               <Input
-                value={customer.state}
+                value={customer_billing.state}
                 readOnly
                 className="text-sm"
                 placeholder="State"
               />
               <Input
-                value={customer.stateCode}
+                value={customer_billing.stateCode}
                 readOnly
                 className="text-sm w-16"
                 placeholder="Code"

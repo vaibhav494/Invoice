@@ -4,7 +4,10 @@ const NewInvoice = new mongoose.Schema({
     supplier: {
         type: Object,
     },
-    customer: {
+    customer_shipping: {
+        type: Object,
+    },
+    customer_billing: {
         type: Object,
     },
     productLines: {
@@ -41,6 +44,8 @@ const NewInvoice = new mongoose.Schema({
         type:String
     }
 });
+
+NewInvoice.index({ invoiceNumber: 1, userId: 1 }, { unique: true });
 
 const Invoice = mongoose.model('Invoice', NewInvoice);
 
