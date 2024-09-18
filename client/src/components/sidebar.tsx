@@ -4,7 +4,8 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-[#0A3A2A] text-white p-6">
       <h1 className="text-2xl font-bold mb-10">
-        <span className="text-[#ADFF2F]">Vaibhav</span>App
+        <a href="/"><span className="text-[#ADFF2F]">Vaibhav</span>App</a>
+        
       </h1>
       <nav className="space-y-6">
         <a href="/dash" className="flex items-center space-x-2 text-[#ADFF2F]">

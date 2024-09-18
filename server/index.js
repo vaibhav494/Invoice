@@ -439,18 +439,166 @@ app.get('/getSupplierName', (req, res) => {
     return res.status(400).json({ error: "userId is required" });
   }
 
-  // Find all suppliers with the given userId and select only the 'name' field
   Supplier.find({ userId: userId }, 'name')
     .then((suppliers) => {
       if (suppliers.length === 0) {
         return res.status(404).json({ error: "Suppliers not found" });
       }
-      // Return an array of supplier names
+
       const supplierNames = suppliers.map(supplier => supplier.name);
       res.json(supplierNames);
     })
     .catch((err) => res.status(500).json({ error: err.message }));
 });
+
+
+
+
+
+app.get('/api/sales', async (req, res) => {
+  try {
+    const currentYear = new Date().getFullYear();
+
+    const sampleInvoice = await Invoice.findOne();
+
+    const salesData = await Promise.all(
+      Array.from({ length: 12 }, async (_, month) => {
+        const { start, end } = getMonthRange(currentYear, month);
+        const result = await Invoice.aggregate([
+          {
+            $match: {
+              invoiceDate: { 
+                $gte: start.toISOString().split('T')[0], 
+                $lte: end.toISOString().split('T')[0] 
+              },
+            },
+          },
+          {
+            $unwind: {
+              path: '$productLines',
+              preserveNullAndEmptyArrays: true
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalSales: { $sum: { $toDouble: '$productLines.amount' } },
+            },
+          },
+        ]);
+
+
+
+        return result.length > 0 ? result[0].totalSales : 0;
+      })
+    );
+
+
+    res.json(salesData);
+  } catch (error) {
+    console.error('Error in /api/sales:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// API to get monthly revenue data
+app.get('/api/revenue', async (req, res) => {
+  try {
+    const currentYear = new Date().getFullYear();
+
+
+    const revenueData = await Promise.all(
+      Array.from({ length: 12 }, async (_, month) => {
+        const { start, end } = getMonthRange(currentYear, month);
+
+        const result = await Invoice.aggregate([
+          {
+            $match: {
+              invoiceDate: { 
+                $gte: start.toISOString().split('T')[0], 
+                $lte: end.toISOString().split('T')[0] 
+              },
+            },
+          },
+          {
+            $unwind: {
+              path: '$taxLines',
+              preserveNullAndEmptyArrays: true
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalRevenue: {
+                $sum: { 
+                  $add: [
+                    { $toDouble: '$taxLines.taxableValue' }, 
+                    { $toDouble: '$taxLines.totalTaxAmount' }
+                  ] 
+                },
+              },
+            },
+          },
+        ]);
+
+
+        return result.length > 0 ? result[0].totalRevenue : 0;
+      })
+    );
+
+    res.json(revenueData);
+  } catch (error) {
+    console.error('Error in /api/revenue:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+function getMonthRange(year, month) {
+  const start = new Date(year, month, 1);
+  const end = new Date(year, month + 1, 0);
+  return { start, end };
+}
+
+// API to get summary data
+app.get('/api/summary', async (req, res) => {
+  try {
+    const summary = await Invoice.aggregate([
+      {
+        $facet: {
+          totalSales: [
+            { $unwind: '$productLines' },
+            { $group: { _id: null, total: { $sum: '$productLines.amount' } } },
+          ],
+          totalRevenue: [
+            { $unwind: '$taxLines' },
+            {
+              $group: {
+                _id: null,
+                total: {
+                  $sum: { $add: ['$taxLines.taxableValue', '$taxLines.totalTaxAmount'] },
+                },
+              },
+            },
+          ],
+        },
+      },
+    ]);
+
+    const totalSales = summary[0].totalSales[0]?.total || 0;
+    const totalRevenue = summary[0].totalRevenue[0]?.total || 0;
+    const profitMargin = totalSales > 0 ? ((totalRevenue - totalSales) / totalSales) * 100 : 0;
+
+    res.json({
+      totalSales,
+      totalRevenue,
+      profitMargin: profitMargin.toFixed(2),
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 
 const port = process.env.PORT || 4000;
 
