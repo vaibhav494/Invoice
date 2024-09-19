@@ -162,6 +162,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
       fetchSupplier();
     }
   }, []);
+  
   useEffect(() => {
     const fetchBankDetails = async () => {
       try {

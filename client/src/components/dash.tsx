@@ -21,10 +21,13 @@ export default function Dash() {
         </div>
         <div className="space-x-4">
           <button className="px-4 py-2 bg-white rounded-md shadow">
+            <a href="/chart">
             <span className="flex items-center">
               <BarChartIcon className="w-5 h-5 mr-2" />
               Graphical View
             </span>
+            </a>
+            
           </button>
           <button className="px-4 py-2 bg-white rounded-md shadow">
             <span className="flex items-center">

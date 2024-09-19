@@ -1,229 +1,119 @@
-import React, { useState } from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Main_Invoice from "./components/Main_Invoice";
-import Seller_entry from "./seller_entry";
-import Bill_detail from "./pages/bill_detail";
-import { invoice } from "./data/types";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
-import { useEffect } from "react";
-
-import {
-  SignedIn,
-  SignedOut,
-} from "@clerk/clerk-react";
-import Estimate_Invoice from "./components/estimate_invoice";
-import Kaccha from "./pages/Kaccha";
+import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
 import RootLayout from "./components/RootLayout";
-import { Navbar } from "./components/Navbar";
-import Payment from "./components/Payment";
-import Dashboard from "./pages/Dashboard";
-import DynamicTaxInvoice from "./components/dynamic-tax-invoice";
 import Dash from "./components/dash";
 import AuthPage from "./Auth/AuthPage";
+import Seller_entry from "./seller_entry";
+import Bill_detail from "./pages/bill_detail";
+import Supplier from "./pages/supplier";
+import Kaccha from "./pages/Kaccha";
+import Estimate_Invoice from "./components/estimate_invoice";
+import DynamicTaxInvoice from "./components/dynamic-tax-invoice";
 import Customer from "./pages/customer";
+import Demo from "./chart/Demo";
 import OtherExpense from "./pages/OtherExpense";
 import BankDetail from "./pages/BankDetail";
-import Demo from "./chart/demo";
-import Supplier from "./pages/supplier";
+import Dashboard from "./pages/Dashboard";
+import All_bill_detail from "./admin/All_bill_detail";
 
 function App() {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const { user } = useUser();
   const [sssname, setSssname] = useState<string[]>([]);
 
-  const savedInvoice = window.localStorage.getItem("invoiceData");
-  let data = null;
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!user) {
+        console.log("User is not defined");
+        setLoading(false);
+        return; // Only run if the user exists
+      }
+  
+      console.log("Checking admin status for user ID:", user.id);
+      try {
+        const response = await axios.get(`http://localhost:4000/api/check?userId=${user.id}`);
+        console.log("API response:", response.data);
+        setIsAdmin(response.data === 'true'); // Explicit comparison for string response
+      } catch (error) {
+        console.error("Error checking admin status:", error);
+      } finally {
+        setLoading(false); // Always set loading to false
+      }
+    };
+  
+    checkAdminStatus();
+  }, [user]);  // Dependency is the user object
+  
 
-  try {
-    if (savedInvoice) {
-      data = JSON.parse(savedInvoice);
-    }
-  } catch (e) {
-    console.error("Error parsing invoice data:", e);
-  }
 
-  const onInvoiceUpdated = (invoice: invoice) => {
-    window.localStorage.setItem("invoiceData", JSON.stringify(invoice));
-  };
   useEffect(() => {
     axios
       .get("http://localhost:4000/insert")
       .then((response) => {
-        console.log("Data fetched:", response.data);
         setSssname(response.data);
       })
       .catch((err) => {
         console.log("Error fetching data:", err);
       });
   }, []);
+  
+  if (loading) {
+    return <div>Loading...</div>; // Conditional render here is fine as long as hooks are before it
+  }
+  
 
-  //without clerk
+
+
+  
+
   return (
     <BrowserRouter>
       <Routes>
-
-        <Route element={
-          <header>
-          <SignedOut>
-            <AuthPage></AuthPage>
-          </SignedOut>
-          <SignedIn>
-            <RootLayout />
-          </SignedIn>
-        </header>
-          }>
-          <Route
-            path="/"
-            element={
-              <Dash></Dash>
-            }
-          />
-          <Route
-            path="/customer-entry"
-            element={
-       
-                  <Seller_entry
-                    fstate={sssname}
-                    fsetState={setSssname}
-                  ></Seller_entry>
-              
-            }
-          ></Route>
-          <Route
-            path="/supplier-entry"
-            element={
-       
-                  <Supplier/>
-            }
-          ></Route>
+        <Route
+          element={
+            <header>
+              <SignedOut>
+                <AuthPage />
+              </SignedOut>
+              <SignedIn>
+                <RootLayout />
+              </SignedIn>
+            </header>
+          }
+        >
+          {/* Common routes for all users */}
+          <Route path="/" element={<Dash />} />
+          <Route path="/customer-entry" element={<Seller_entry fstate={sssname} fsetState={setSssname} />} />
+          <Route path="/supplier-entry" element={<Supplier />} />
           <Route path="/bill_detail" element={<Bill_detail />} />
-          <Route path="/kaccha" element={<Kaccha />}></Route>
-          <Route
-            path="/estimate_invoice"
-            element={
-              <>
-                <Estimate_Invoice />
-              </>
-            }
-          />
-          <Route
-            path="/invoice"
-            element={
-              <>
-                <DynamicTaxInvoice fstate={sssname} />
-              </>
-            }
-          />
-          <Route
-            path="/dash"
-            element={
-              <>
-                <Dash />
-              </>
-            }
-          />
-          <Route
-            path="/customer"
-            element={
-              <>
-                <Customer />
-              </>
-            }
-          />
-          <Route
-            path="/chart"
-            element={
-              <>
-                <Demo />
-              </>
-            }
-          />
-          
-          <Route
-            path="/other-expense"
-            element={
-              <>
-                <OtherExpense />
-              </>
-            }
-          />
-          <Route
-            path="/add-bank-detail"
-            element={
-              <>
-                <BankDetail />
-              </>
-            }
-          />
-          *{" "}
-          <Route
-            path="/dashboard"
-            element={
-              <>
-                <Dashboard />
-              </>
-            }
-          />
+          <Route path="/kaccha" element={<Kaccha />} />
+          <Route path="/estimate_invoice" element={<Estimate_Invoice />} />
+          <Route path="/invoice" element={<DynamicTaxInvoice fstate={sssname} />} />
+          <Route path="/dash" element={<Dash />} />
+          <Route path="/customer" element={<Customer />} />
+          <Route path="/chart" element={<Demo />} />
+          <Route path="/other-expense" element={<OtherExpense />} />
+          <Route path="/add-bank-detail" element={<BankDetail />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Admin-specific routes */}
+          {isAdmin && (
+            <>
+              <Route path="admin/panel" element={<All_bill_detail />} />
+              {/* Add more admin routes here */}
+            </>
+          )}
+
+          {/* Redirect non-admin users away from admin routes */}
+          {!isAdmin && (
+            <Route path="/admin/*" element={<Navigate to="/" />} />
+          )}
         </Route>
       </Routes>
     </BrowserRouter>
   );
-
-  //with clerk
-  // return (
-  //   <BrowserRouter>
-  //     <Routes>
-  //       <Route path="/" element={
-  //         <header>
-  //         <SignedOut>
-  //           <SignInButton />
-  //         </SignedOut>
-  //         <SignedIn>
-  //         <div className="main-div">
-  //             <div className="seller-entry-main">
-  //               <h1 className="center fs-30">Seller Entry</h1>
-  //               <Seller_entry fstate={sssname} fsetState={setSssname} />
-  //             </div>
-  //             <div className="app">
-  //               <h1 className="center fs-30">Generate Invoice Here</h1>
-  //               <Main_Invoice
-  //                 data={data}
-  //                 onChange={onInvoiceUpdated}
-  //                 fstate={sssname}
-  //               />
-  //             </div>
-  //             <div className="clear"></div>
-  //           </div>
-  //         </SignedIn>
-  //       </header>
-  //       }
-  //       />
-  //       <Route
-  //         path="/invoice"
-  //         element={
-  //           <SignedIn>
-  //           <div className="main-div">
-  //             <div className="seller-entry-main">
-  //               <h1 className="center fs-30">Seller Entry</h1>
-  //               <Seller_entry fstate={sssname} fsetState={setSssname} />
-  //             </div>
-  //             <div className="app">
-  //               <h1 className="center fs-30">Generate Invoice Here</h1>
-  //               <Main_Invoice
-  //                 data={data}
-  //                 onChange={onInvoiceUpdated}
-  //                 fstate={sssname}
-  //               />
-  //             </div>
-  //             <div className="clear"></div>
-  //           </div>
-  //           </SignedIn>
-  //         }
-  //       />
-  //       <Route path="/bill_detail" element={<Bill_detail />} />
-  //       <Route path="/estimate_invoice" element={<>hello</>} />
-  //     </Routes>
-  //   </BrowserRouter>
-  // );
 }
 
 export default App;
