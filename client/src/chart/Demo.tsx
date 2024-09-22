@@ -222,7 +222,7 @@ export default function Demo() {
                 <CardTitle>Total Sales</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-semibold">${summary.totalSales.toLocaleString()}</p>
+                <p className="text-2xl font-semibold">₹{summary.totalSales.toLocaleString()}</p>
               </CardContent>
             </Card>
             <Card>
@@ -230,7 +230,7 @@ export default function Demo() {
                 <CardTitle>Total Revenue</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-semibold">${summary.totalRevenue.toLocaleString()}</p>
+                <p className="text-2xl font-semibold">₹{summary.totalRevenue.toLocaleString()}</p>
               </CardContent>
             </Card>
             <Card>

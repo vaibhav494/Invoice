@@ -116,7 +116,7 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0A3A2A] p-4">
       <div className="text-white text-center mb-10">
-        <h1 className="text-3xl font-bold mb-2">Welcome to Invoice Generator</h1>
+        <h1 className="text-3xl font-bold mb-2">Welcome to <span className="text-[#ADFF2F]">Ledger</span>Dary </h1>
         <p className="text-xl">Simplify your billing process with our easy-to-use tool</p>
       </div>
       <div className="w-full max-w-md bg-white rounded-lg shadow-xl overflow-hidden">

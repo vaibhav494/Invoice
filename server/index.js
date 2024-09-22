@@ -16,6 +16,7 @@ const Expense = require("./models/Expense"); // Make sure to create this model
 const ExpenseName = require("./models/ExpenseName"); // Make sure to create this model
 const BankDetail = require("./models/BankDetail");
 const Supplier = require("./models/Supplier");
+const TodaysDetail = require("./models/TodayDetail")
 const AdminUser = require("./models/AdminUser");
 
 app.use(express.json());
@@ -268,10 +269,22 @@ app.post("/insertSupplier", async (req, res) => {
   }
 });
 
+
+//statusupdate
 app.put("/update_invoice_status", async (req, res) => {
   try {
     const { invoiceNumber, newStatus, userId } = req.body;
+    // if (newStatus === 'Paid'){
+    //   const data = TodaysDetail.find({currentDate});
+    //   if (!data){
+        
+    //     TodaysDetail.create({
+    //       TodayExpense:
+    //     })
+    //   }
+      
 
+    //}
     const updatedInvoice = await Invoice.findOneAndUpdate(
       { invoiceNumber: invoiceNumber, userId: userId },
       { $set: { status: newStatus } },
@@ -420,7 +433,7 @@ app.post("/api/bank-details", async (req, res) => {
   }
 });
 
-app.get("/`getCustomer`", (req, res) => {
+app.get("/getCustomer", (req, res) => {
   const userId = req.query.userId;
 
   if (!userId) {
@@ -578,6 +591,10 @@ function getMonthRange(year, month) {
   const end = new Date(year, month + 1, 0);
   return { start, end };
 }
+
+app.get('/day-revenue',(req,res) => {
+
+})
 
 // API to get summary data
 app.get("/api/summary", async (req, res) => {

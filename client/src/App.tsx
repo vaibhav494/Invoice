@@ -87,7 +87,7 @@ function App() {
           {/* Common routes for all users */}
           <Route path="/" element={<Dash />} />
           <Route path="/customer-entry" element={<Seller_entry fstate={sssname} fsetState={setSssname} />} />
-          <Route path="/supplier-entry" element={<Supplier />} />
+          <Route path="/supplier" element={<Supplier />} />
           <Route path="/bill_detail" element={<Bill_detail />} />
           <Route path="/kaccha" element={<Kaccha />} />
           <Route path="/estimate_invoice" element={<Estimate_Invoice />} />

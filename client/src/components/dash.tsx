@@ -2,11 +2,14 @@ import { ArrowDownIcon, ArrowUpIcon, ArchiveIcon, DownloadIcon, BarChartIcon, Tr
 import { UserButton } from '@clerk/clerk-react';
 import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Dash() {
   const navigate = useNavigate();  // Initialize the navigate function at the top level
   const { user } = useUser();
-
+  function Revenue(){
+    axios.get('/')
+  }
   // Function to handle redirection
   function redirectSavedInvoices() {
     navigate('/bill_detail');  // Programmatically navigate to the '/bill_detail' route
@@ -40,10 +43,10 @@ export default function Dash() {
 
       <div className="grid grid-cols-4 gap-6 mb-10">
         {[
-          { title: "Today's revenue", amount: "KES 2,837.90", change: 10, changeType: 'increase' },
-          { title: "Today's expenses", amount: "KES 25,938.86", change: 6, changeType: 'decrease' },
-          { title: "Overdue Invoices", amount: "KES 6,947.00", badge: "2 New" },
-          { title: "Upcoming Payments", amount: "KES 6,947.00", badge: "9 New" },
+          { title: "Today's revenue", amount: "INR 2,837.90", change: 10, changeType: 'increase' },
+          { title: "Today's expenses", amount: "INR 25,938.86", change: 6, changeType: 'decrease' },
+          { title: "Overdue Invoices", amount: "INR 6,947.00", badge: "2 New" },
+          { title: "Upcoming Payments", amount: "INR 6,947.00", badge: "9 New" },
         ].map((item, index) => (
           <div key={index} className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-gray-500 mb-2">{item.title}</h3>
@@ -119,11 +122,11 @@ export default function Dash() {
           <p className="text-gray-500 mb-4">Updated 20 mins ago</p>
           <ul className="space-y-4">
             {[
-              { company: 'Bima Traders', amount: '+ KES 38,948.00', time: 'Wednesday 1:00pm' },
-              { company: 'Meta Corp', amount: '- KES 450.00', time: 'Wednesday 2:34pm' },
-              { company: 'Maxfter Inc.', amount: '+ KES 2,483.00', time: 'Thursday 3:55pm' },
-              { company: 'Linkedin Inc.', amount: '+ KES 3,728.00', time: 'Thursday 6:00pm' },
-              { company: 'Maihsy LLP', amount: '+ KES 2,726.00', time: 'Friday 7:00pm' },
+              { company: 'Bima Traders', amount: '+ INR 38,948.00', time: 'Wednesday 1:00pm' },
+              { company: 'Meta Corp', amount: '- INR 450.00', time: 'Wednesday 2:34pm' },
+              { company: 'Maxfter Inc.', amount: '+ INR 2,483.00', time: 'Thursday 3:55pm' },
+              { company: 'Linkedin Inc.', amount: '+ INR 3,728.00', time: 'Thursday 6:00pm' },
+              { company: 'Maihsy LLP', amount: '+ INR 2,726.00', time: 'Friday 7:00pm' },
             ].map((transaction, index) => (
               <li key={index} className="flex justify-between items-center">
                 <div>

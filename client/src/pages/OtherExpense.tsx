@@ -31,7 +31,7 @@ export default function ExpenseTracker() {
       fetchExpenses()
       fetchExpenseNames()
     }
-  }, [user])
+  }, [user])  
 
   const fetchExpenses = async () => {
     if (!user) return;
@@ -219,7 +219,7 @@ export default function ExpenseTracker() {
                 <li key={expense.id} className="flex justify-between items-center border-b pb-2">
                   <span>{expense.name}</span>
                   <span className="flex space-x-4">
-                    <span>${expense.amount.toFixed(2)}</span>
+                    <span>INR {expense.amount.toFixed(2)}</span>
                     <span>{expense.date}</span>
                   </span>
                 </li>

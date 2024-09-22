@@ -75,7 +75,7 @@ export default function ClientManagement() {
   const handleAddClient = async () => {
     if (newClient.name && newClient.addressLine1 && newClient.gst && newClient.state && newClient.stateCode) {
       try {
-        const response = await fetch('http://localhost:4000/insert', {
+        const response = await fetch('http://localhost:4000/insertCustomer', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

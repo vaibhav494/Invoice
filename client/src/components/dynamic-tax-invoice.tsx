@@ -17,6 +17,7 @@ import "jspdf-autotable";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/clerk-react";
+import { ToWords } from "to-words";
 
 interface CompanyDetails {
   name: string;
@@ -121,16 +122,6 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
   const [bankDetails, setBankDetails] = useState<BankDetail[]>([]);
   const [selectedBankDetail, setSelectedBankDetail] = useState<BankDetail | null>(null);
 
-  // useEffect(() => {
-  //   // Convert fstate to the required format
-  //   const formattedList = fstate.map((seller: any) => ({
-  //     id: seller.id,
-  //     name: seller.name,
-  //   }));
-  //   setSupplierList(formattedList);
-  //   setCustomerList(formattedList);
-  // }, [fstate]);
-
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
@@ -186,7 +177,8 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
 
   function AddInvoiceDatabase() {
     
-  
+    const calculatedTaxLines = calculateTaxLines();
+
     axios.post("http://localhost:4000/addinvoicedatabase", {
         Supplier: supplier,
         CustomerBilling: customer_billing,
@@ -199,7 +191,8 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
         DispatchDocNo: dispatchDocNo,
         DispatchedThrough: dispatchedThrough,
         Destination: destination,
-        TaxLines:taxLines,
+        //TaxLines:taxLines,
+        TaxLines:calculatedTaxLines,
         UserId: user?.id,
         Status:status
       })
@@ -220,7 +213,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
         if (company === "supplier") {
           setSupplier({
             name: details.name,
-            address: Array.isArray(details.address) ? details.address : [details.address], // Ensure address is an array
+            address: Array.isArray(details.address) ? details.address : [details.address], 
             gstin: details.gst,
             state: details.state,
             stateCode: details.stateCode,
@@ -228,7 +221,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
         } else if (company === "customer_billing") {
           setCustomerBilling({
             name: details.name,
-            address: Array.isArray(details.address) ? details.address : [details.address], // Ensure address is an array
+            address: Array.isArray(details.address) ? details.address : [details.address], 
             gstin: details.gst,
             state: details.state,
             stateCode: details.stateCode,
@@ -236,7 +229,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
         } else {
           setCustomerShipping({
             name: details.name,
-            address: Array.isArray(details.address) ? details.address : [details.address], // Ensure address is an array
+            address: Array.isArray(details.address) ? details.address : [details.address],
             gstin: details.gst,
             state: details.state,
             stateCode: details.stateCode,
@@ -283,7 +276,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
   };
   
   const calculateTaxLines = (): TaxLine[] => {
-    // const taxLines: TaxLine[] = [];
+    const taxLines: TaxLine[] = [];
     productLines.forEach((line) => {
       const existingTaxLine = taxLines.find(
         (taxLine) => taxLine.hsn === line.hsn
@@ -319,8 +312,9 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
   const calculateGrandTotal = () => calculateTotal() + calculateTotalTax();
 
   const numberToWords = (num: number) => {
-    // This is a placeholder. Implement a proper number to words conversion here.
-    return `INR ${num.toFixed(2)} Only`;
+    const toWords = new ToWords();
+    let words = toWords.convert(num, { currency: true });
+    return words;
   };
 
   const downloadInvoice = () => {
@@ -789,14 +783,15 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
               {productLines[0]?.per}
             </p>
             <p className="font-semibold">
-              ₹ {calculateGrandTotal().toFixed(2)}
+              {/* ₹ {calculateGrandTotal().toFixed(2)} */}
+              ₹ {productLines.reduce((sum,line) => sum + line.amount, 0)}{""}
             </p>
           </div>
           <p className="text-sm text-right">E. & O.E</p>
           <p className="text-sm font-semibold mt-2">
             Amount Chargeable (in words)
           </p>
-          <p className="text-sm">{numberToWords(calculateGrandTotal())}</p>
+          <p className="text-sm">{numberToWords(productLines.reduce((sum,line) => sum + line.amount, 0))}</p>
         </div>
         <div className="mt-6 border-t pt-4">
           <Table>
@@ -831,12 +826,18 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
                   {calculateTotalTax().toFixed(2)}
                 </TableCell>
               </TableRow>
+              
             </TableBody>
           </Table>
         </div>
         <div className="mt-6">
+        <p className="text-sm font-semibold">
+            Grand Total Amount (in number) :</p>
+          <p className="text-sm">{'INR '+calculateGrandTotal()}
+          </p><br />  
           <p className="text-sm font-semibold">
-            Tax Amount (in words) : {numberToWords(calculateTotalTax())}
+          Grand Total Amount (in words) :</p>
+          <p className="text-sm">{numberToWords(calculateGrandTotal())}
           </p>
           <p className="text-sm font-semibold mt-4">Company's Bank Details</p>
           <div className="mt-6">

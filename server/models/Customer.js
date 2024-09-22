@@ -26,6 +26,10 @@ const ReactFormDataSchema = new mongoose.Schema({
     userId:{
         type:String,
         required:true
+    },
+    Date:{
+        type:Date,
+        required:true
     }
 });
 
