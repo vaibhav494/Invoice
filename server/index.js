@@ -24,6 +24,75 @@ app.use(cors());
 console.log("before mongo conn");
 mongoose.connect("mongodb://localhost:27017/invoice");
 
+
+// app.post(
+//   "/api/webhooks",
+//   bodyParser.raw({ type: "application/json" }), // Parse raw payload as a buffer
+//   async function (req, res) {
+//     try {
+//       const payloadBuffer = req.body; 
+//       const payloadString = JSON.stringify(payloadBuffer); 
+//       const svixHeaders = req.headers;
+//       const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET_KEY);
+//       const evt = wh.verify(payloadString, svixHeaders); 
+//       const { id, ...attributes } = evt.data;
+//       const eventType = evt.type;
+//       switch (eventType) {
+//         case "user.created":
+//           console.log(`User ${id} was created`);
+//           console.log(attributes);
+//           const { first_name, last_name } = attributes;
+//           const newUser = new User({
+//             clerkUserId: id,
+//             firstName: first_name,
+//             lastName: last_name,
+//           });
+//           await newUser.save();
+//           console.log("User saved to database");
+//           break;
+//         case "user.updated":
+//           console.log(`User ${id} was updated`);
+//           console.log(attributes);
+//           const updatedUser = await User.findOneAndUpdate(
+//             { clerkUserId: id },
+//             {
+//               firstName: attributes.first_name,
+//               lastName: attributes.last_name,
+//               // Add other fields you want to update
+//             },
+//             { new: true }
+//           );
+//           if (updatedUser) {
+//             console.log("User updated in database");} else {console.log("User not found in database");}
+//           break;
+//         case "user.deleted":
+//           console.log(`User ${id} deleted`);
+//           const deleteResult = await User.deleteOne({ clerkUserId: id });
+//           if (deleteResult.deletedCount > 0) {
+//             console.log("User deleted from database");
+//           } else {
+//             console.log("User not found in database");
+//           }
+//           break;
+//         default:
+//           console.log(`Unhandled event type: ${eventType}`);
+//       }
+//       res.status(200).json({
+//         success: true,
+//         message: "Webhook received and verified",
+//       });
+//     } catch (err) {
+//       console.error("Webhook verification failed:", err.message); // Detailed error message
+//       res.status(400).json({
+//         success: false,
+//         message: err.message,
+//       });
+//     }
+//   }
+// );
+
+
+
 app.post(
   "/api/webhooks",
   bodyParser.raw({ type: "application/json" }), // Parse raw payload as a buffer
@@ -93,53 +162,6 @@ app.post("/addinvoicedatabase", async (req, res) => {
   });
   await newInvoice.save();
 });
-
-app.post("/users", async (req, res) => {
-  const { clerkId, firstName, lastName, email } = req.body;
-
-  const newUser = new User({ clerkId, firstName, lastName, email });
-  await newUser.save();
-  res.status(201).send("User created");
-});
-
-app.get("/get_seller_detail", (req, res) => {
-  const { name, company } = req.query;
-
-  if (!name || !company) {
-    return res
-      .status(400)
-      .json({ error: "Name and company query parameters are required" });
-  }
-
-  const query = { name: name };
-  if (company === "supplier") {
-    Supplier.findOne(query)
-      .then((supplier_detail) => {
-        if (!supplier_detail) {
-          return res.status(404).json({ error: "Seller not found" });
-        }
-        res.json(supplier_detail);
-      })
-      .catch((err) => res.status(500).json({ error: err.message }));
-  } else if (
-    company === "customer_billing" ||
-    company === "customer_shipping"
-  ) {
-    Customer.findOne(query)
-      .then((customer_detail) => {
-        if (!customer_detail) {
-          return res.status(404).json({ error: "Seller not found" });
-        }
-        res.json(customer_detail);
-      })
-      .catch((err) => res.status(500).json({ error: err.message }));
-  } else {
-    return res.status(400).json({ error: "Invalid company type" });
-  }
-});
-
-app.post("/");
-
 app.get("/insert_full_invoice_detail", async (req, res) => {
   const userId = req.query.userId; // Get userId from query parameters
   const adminUser = await AdminUser.findOne({ userId });
@@ -196,6 +218,50 @@ app.get("/insert_full_invoice_detail", async (req, res) => {
       console.error("Error fetching invoices:", err);
       res.status(500).json({ error: err.message });
     }
+  }
+});
+
+app.post("/users", async (req, res) => {
+  const { clerkId, firstName, lastName, email } = req.body;
+
+  const newUser = new User({ clerkId, firstName, lastName, email });
+  await newUser.save();
+  res.status(201).send("User created");
+});
+
+app.get("/get_seller_detail", (req, res) => {
+  const { name, company } = req.query;
+
+  if (!name || !company) {
+    return res
+      .status(400)
+      .json({ error: "Name and company query parameters are required" });
+  }
+
+  const query = { name: name };
+  if (company === "supplier") {
+    Supplier.findOne(query)
+      .then((supplier_detail) => {
+        if (!supplier_detail) {
+          return res.status(404).json({ error: "Seller not found" });
+        }
+        res.json(supplier_detail);
+      })
+      .catch((err) => res.status(500).json({ error: err.message }));
+  } else if (
+    company === "customer_billing" ||
+    company === "customer_shipping"
+  ) {
+    Customer.findOne(query)
+      .then((customer_detail) => {
+        if (!customer_detail) {
+          return res.status(404).json({ error: "Seller not found" });
+        }
+        res.json(customer_detail);
+      })
+      .catch((err) => res.status(500).json({ error: err.message }));
+  } else {
+    return res.status(400).json({ error: "Invalid company type" });
   }
 });
 
@@ -268,23 +334,34 @@ app.post("/insertSupplier", async (req, res) => {
     console.log(err);
   }
 });
+app.get("/getCustomer", (req, res) => {
+  const userId = req.query.userId;
+
+  if (!userId) {
+    return res.status(400).json({ error: "userId is required" });
+  }
+
+  Customer.find({ userId: userId })
+    .then((customers) => res.json(customers))
+    .catch((err) => res.status(500).json({ error: err.message }));
+});
+app.get("/getSupplier", (req, res) => {
+  const userId = req.query.userId;
+
+  if (!userId) {
+    return res.status(400).json({ error: "userId is required" });
+  }
+
+  Supplier.find({ userId: userId })
+    .then((supplier) => res.json(supplier))
+    .catch((err) => res.status(500).json({ error: err.message }));
+});
 
 
 //statusupdate
 app.put("/update_invoice_status", async (req, res) => {
   try {
     const { invoiceNumber, newStatus, userId } = req.body;
-    // if (newStatus === 'Paid'){
-    //   const data = TodaysDetail.find({currentDate});
-    //   if (!data){
-        
-    //     TodaysDetail.create({
-    //       TodayExpense:
-    //     })
-    //   }
-      
-
-    //}
     const updatedInvoice = await Invoice.findOneAndUpdate(
       { invoiceNumber: invoiceNumber, userId: userId },
       { $set: { status: newStatus } },
@@ -433,28 +510,7 @@ app.post("/api/bank-details", async (req, res) => {
   }
 });
 
-app.get("/getCustomer", (req, res) => {
-  const userId = req.query.userId;
 
-  if (!userId) {
-    return res.status(400).json({ error: "userId is required" });
-  }
-
-  Customer.find({ userId: userId })
-    .then((customers) => res.json(customers))
-    .catch((err) => res.status(500).json({ error: err.message }));
-});
-app.get("/getSupplier", (req, res) => {
-  const userId = req.query.userId;
-
-  if (!userId) {
-    return res.status(400).json({ error: "userId is required" });
-  }
-
-  Supplier.find({ userId: userId })
-    .then((supplier) => res.json(supplier))
-    .catch((err) => res.status(500).json({ error: err.message }));
-});
 
 app.get("/getCustomerName", (req, res) => {
   const userId = req.query.userId;

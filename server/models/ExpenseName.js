@@ -1,14 +1,8 @@
 const mongoose = require('mongoose');
 
 const ExpenseNameSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  userId: {
-    type: String,
-    required: true
-  }
+  name: {type: String, required: true},
+  userId: {type: String,required: true}
 });
 
 // Compound index to ensure uniqueness of name per user
