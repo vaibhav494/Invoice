@@ -707,6 +707,71 @@ app.get("/api/summary", async (req, res) => {
   }
 });
 
+app.get('/calculate-expense', async (req, res)=>{
+  const userId = req.query.userId;
+  const expenses = await Expense.find({userId:userId}, "amount date" )
+  
+  totalExpense = 0
+  expenses.forEach(expense=>{
+    const parsedDate = new Date(expense.date);
+    parsedDate.setHours(0, 0, 0, 0)
+    console.log("this is invoice date "+ parsedDate)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    console.log("this is todays date "+ today)
+    if (parsedDate.getTime() === today.getTime()) {
+      totalExpense += expense.amount;
+    }
+  })
+  
+
+  res.status(200).json({ totalExpense });
+})
+app.get('/calculate-revenue', async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    
+    // Fetch invoices for the given userId from the database
+    const invoices = await Invoice.find({ userId: userId }, "invoiceDate productLines taxLines");
+    console.log(invoices)
+    let totalRevenue = 0;
+
+    invoices.forEach(invoice => {
+      // Calculate the total amount for each invoice
+      const totalProductAmount = invoice.productLines.reduce((sum, line) => sum + (line.amount || 0), 0);
+      const totalTaxAmount = invoice.taxLines.reduce((sum, line) => sum + (line.totalTaxAmount || 0), 0);
+      const totalAmount = totalProductAmount + totalTaxAmount;
+      
+      // Parse the date string into a Date object
+      const parsedDate = new Date(invoice.invoiceDate);
+      parsedDate.setHours(0, 0, 0, 0)
+      console.log("this is invoice date "+ parsedDate)
+      // Get today's date and set time to midnight for a clean comparison
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      console.log("this is todays date "+ today)
+
+      // Add to total revenue if the parsed date matches today's date
+      if (parsedDate.getTime() === today.getTime()) {
+        totalRevenue += totalAmount;
+      }
+    });
+    console.log(totalRevenue)
+    // Send the calculated total revenue as a response
+    res.status(200).json({ totalRevenue });
+  } catch (error) {
+    console.error('Error calculating revenue:', error);
+    res.status(500).json({ message: 'Error calculating revenue', error });
+  }
+});
+
+
+
+
+
+
+
+
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => {

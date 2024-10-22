@@ -3,13 +3,48 @@ import { UserButton } from '@clerk/clerk-react';
 import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import exp from 'constants';
 
 export default function Dash() {
   const navigate = useNavigate();  // Initialize the navigate function at the top level
   const { user } = useUser();
-  function Revenue(){
-    axios.get('/')
-  }
+  const [revenue, setRevenue] = useState(0);
+  const [expense, setExpense] = useState(0);
+
+  useEffect(() => {
+    async function calc() {
+      try {
+        const res = await axios.get(`http://localhost:4000/calculate-revenue?userId=${user?.id}`);
+        setRevenue(res.data.totalRevenue); // Assuming the API returns { totalRevenue: value }
+      } catch (error) {
+        console.error('Error fetching revenue:', error);
+      }
+    }
+    if (user && user.id) {
+      calc();
+    }
+  }, [user?.id]);
+  useEffect(() => {
+    async function calc() {
+      try {
+        const res = await axios.get(`http://localhost:4000/calculate-expense?userId=${user?.id}`);
+        setExpense(res.data.totalExpense); 
+      } catch (error) {
+        console.error('Error fetching revenue:', error);
+      }
+    }
+    if (user && user.id) {
+      calc();
+    }
+  }, [user?.id]);
+
+
+
+
+
+
+
   // Function to handle redirection
   function redirectSavedInvoices() {
     navigate('/bill_detail');  // Programmatically navigate to the '/bill_detail' route
@@ -43,8 +78,8 @@ export default function Dash() {
 
       <div className="grid grid-cols-4 gap-6 mb-10">
         {[
-          { title: "Today's revenue", amount: "INR 2,837.90", change: 10, changeType: 'increase' },
-          { title: "Today's expenses", amount: "INR 25,938.86", change: 6, changeType: 'decrease' },
+          { title: "Today's revenue", amount: "INR "+revenue, change: 10, changeType: 'increase' },
+          { title: "Today's expenses", amount: "INR "+ expense, change: 6, changeType: 'decrease' },
           { title: "Overdue Invoices", amount: "INR 6,947.00", badge: "2 New" },
           { title: "Upcoming Payments", amount: "INR 6,947.00", badge: "9 New" },
         ].map((item, index) => (
