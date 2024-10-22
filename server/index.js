@@ -658,9 +658,7 @@ function getMonthRange(year, month) {
   return { start, end };
 }
 
-app.get('/day-revenue',(req,res) => {
 
-})
 
 // API to get summary data
 app.get("/api/summary", async (req, res) => {

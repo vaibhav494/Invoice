@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { HomeIcon, FileTextIcon, ShoppingBagIcon, BuildingIcon, BarChartIcon } from 'lucide-react'
+import { HomeIcon, FileTextIcon, ShoppingBagIcon, BuildingIcon, BarChartIcon ,SquareChartGantt} from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 export default function Sidebar() {
@@ -17,6 +17,7 @@ export default function Sidebar() {
     { href: '/other-expense', text: 'Other Expense', icon: ShoppingBagIcon },
     { href: '/add-bank-detail', text: 'Bank Detail', icon: BuildingIcon },
     { href: '/chart', text: 'Chart', icon: BarChartIcon },
+    { href: '/product-cost', text: 'Product Cost', icon: SquareChartGantt },
     // { href: '/customer', text: 'Customer', icon: UsersIcon },
     // { href: '/invoice', text: 'Generate Invoice', icon: FileIcon },
   ]

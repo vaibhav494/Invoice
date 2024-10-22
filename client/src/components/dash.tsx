@@ -4,14 +4,20 @@ import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import exp from 'constants';
+
+import { Link, useLocation } from 'react-router-dom'
+
 
 export default function Dash() {
+  const location = useLocation()
+  const [activeLink, setActiveLink] = useState(location.pathname)
   const navigate = useNavigate();  // Initialize the navigate function at the top level
   const { user } = useUser();
   const [revenue, setRevenue] = useState(0);
   const [expense, setExpense] = useState(0);
-
+  useEffect(() => {
+    setActiveLink(location.pathname)
+  }, [location.pathname])
   useEffect(() => {
     async function calc() {
       try {
@@ -59,20 +65,30 @@ export default function Dash() {
         </div>
         <div className="space-x-4">
           <button className="px-4 py-2 bg-white rounded-md shadow">
-            <a href="/chart">
+            {/* <a href="/chart">
             <span className="flex items-center">
               <BarChartIcon className="w-5 h-5 mr-2" />
               Graphical View
+            </span></a> */}
+            <span>
+            <Link className='flex items-center'
+              key={'/chart'}
+              to={'/chart'}
+              onClick={() => setActiveLink('/chart')}
+            >
+              <BarChartIcon className="w-5 h-5 mr-2" />
+              Graphical View
+            </Link>
             </span>
-            </a>
+            
             
           </button>
-          <button className="px-4 py-2 bg-white rounded-md shadow">
+          {/* <button className="px-4 py-2 bg-white rounded-md shadow">
             <span className="flex items-center">
               <TrendingUpIcon className="w-5 h-5 mr-2" />
               Trends
             </span>
-          </button>
+          </button> */}
         </div>
       </header>
 

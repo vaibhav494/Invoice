@@ -28,6 +28,7 @@ import { any } from "zod";
 import LoginPage from "./admin/LoginPage";
 import AdminDashboard from "./admin/AdminDashboard";
 import UserDetail from "./admin/UserDetail";
+import ProductCost from "./pages/ProductCost";
 
 const ADMIN_CREDENTIALS = {
   username: "admin",
@@ -150,6 +151,7 @@ function App() {
           <Route path="/other-expense" element={<OtherExpense />} />
           <Route path="/add-bank-detail" element={<BankDetail />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/product-cost" element={<ProductCost/>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
