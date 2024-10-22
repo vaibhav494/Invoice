@@ -14,6 +14,7 @@ const NewInvoice = new mongoose.Schema({
     userId: {type: String},
     status: {type: String}
 });
+
 const Supplier = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     address: { type: Array, required: true },
@@ -22,6 +23,7 @@ const Supplier = new mongoose.Schema({
     stateCode: { type: String, required: true },
     userId: { type: String, required: true }
 });
+
 const Customer = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     address: { type: Array, required: true },
@@ -31,6 +33,7 @@ const Customer = new mongoose.Schema({
     userId: { type: String, required: true },
     Date: { type: Date, required: true }
 });
+
 const TodayDetails = new mongoose.Schema({
     TodayRevenue: {type: String, required: true},
     TodayExpense: {type: String, required: true},
@@ -38,6 +41,7 @@ const TodayDetails = new mongoose.Schema({
     UpcomingPayments: {type: String, required: true},
     userId: {type: String, required: true}
 });
+
 const userSchema = new mongoose.Schema(
     {
       clerkUserId: { type: String, unique: true, required: true },
@@ -45,16 +49,23 @@ const userSchema = new mongoose.Schema(
       lastName: String,
     },{ timestamps: true }
   );
+
 const BankDetailModel = new mongoose.Schema({
     name: { type: String, required: true },
     Ac_No: { type: String, required: true, unique: true },
     branch_ifsc: { type: String, required: true },
     userId: { type: String, required: true }
 });
+
 const ExpenseSchema = new mongoose.Schema({
     name: { type: String, required: true },
     amount: { type: Number, required: true },
     date: { type: Date, required: true },
     userId: { type: String, required: true }
-  });
+});
+
+const ExpenseNameSchema = new mongoose.Schema({
+    name: {type: String, required: true},
+    userId: {type: String,required: true}
+});
   

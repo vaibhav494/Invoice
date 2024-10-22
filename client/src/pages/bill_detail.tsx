@@ -350,5 +350,5 @@ export default function ImprovedInvoiceTable() {
         </div>
       </CardContent>
     </Card>
-  );
+  ); 
 }

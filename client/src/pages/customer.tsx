@@ -1,5 +1,3 @@
-'use client'
-
 import { useState, useEffect } from 'react'
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from "@/components/ui/button"
@@ -57,7 +55,8 @@ export default function ClientManagement() {
 
   const fetchClients = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/getCustomer?userId=${user?.id}`);
+      const response = await fetch
+      (`http://localhost:4000/getCustomer?userId=${user?.id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch clients');
       }
@@ -73,16 +72,18 @@ export default function ClientManagement() {
   }
 
   const handleAddClient = async () => {
-    if (newClient.name && newClient.addressLine1 && newClient.gst && newClient.state && newClient.stateCode) {
+    if (newClient.name && newClient.addressLine1 && newClient.gst && 
+      newClient.state && newClient.stateCode) {
       try {
-        const response = await fetch('http://localhost:4000/insertCustomer', {
-          method: 'POST',
+        const response = await fetch('http://localhost:4000/insertCustomer'
+          , {method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             customer_name: newClient.name,
-            customer_address: [newClient.addressLine1, newClient.addressLine2, newClient.addressLine3], // Send as an array
+            customer_address: [newClient.addressLine1, 
+              newClient.addressLine2, newClient.addressLine3], // Send as an array
             customer_gst: newClient.gst,
             customer_state: newClient.state,
             customer_state_code: newClient.stateCode,
@@ -95,7 +96,8 @@ export default function ClientManagement() {
         }
 
         fetchClients(); // Refresh the client list
-        setNewClient({ name: '', addressLine1: '', addressLine2: '', addressLine3: '', gst: '', state: '', stateCode: '' });
+        setNewClient({ name: '', addressLine1: '', addressLine2: '',
+           addressLine3: '', gst: '', state: '', stateCode: '' });
         setIsOpen(false);
       } catch (error) {
         console.error('Error adding client:', error);

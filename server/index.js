@@ -98,7 +98,7 @@ app.post(
   bodyParser.raw({ type: "application/json" }), // Parse raw payload as a buffer
   async function (req, res) {
     try {
-      const payloadBuffer = req.body; // This is a Buffer because of bodyParser.raw()
+      const payloadBuffer = req.body; // This is a Buffer because of .raw()
       const payloadString = JSON.stringify(payloadBuffer); // Convert Buffer to string for verification
       const svixHeaders = req.headers;
 
@@ -142,6 +142,19 @@ app.post(
     }
   }
 );
+
+//admin-dashboard user
+app.get('/get-users', async (req, res) => {
+  try {
+    const userDetail = await User.find();
+    res.json(userDetail);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while fetching users' });
+  }
+});
+
+
+
 
 app.post("/addinvoicedatabase", async (req, res) => {
   const newInvoice = new Invoice({
@@ -584,15 +597,12 @@ app.get("/api/sales", async (req, res) => {
         return result.length > 0 ? result[0].totalSales : 0;
       })
     );
-
     res.json(salesData);
   } catch (error) {
     console.error("Error in /api/sales:", error);
     res.status(500).json({ message: error.message });
   }
 });
-
-// API to get monthly revenue data
 app.get("/api/revenue", async (req, res) => {
   try {
     const currentYear = new Date().getFullYear();

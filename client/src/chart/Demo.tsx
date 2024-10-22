@@ -150,7 +150,8 @@ ChartJS.register(
   Legend
 )
 
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
+   'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const options = {
   responsive: true,
@@ -168,7 +169,8 @@ const options = {
 export default function Demo() {
   const [salesData, setSalesData] = useState([]);
   const [revenueData, setRevenueData] = useState([]);
-  const [summary, setSummary] = useState({ totalSales: 0, totalRevenue: 0, profitMargin: 0 });
+  const [summary, setSummary] = useState({ totalSales: 0, 
+    totalRevenue: 0, profitMargin: 0 });
 
   useEffect(() => {
     const fetchData = async () => {

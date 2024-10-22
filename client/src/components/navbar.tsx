@@ -1,6 +1,6 @@
-import { Bell } from 'lucide-react'; // Assuming you're using this icon
-import { UserButton } from '@clerk/clerk-react'; // Assuming you're using Clerk for user authentication
-import { Link, useLocation } from 'react-router-dom'; // Using Link for navigation
+import { Bell } from 'lucide-react'; 
+import { UserButton } from '@clerk/clerk-react'; 
+import { Link, useLocation } from 'react-router-dom'; 
 
 const Navbar = () => {
   const location = useLocation();
