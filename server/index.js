@@ -731,7 +731,7 @@ app.get('/calculate-revenue', async (req, res) => {
     
     // Fetch invoices for the given userId from the database
     const invoices = await Invoice.find({ userId: userId }, "invoiceDate productLines taxLines");
-    console.log(invoices)
+
     let totalRevenue = 0;
 
     invoices.forEach(invoice => {
@@ -743,18 +743,18 @@ app.get('/calculate-revenue', async (req, res) => {
       // Parse the date string into a Date object
       const parsedDate = new Date(invoice.invoiceDate);
       parsedDate.setHours(0, 0, 0, 0)
-      console.log("this is invoice date "+ parsedDate)
+
       // Get today's date and set time to midnight for a clean comparison
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      console.log("this is todays date "+ today)
+
 
       // Add to total revenue if the parsed date matches today's date
       if (parsedDate.getTime() === today.getTime()) {
         totalRevenue += totalAmount;
       }
     });
-    console.log(totalRevenue)
+
     // Send the calculated total revenue as a response
     res.status(200).json({ totalRevenue });
   } catch (error) {
