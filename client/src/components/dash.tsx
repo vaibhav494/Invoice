@@ -1,5 +1,4 @@
 import { ArrowDownIcon, ArrowUpIcon, ArchiveIcon, DownloadIcon, BarChartIcon, TrendingUpIcon, SquareArrowOutUpRight } from 'lucide-react';
-import { UserButton } from '@clerk/clerk-react';
 import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -15,14 +14,16 @@ export default function Dash() {
   const { user } = useUser();
   const [revenue, setRevenue] = useState(0);
   const [expense, setExpense] = useState(0);
+
   useEffect(() => {
     setActiveLink(location.pathname)
   }, [location.pathname])
+  
   useEffect(() => {
     async function calc() {
       try {
         const res = await axios.get(`http://localhost:4000/calculate-revenue?userId=${user?.id}`);
-        setRevenue(res.data.totalRevenue); // Assuming the API returns { totalRevenue: value }
+        setRevenue(res.data.totalRevenue); 
       } catch (error) {
         console.error('Error fetching revenue:', error);
       }
@@ -44,10 +45,6 @@ export default function Dash() {
       calc();
     }
   }, [user?.id]);
-
-
-
-
 
 
 
@@ -94,8 +91,8 @@ export default function Dash() {
 
       <div className="grid grid-cols-4 gap-6 mb-10">
         {[
-          { title: "Today's revenue", amount: "INR "+revenue, change: 10, changeType: 'increase' },
-          { title: "Today's expenses", amount: "INR "+ expense, change: 6, changeType: 'decrease' },
+          { title: "Today's revenue", amount: "INR "+revenue.toLocaleString(undefined, {maximumFractionDigits:2}), change: 10, changeType: 'increase' },
+          { title: "Today's expenses", amount: "INR "+ expense.toLocaleString(undefined, {maximumFractionDigits:2}), change: 6, changeType: 'decrease' },
           { title: "Overdue Invoices", amount: "INR 6,947.00", badge: "2 New" },
           { title: "Upcoming Payments", amount: "INR 6,947.00", badge: "9 New" },
         ].map((item, index) => (

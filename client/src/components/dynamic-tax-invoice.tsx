@@ -374,7 +374,7 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
     const finalY = (doc as any).lastAutoTable.finalY + 10;
     doc.setFontSize(10);
     doc.text(
-      `Total: Rs{productLines.reduce((sum, line) => sum + line.quantity, 0)} ${
+      `Total: Rs${productLines.reduce((sum, line) => sum + line.quantity, 0)} ${
         productLines[0]?.per
       }`,
       130,
@@ -837,9 +837,11 @@ export default function DynamicTaxInvoice({ fstate }: Props) {
         <Button onClick={downloadInvoice} className="mt-4">
           Download Invoice
         </Button>
+        <Button className="float-right mt-4" onClick={AddInvoiceDatabase}>
+          Save Invoice
+        </Button>
       </CardContent>
     </Card>
-    <Button onClick={AddInvoiceDatabase}>Click here to Save</Button>
     </>
   );
 }

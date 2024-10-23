@@ -139,8 +139,6 @@ function App() {
           />
           <Route path="/supplier" element={<Supplier />} />
           <Route path="/bill_detail" element={<Bill_detail />} />
-          <Route path="/kaccha" element={<Kaccha />} />
-          <Route path="/estimate_invoice" element={<Estimate_Invoice />} />
           <Route
             path="/invoice"
             element={<DynamicTaxInvoice fstate={sssname} />}

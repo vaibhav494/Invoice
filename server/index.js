@@ -103,9 +103,9 @@ app.post(
       const svixHeaders = req.headers;
 
       const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET_KEY);
-
+      console.log(process.env.CLERK_WEBHOOK_SECRET_KEY);
       const evt = wh.verify(payloadString, svixHeaders); // Verifies the incoming webhook payload
-
+      
       const { id, ...attributes } = evt.data;
       const eventType = evt.type;
       if (eventType === "user.created") {

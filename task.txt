@@ -1,7 +1,13 @@
+DONE
 1)   add other expense in the app - done
 2)   add bank detail of supplier - done
 3)   main invoice changes (details diff option for shipping and billing) also fixed small bugs- done finally
 4)   adding graph - done
-5)   chart date selector - not done
 6)   admin panel - imp done
-7)   product price 
+
+
+NOT DONE
+7)   product price - logic implementation in invoice not done
+8)   recent transactions(expense and status change) - not done
+5)   chart date selector - not done
+9)   complete dynamic dashboard - not done
