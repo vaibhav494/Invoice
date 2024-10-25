@@ -7,6 +7,10 @@ DONE
 
 
 NOT DONE
+
+FOCUS: INVOICE PAGE
+
+
 7)   product price - logic implementation in invoice not done
 8)   recent transactions(expense and status change) - not done
 5)   chart date selector - not done

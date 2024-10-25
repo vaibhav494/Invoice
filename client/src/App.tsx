@@ -11,11 +11,8 @@ import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
 import RootLayout from "./components/RootLayout";
 import Dash from "./components/dash";
 import AuthPage from "./Auth/AuthPage";
-import Seller_entry from "./seller_entry";
 import Bill_detail from "./pages/bill_detail";
 import Supplier from "./pages/supplier";
-import Kaccha from "./pages/Kaccha";
-import Estimate_Invoice from "./components/estimate_invoice";
 import DynamicTaxInvoice from "./components/dynamic-tax-invoice";
 import Customer from "./pages/customer";
 import Demo from "./chart/Demo";
@@ -30,10 +27,7 @@ import AdminDashboard from "./admin/AdminDashboard";
 import UserDetail from "./admin/UserDetail";
 import ProductCost from "./pages/ProductCost";
 
-const ADMIN_CREDENTIALS = {
-  username: "admin",
-  password: "password123",
-};
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -65,30 +59,30 @@ function App() {
   const { user } = useUser();
   const [sssname, setSssname] = useState<string[]>([]);
 
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      if (!user) {
-        console.log("User is not defined");
-        setLoading(false);
-        return; // Only run if the user exists
-      }
+  // useEffect(() => {
+  //   const checkAdminStatus = async () => {
+  //     if (!user) {
+  //       console.log("User is not defined");
+  //       setLoading(false);
+  //       return; // Only run if the user exists
+  //     }
 
-      console.log("Checking admin status for user ID:", user.id);
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/api/check?userId=${user.id}`
-        );
-        console.log("API response:", response.data);
-        setIsAdmin(response.data === "true"); // Explicit comparison for string response
-      } catch (error) {
-        console.error("Error checking admin status:", error);
-      } finally {
-        setLoading(false); // Always set loading to false
-      }
-    };
+  //     console.log("Checking admin status for user ID:", user.id);
+  //     try {
+  //       const response = await axios.get(
+  //         `http://localhost:4000/api/check?userId=${user.id}`
+  //       );
+  //       console.log("API response:", response.data);
+  //       setIsAdmin(response.data === "true"); // Explicit comparison for string response
+  //     } catch (error) {
+  //       console.error("Error checking admin status:", error);
+  //     } finally {
+  //       setLoading(false); // Always set loading to false
+  //     }
+  //   };
 
-    checkAdminStatus();
-  }, [user]); // Dependency is the user object
+  //   checkAdminStatus();
+  // }, [user]); 
 
   useEffect(() => {
     axios
@@ -100,9 +94,7 @@ function App() {
         console.log("Error fetching data:", err);
       });
   }, []);
-  if (loading) {
-    return <div>Loading...</div>; // Conditional render here is fine as long as hooks are before it
-  }
+  
   return (
     <BrowserRouter>
       <Routes>
@@ -133,15 +125,11 @@ function App() {
           }
         >
           <Route path="/" element={<Dash />} />
-          <Route
-            path="/customer-entry"
-            element={<Seller_entry fstate={sssname} fsetState={setSssname} />}
-          />
           <Route path="/supplier" element={<Supplier />} />
           <Route path="/bill_detail" element={<Bill_detail />} />
           <Route
             path="/invoice"
-            element={<DynamicTaxInvoice fstate={sssname} />}
+            element={<DynamicTaxInvoice  />}
           />
           <Route path="/dash" element={<Dash />} />
           <Route path="/customer" element={<Customer />} />

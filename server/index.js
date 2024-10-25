@@ -1,4 +1,3 @@
-console.log("index js started");
 const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -18,10 +17,10 @@ const BankDetail = require("./models/BankDetail");
 const Supplier = require("./models/Supplier");
 const TodaysDetail = require("./models/TodayDetail")
 const AdminUser = require("./models/AdminUser");
+const Product = require('./models/Product');
 
 app.use(express.json());
 app.use(cors());
-console.log("before mongo conn");
 mongoose.connect("mongodb://localhost:27017/invoice");
 
 
@@ -103,7 +102,6 @@ app.post(
       const svixHeaders = req.headers;
 
       const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET_KEY);
-      console.log(process.env.CLERK_WEBHOOK_SECRET_KEY);
       const evt = wh.verify(payloadString, svixHeaders); // Verifies the incoming webhook payload
       
       const { id, ...attributes } = evt.data;
@@ -178,7 +176,6 @@ app.post("/addinvoicedatabase", async (req, res) => {
 app.get("/insert_full_invoice_detail", async (req, res) => {
   const userId = req.query.userId; // Get userId from query parameters
   const adminUser = await AdminUser.findOne({ userId });
-  console.log("this is admin user" + adminUser);
   if (!adminUser) {
     try {
       const invoices = await Invoice.find({ userId });
@@ -284,34 +281,44 @@ app.get("/insert", (req, res) => {
     .catch((err) => res.json(err));
 });
 
-// app.get("/get_invoice_number", async (req, res) => {
-//   try {
-//     const result = await Invoice_detail.aggregate([
-//       {
-//         $project: {
-//           invoiceNumberAsInt: {
-//             $toInt: "$All_invoice_detail.invoice_number",
-//           },
-//           originalInvoiceNumber: "$All_invoice_detail.invoice_number",
-//         },
-//       },
-//       {
-//         $sort: { invoiceNumberAsInt: -1 },
-//       },
-//       {
-//         $limit: 1,
-//       },
-//     ]);
-//     const maxInvoiceNumber =
-//       result.length > 0 ? result[0].originalInvoiceNumber : "0";
-//     res.status(200).json({ maxInvoiceNumber });
-//   } catch (err) {
-//     console.error("Error retrieving invoice number:", err); // Log the error for debugging
-//     res
-//       .status(500)
-//       .json({ message: "Error retrieving invoice number", error: err.message });
-//   }
-// });
+app.get("/get_invoice_number", async (req, res) => {
+  try {
+    const { userId } = req.query;
+    console.log("Received userId:", userId); // Log the userId for debugging
+
+    const result = await Invoice.aggregate([
+      {
+        $match: {
+          userId: userId.toString(), // Ensure userId is a string
+        },
+      },
+      {
+        $project: {
+          invoiceNumberAsInt: {
+            $toInt: "$invoiceNumber", // Convert string invoiceNumber to integer for sorting
+          },
+          originalInvoiceNumber: "$invoiceNumber",
+        },
+      },
+      {
+        $sort: { invoiceNumberAsInt: -1 }, // Sort in descending order to get the latest invoice number
+      },
+      {
+        $limit: 1, // Limit to the highest invoice number
+      },
+    ]);
+
+    console.log("Aggregation result:", result); // Log the result for debugging
+
+    const maxInvoiceNumber = result.length > 0 ? result[0].originalInvoiceNumber : "0";
+    res.status(200).json({ maxInvoiceNumber });
+  } catch (err) {
+    console.error("Error retrieving invoice number:", err); // Log the error for debugging
+    res.status(500).json({ message: "Error retrieving invoice number", error: err.message });
+  }
+});
+
+
 
 app.post("/insertCustomer", async (req, res) => {
   try {
@@ -713,10 +720,8 @@ app.get('/calculate-expense', async (req, res)=>{
   expenses.forEach(expense=>{
     const parsedDate = new Date(expense.date);
     parsedDate.setHours(0, 0, 0, 0)
-    console.log("this is invoice date "+ parsedDate)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    console.log("this is todays date "+ today)
     if (parsedDate.getTime() === today.getTime()) {
       totalExpense += expense.amount;
     }
@@ -764,10 +769,40 @@ app.get('/calculate-revenue', async (req, res) => {
 });
 
 
+app.get('/products/:userId', async (req, res) => {
+  const { userId } = req.params;
+  
+  try {
+    const products = await Product.find({ userId });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching products', error });
+  }
+});
 
 
 
+app.post('/products', async (req, res) => {
+  const { userId, name, hsn, cost, per } = req.body;
 
+  if (!userId || !name || !cost) {
+    return res.status(400).json({ message: 'UserId, name, and cost are required' });
+  }
+
+  try {
+    const newProduct = new Product({
+      userId,
+      name,
+      hsn,
+      cost,
+      per
+    });
+    await newProduct.save();
+    res.status(201).json(newProduct);
+  } catch (error) {
+    res.status(500).json({ message: 'Error saving product', error });
+  }
+});
 
 
 const port = process.env.PORT || 4000;

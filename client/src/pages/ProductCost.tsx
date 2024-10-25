@@ -1,52 +1,86 @@
-import { useState } from 'react'
-import { AlertCircle, Plus } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { useState, useEffect } from 'react';
+import { useUser } from '@clerk/clerk-react'; // Import useUser from Clerk
+import { AlertCircle, Plus } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import axios from 'axios';
 
 interface Product {
-  id: number;
+  _id: string;
   name: string;
-  hsn?: string;
+  hsn: string;
   cost: number;
+  per: string;
 }
 
 export default function ProductPricePage() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [name, setName] = useState('')
-  const [hsn, setHsn] = useState('')
-  const [cost, setCost] = useState('')
-  const [error, setError] = useState('')
+  const { user } = useUser(); // Get user object from Clerk
+  const userId = user?.id; // Extract userId
+  const [products, setProducts] = useState<Product[]>([]);
+  const [name, setName] = useState('');
+  const [hsn, setHsn] = useState('');
+  const [cost, setCost] = useState('');
+  const [per, setPer] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
+  useEffect(() => {
+    if (userId) {
+      fetchProducts(userId);
+    }
+  }, [userId]);
+
+  const fetchProducts = async (userId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:4000/products/${userId}`);
+      setProducts(response.data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
 
     if (!name.trim()) {
-      setError('Name is required')
-      return
+      setError('Name is required');
+      return;
     }
 
     if (!cost || isNaN(Number(cost))) {
-      setError('Valid cost is required')
-      return
+      setError('Valid cost is required');
+      return;
     }
 
-    const newProduct: Product = {
-      id: Date.now(),
+    if (!userId) {
+      setError('User is not authenticated');
+      return;
+    }
+
+    const newProduct = {
+      userId,
       name: name.trim(),
       hsn: hsn.trim() || undefined,
-      cost: Number(cost)
-    }
+      cost: Number(cost),
+      per: per.trim(),
+    };
 
-    setProducts([...products, newProduct])
-    setName('')
-    setHsn('')
-    setCost('')
-  }
+    try {
+      await axios.post('http://localhost:4000/products', newProduct);
+      setName('');
+      setHsn('');
+      setCost('');
+      setPer('');
+      fetchProducts(userId); // Refresh the product list after adding a new product
+    } catch (error) {
+      console.error('Error adding product:', error);
+      setError('Failed to add product');
+    }
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -87,6 +121,15 @@ export default function ProductPricePage() {
                 step="0.01"
               />
             </div>
+            <div>
+              <Label htmlFor="per">Per (required)</Label>
+              <Input
+                id="per"
+                value={per}
+                onChange={(e) => setPer(e.target.value)}
+                placeholder="Enter product per (eg: Mtr, Pcs)"
+              />
+            </div>
             {error && <p className="text-red-500">{error}</p>}
             <Button type="submit">
               <Plus className="mr-2 h-4 w-4" /> Add Product
@@ -106,14 +149,16 @@ export default function ProductPricePage() {
                 <TableHead>Name</TableHead>
                 <TableHead>HSN</TableHead>
                 <TableHead>Cost</TableHead>
+                <TableHead>Per</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {products.map((product) => (
-                <TableRow key={product.id}>
+                <TableRow key={product._id}>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.hsn || 'N/A'}</TableCell>
                   <TableCell>₹{product.cost.toFixed(2)}</TableCell>
+                  <TableCell>{product.per}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -130,5 +175,5 @@ export default function ProductPricePage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
