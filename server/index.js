@@ -284,7 +284,6 @@ app.get("/insert", (req, res) => {
 app.get("/get_invoice_number", async (req, res) => {
   try {
     const { userId } = req.query;
-    console.log("Received userId:", userId); // Log the userId for debugging
 
     const result = await Invoice.aggregate([
       {
@@ -308,7 +307,6 @@ app.get("/get_invoice_number", async (req, res) => {
       },
     ]);
 
-    console.log("Aggregation result:", result); // Log the result for debugging
 
     const maxInvoiceNumber = result.length > 0 ? result[0].originalInvoiceNumber : "0";
     res.status(200).json({ maxInvoiceNumber });

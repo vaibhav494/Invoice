@@ -76,6 +76,10 @@ export default function DynamicTaxInvoice() {
       amount: 0,
     },
   ]);
+
+  //fetch product details
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+
   const [nextId, setNextId] = useState(2);
   const [supplier, setSupplier] = useState<CompanyDetails>({
     name: "CLASSIC FABRICS",
@@ -319,24 +323,66 @@ export default function DynamicTaxInvoice() {
     name: string;
     hsn?: string;
     cost: number;
+    per: string;
   }
-  const [products, setProducts] = useState<Product[]>([]);
-  useEffect(() => {
-    if (userId) {
-      fetchProducts(userId);
-    }
-  }, [userId]);
 
-  const fetchProducts = async (userId: string) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/products/${userId}`
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (user?.id) {
+        try {
+          const response = await axios.get(
+            `http://localhost:4000/products/${user.id}`
+          );
+          console.log(response.data);
+          setAllProducts(response.data);
+          console.log(allProducts);
+        } catch (error) {
+          console.error("Error fetching products:", error);
+        }
+      }
+    };
+
+    fetchProducts();
+  }, []);
+  const handleProductSelect = (lineId: number, selectedProductName: string) => {
+    const selectedProduct = allProducts.find(
+      (product) => product.name === selectedProductName
+    );
+
+    if (selectedProduct) {
+      setProductLines(
+        productLines.map((line) => {
+          if (line.id === lineId) {
+            return {
+              ...line,
+              description: selectedProduct.name,
+              hsn: selectedProduct.hsn || "",
+              per: selectedProduct.per || "",
+              rate: selectedProduct.cost || 0,
+              amount: line.quantity * (selectedProduct.cost || 0),
+            };
+          }
+          return line;
+        })
       );
-      setProducts(response.data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
     }
   };
+  // useEffect(() => {
+  //   if (userId) {
+  //     fetchProducts(userId);
+  //   }
+  // }, [userId]);
+
+  // const fetchProducts = async (userId: string) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:4000/products/${userId}`
+  //     );
+  //     setProducts(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching products:", error);
+  //   }
+  // };
   const calculateTotal = () =>
     productLines.reduce((sum, line) => sum + line.amount, 0);
   const calculateTotalTax = () =>
@@ -748,17 +794,29 @@ export default function DynamicTaxInvoice() {
                 <TableRow key={line.id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
-                    <Input
+                    <select
                       value={line.description}
-                      onChange={(e) =>
-                        updateProductLine(
-                          line.id,
-                          "description",
-                          e.target.value
-                        )
-                      }
-                    />
+                      onChange={(e) => {
+                        const selectedValue = e.target.value;
+                        if (selectedValue === "add-new") {
+                          // Redirect to the add product page
+                          window.location.href = "/product-cost"; // Adjust the path as needed
+                        } else {
+                          handleProductSelect(line.id, selectedValue);
+                        }
+                      }}
+                    >
+                      <option value="">Select a product</option>
+                      {Array.isArray(allProducts) &&
+                        allProducts.map((product) => (
+                          <option key={product._id} value={product.name}>
+                            {product.name}
+                          </option>
+                        ))}
+                      <option value="add-new">Add a new product</option>
+                    </select>
                   </TableCell>
+
                   <TableCell>
                     <Input
                       value={line.hsn}
