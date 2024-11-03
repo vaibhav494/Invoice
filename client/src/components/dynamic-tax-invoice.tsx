@@ -91,6 +91,7 @@ export default function DynamicTaxInvoice() {
     state: "Maharashtra",
     stateCode: "27",
   });
+  const [pan, setPan] = useState('');
   const [customer_shipping, setCustomerShipping] = useState<CompanyDetails>({
     name: "L. P. CREATION",
     address: [
@@ -231,6 +232,10 @@ export default function DynamicTaxInvoice() {
             state: details.state,
             stateCode: details.stateCode,
           });
+
+          let pan = details.gst.slice(2, -3);
+          setPan(pan)
+
         } else if (company === "customer_billing") {
           setCustomerBilling({
             name: details.name,
@@ -453,7 +458,7 @@ export default function DynamicTaxInvoice() {
     doc.autoTable({
       head: [
         [
-          "SI No.",
+          "Sr No.",
           "Description of Goods",
           "HSN/SAC",
           "Quantity",
@@ -572,9 +577,15 @@ export default function DynamicTaxInvoice() {
               <CardTitle className="text-2xl font-bold">Tax Invoice</CardTitle>
               <select
                 value={supplier.name}
-                onChange={(e) =>
-                  fetchCompanyDetails("supplier", e.target.value)
-                }
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  if (selectedValue === "add-new") {
+                    // Redirect to the add supplier page
+                    window.location.href = "/supplier"; // Adjust the path as needed
+                  } else {
+                    fetchCompanyDetails("supplier", selectedValue);
+                  }
+                }}
                 className="font-semibold"
               >
                 <option value="">Select Supplier</option>
@@ -583,7 +594,9 @@ export default function DynamicTaxInvoice() {
                     {s}
                   </option>
                 ))}
+                <option value="add-new">Add a new supplier</option>
               </select>
+
               <textarea
                 value={supplier.address.join("\n")}
                 readOnly
@@ -639,9 +652,15 @@ export default function DynamicTaxInvoice() {
               <h3 className="font-semibold mb-2">Consignee (Ship to)</h3>
               <select
                 value={customer_shipping.name}
-                onChange={(e) =>
-                  fetchCompanyDetails("customer_shipping", e.target.value)
-                }
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  if (selectedValue === "add-new") {
+                    // Redirect to the add customer page
+                    window.location.href = "/customer"; // Adjust the path as needed
+                  } else {
+                    fetchCompanyDetails("customer_shipping", selectedValue);
+                  }
+                }}
                 className="font-semibold"
               >
                 <option value="">Select Customer</option>
@@ -650,7 +669,9 @@ export default function DynamicTaxInvoice() {
                     {c}
                   </option>
                 ))}
+                <option value="add-new">Add a new customer</option>
               </select>
+
               <textarea
                 value={customer_shipping.address.join("\n")}
                 readOnly
@@ -687,9 +708,15 @@ export default function DynamicTaxInvoice() {
               <h3 className="font-semibold mb-2">Buyer (Bill to)</h3>
               <select
                 value={customer_billing.name}
-                onChange={(e) =>
-                  fetchCompanyDetails("customer_billing", e.target.value)
-                }
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  if (selectedValue === "add-new") {
+                    // Redirect to the add customer page
+                    window.location.href = "/customer"; // Adjust the path as needed
+                  } else {
+                    fetchCompanyDetails("customer_billing", selectedValue);
+                  }
+                }}
                 className="font-semibold"
               >
                 <option value="">Select Customer</option>
@@ -698,7 +725,9 @@ export default function DynamicTaxInvoice() {
                     {c}
                   </option>
                 ))}
+                <option value="add-new">Add a new customer</option>
               </select>
+
               <textarea
                 value={customer_billing.address.join("\n")}
                 readOnly
@@ -780,7 +809,7 @@ export default function DynamicTaxInvoice() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">SI No.</TableHead>
+                <TableHead className="w-[100px]">Sr No.</TableHead>
                 <TableHead>Description of Goods</TableHead>
                 <TableHead>HSN/SAC</TableHead>
                 <TableHead>Quantity</TableHead>
@@ -945,10 +974,16 @@ export default function DynamicTaxInvoice() {
                 id="bankDetails"
                 value={selectedBankDetail?.Ac_No || ""}
                 onChange={(e) => {
-                  const selected = bankDetails.find(
-                    (bank) => bank.Ac_No === e.target.value
-                  );
-                  setSelectedBankDetail(selected || null);
+                  const selectedValue = e.target.value;
+                  if (selectedValue === "add-new") {
+                    // Redirect to the add bank details page
+                    window.location.href = "/add-bank-detail"; // Adjust the path as needed
+                  } else {
+                    const selected = bankDetails.find(
+                      (bank) => bank.Ac_No === selectedValue
+                    );
+                    setSelectedBankDetail(selected || null);
+                  }
                 }}
               >
                 <option value="">Select Bank Account</option>
@@ -957,7 +992,9 @@ export default function DynamicTaxInvoice() {
                     {bank.name} - {bank.Ac_No}
                   </option>
                 ))}
+                <option value="add-new">Add a new bank account</option>
               </select>
+
               {selectedBankDetail && (
                 <div>
                   <p>Bank Name: {selectedBankDetail.name}</p>
@@ -968,7 +1005,7 @@ export default function DynamicTaxInvoice() {
             </div>
           </div>
           <div className="mt-6 border-t pt-4">
-            <p className="text-sm font-semibold">Company's PAN : CHLPP2269J</p>
+            <p className="text-sm font-semibold">Company's PAN : {pan}</p>
             <p className="text-xs mt-2">Declaration:</p>
             <p className="text-xs">
               We declare that this invoice shows the actual price of the goods
