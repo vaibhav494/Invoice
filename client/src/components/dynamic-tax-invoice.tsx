@@ -65,6 +65,7 @@ export default function DynamicTaxInvoice() {
   const [deliveryNoteDate, setDeliveryNoteDate] = useState(dateOnly);
   const [dispatchedThrough, setDispatchedThrough] = useState("Ganesh Trp");
   const [destination, setDestination] = useState("Mumbai");
+  const [pan, setPan] = useState('');
   const [productLines, setProductLines] = useState<ProductLine[]>([
     {
       id: 1,
@@ -82,16 +83,39 @@ export default function DynamicTaxInvoice() {
 
   const [nextId, setNextId] = useState(2);
   const [supplier, setSupplier] = useState<CompanyDetails>({
-    name: "CLASSIC FABRICS",
+    name: "",
     address: [
-      "503, A WING, 5TH FLOOR, SAMARPAN APARTMENT,",
-      "NEAR D-MART, YASHWANT VIVA TOWNSHIP,",
+      "",
+      "",
     ],
-    gstin: "27CHLPP2269J1ZR",
-    state: "Maharashtra",
-    stateCode: "27",
+    gstin: "",
+    state: "",
+    stateCode: "",
   });
-  const [pan, setPan] = useState('');
+
+  useEffect(() => {
+    const fetchDefaultSupplier = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/getDefaultSupplier?userId=${user?.id}`
+        );
+        if (response.data == null){
+          return
+        }
+        setSupplier(response.data);
+        let pan = response.data.gst.slice(2, -3);
+          setPan(pan)
+      } catch (error) {
+        console.error("Error fetching bank details:", error);
+      }
+    };
+    if (user) {
+      fetchDefaultSupplier();
+    }
+  }, []);
+
+
+ 
   const [customer_shipping, setCustomerShipping] = useState<CompanyDetails>({
     name: "L. P. CREATION",
     address: [

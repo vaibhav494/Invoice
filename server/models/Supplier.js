@@ -5,7 +5,8 @@ const ReactFormDataSchema = new mongoose.Schema({
     gst: { type: String, required: true, unique: true },
     state: { type: String, required: true },
     stateCode: { type: String, required: true },
-    userId: { type: String, required: true }
+    userId: { type: String, required: true },
+    isDefault : {type:Boolean}
 });
 
 const Supplier = mongoose.model('Supplier', ReactFormDataSchema);

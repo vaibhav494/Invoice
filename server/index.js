@@ -803,6 +803,60 @@ app.post('/products', async (req, res) => {
 });
 
 
+//isDefault
+app.post('/setDefaultSupplier', async (req, res) => {
+  try {
+    const { userId, supplierId } = req.body;
+
+    // Reset all suppliers to non-default
+    await Supplier.updateMany({ userId }, { isDefault: false });
+
+    // Set the selected supplier as default
+    await Supplier.findOneAndUpdate(
+      { _id: supplierId, userId },
+      { isDefault: true },
+      { new: true }
+    );
+
+    res.status(200).json({ message: 'Default supplier set successfully' });
+  } catch (error) {
+    console.error('Error setting default supplier:', error);
+    res.status(500).json({ message: 'Failed to set default supplier' });
+  }
+});
+
+app.get('/getDefaultSupplier', async(req, res) => {
+  try {
+    const userId = req.query.userId;
+    console.log("Received request for userId:", userId);
+    
+    if (!userId) {
+      console.log("No userId provided");
+      return res.status(400).json({ message: 'userId is required' });
+    }
+
+    // Add debug log to see what we're querying for
+    console.log("Querying with:", { userId, isDefault: true });
+
+    const defaultSupplier = await Supplier.findOne({ 
+      userId: userId.toString(), // Ensure userId is a string
+      isDefault: true 
+    });
+    
+    console.log("Found supplier:", defaultSupplier);
+    
+    if (!defaultSupplier) {
+      console.log("No default supplier found for userId:", userId);
+      return res.status(404).json({ message: 'No default supplier found' });
+    }
+
+    res.status(200).json(defaultSupplier);
+  } catch (error) {
+    console.error('Error fetching default supplier:', error);
+    res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+});
+
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
