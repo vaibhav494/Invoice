@@ -117,26 +117,26 @@ export default function DynamicTaxInvoice() {
 
  
   const [customer_shipping, setCustomerShipping] = useState<CompanyDetails>({
-    name: "L. P. CREATION",
+    name: "Customer Name",
     address: [
-      "CHANDRKANT CHAWL, ROOM NO 19, OPP",
-      "KHIRA NAGAR, S. V. ROAD, SANTACRUZ",
-      "WEST, Mumbai Suburban, 400054",
+      "Line 1",
+      "Line 2",
+      "Line 3",
     ],
-    gstin: "27AITPP7407M1ZE",
-    state: "Maharashtra",
-    stateCode: "27",
+    gstin: "Gst Number",
+    state: "State Name",
+    stateCode: "State Code",
   });
   const [customer_billing, setCustomerBilling] = useState<CompanyDetails>({
-    name: "L. P. CREATION",
+    name: "Customer Name",
     address: [
-      "CHANDRKANT CHAWL, ROOM NO 19, OPP",
-      "KHIRA NAGAR, S. V. ROAD, SANTACRUZ",
-      "WEST, Mumbai Suburban, 400054",
+      "Line 1",
+      "Line 2",
+      "Line 3",
     ],
-    gstin: "27AITPP7407M1ZE",
-    state: "Maharashtra",
-    stateCode: "27",
+    gstin: "Gst Number",
+    state: "State Name",
+    stateCode: "State Code",
   });
   const [supplierList, setSupplierList] = useState<[]>([]);
   const [customerList, setCustomerList] = useState<[]>([]);

@@ -828,22 +828,19 @@ app.post('/setDefaultSupplier', async (req, res) => {
 app.get('/getDefaultSupplier', async(req, res) => {
   try {
     const userId = req.query.userId;
-    console.log("Received request for userId:", userId);
+
     
     if (!userId) {
       console.log("No userId provided");
       return res.status(400).json({ message: 'userId is required' });
     }
 
-    // Add debug log to see what we're querying for
-    console.log("Querying with:", { userId, isDefault: true });
-
     const defaultSupplier = await Supplier.findOne({ 
       userId: userId.toString(), // Ensure userId is a string
       isDefault: true 
     });
     
-    console.log("Found supplier:", defaultSupplier);
+
     
     if (!defaultSupplier) {
       console.log("No default supplier found for userId:", userId);
