@@ -469,7 +469,7 @@ export default function DynamicTaxInvoice() {
     supplier.address.forEach((line, index) => {
       doc.text(line, 20, 30 + index * 5);
     });
-    doc.text(`GSTIN/UIN: ${supplier.gstin}`, 20, 40);
+    doc.text(`GSTIN/UIN: ${supplier.gstin}`, 20, 50);
     doc.text(
       `State Name : ${supplier.state}, Code : ${supplier.stateCode}`,
       20,
