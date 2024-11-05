@@ -170,6 +170,7 @@ app.post("/addinvoicedatabase", async (req, res) => {
     taxLines: req.body.TaxLines,
     userId: req.body.UserId,
     status: req.body.Status,
+    profit: req.body.Profit
   });
   await newInvoice.save();
 });

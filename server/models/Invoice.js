@@ -14,7 +14,8 @@ const NewInvoice = new mongoose.Schema({
     destination: {type: String},
     taxLines: {type: Array},
     userId: {type: String},
-    status: {type: String}
+    status: {type: String},
+    profit:{type:String}
 });
 // Matching combination of userId and invoiceNumber unique combination 
 NewInvoice.index({ invoiceNumber: 1, userId: 1 }, { unique: true });

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast"; // Make sure to import the correct path
+import { useToast } from "@/hooks/use-toast"; 
 import {
   Table,
   TableBody,
@@ -49,13 +49,11 @@ interface BankDetail {
   branch_ifsc: string;
   userId: string;
 }
-interface Props {
-  fstate: string[];
-}
 export default function DynamicTaxInvoice() {
+  const [Profit, setProfit] = useState(0);
   const status = "Pending";
   const { user } = useUser();
-  const [invoiceNumber, setInvoiceNumber] = useState("71");
+  const [invoiceNumber, setInvoiceNumber] = useState("0");
   const date = new Date();
   const dateOnly = date.toISOString().split("T")[0];
   const [invoiceDate, setInvoiceDate] = useState(dateOnly);
@@ -92,6 +90,24 @@ export default function DynamicTaxInvoice() {
     state: "",
     stateCode: "",
   });
+
+  const calProfit = () => {
+    let totalProfit = 0;
+    productLines.forEach((line) => {
+      const product = allProducts.find(p => p.name === line.description);
+      console.log('this is product '+product)
+      if (product) {
+        // Calculate profit for each line: (selling price - cost price) * quantity
+        console.log('this is line.rate'+ line.rate);
+        console.log('this is line.quantity'+ line.quantity);
+        console.log('this is product.cost'+ product.cost);
+        const lineProfit = ((line.rate * line.quantity) - (product.cost * line.quantity));
+        totalProfit += lineProfit;
+      }
+    });
+    setProfit(totalProfit);
+    console.log("Total Profit:", totalProfit);
+  }
 
   useEffect(() => {
     const fetchDefaultSupplier = async () => {
@@ -213,6 +229,28 @@ export default function DynamicTaxInvoice() {
       setSelectedBankDetail(bankDetails[0]); // Set default selection
     }
   }, [bankDetails]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (user?.id) {
+        try {
+          const response = await axios.get(
+            `http://localhost:4000/products/${user.id}`
+          );
+          console.log(response.data);
+          setAllProducts(response.data);
+          console.log(allProducts);
+        } catch (error) {
+          console.error("Error fetching products:", error);
+        }
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+
+
   function AddInvoiceDatabase() {
     const calculatedTaxLines = calculateTaxLines();
     axios.post("http://localhost:4000/addinvoicedatabase", {
@@ -231,7 +269,8 @@ export default function DynamicTaxInvoice() {
       TaxLines: calculatedTaxLines,
       UserId: user?.id,
       Status: status,
-    });
+      Profit: Profit
+    })
   }
   const fetchCompanyDetails = (
     company: "supplier" | "customer_billing" | "customer_shipping",
@@ -355,24 +394,7 @@ export default function DynamicTaxInvoice() {
     per: string;
   }
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      if (user?.id) {
-        try {
-          const response = await axios.get(
-            `http://localhost:4000/products/${user.id}`
-          );
-          console.log(response.data);
-          setAllProducts(response.data);
-          console.log(allProducts);
-        } catch (error) {
-          console.error("Error fetching products:", error);
-        }
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  
   const handleProductSelect = (lineId: number, selectedProductName: string) => {
     const selectedProduct = allProducts.find(
       (product) => product.name === selectedProductName
@@ -396,6 +418,9 @@ export default function DynamicTaxInvoice() {
       );
     }
   };
+  useEffect(() => {
+    calProfit();
+  }, [productLines]);
   // useEffect(() => {
   //   if (userId) {
   //     fetchProducts(userId);
@@ -895,13 +920,10 @@ export default function DynamicTaxInvoice() {
                     <Input
                       type="number"
                       value={line.rate}
-                      onChange={(e) =>
-                        updateProductLine(
-                          line.id,
-                          "rate",
-                          parseFloat(e.target.value)
-                        )
-                      }
+                      onChange={ (e) => {
+                        updateProductLine(line.id, "rate", parseFloat(e.target.value));
+                        //calProfit();
+                      }}
                     />
                   </TableCell>
                   <TableCell>
@@ -1049,6 +1071,9 @@ export default function DynamicTaxInvoice() {
           <Button className="float-right mt-4" onClick={AddInvoiceDatabase}>
             Save Invoice
           </Button>
+          <div className="mt-4">
+            <p className="text-sm font-semibold">Total Profit: ₹ {Profit.toFixed(2)}</p>
+          </div>
         </CardContent>
       </Card>
     </>
