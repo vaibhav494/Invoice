@@ -32,6 +32,7 @@ interface ProductLine {
   quantity: number;
   rate: number;
   per: string;
+  discount : number;
   amount: number;
 }
 interface TaxLine {
@@ -72,6 +73,7 @@ export default function DynamicTaxInvoice() {
       quantity: 0,
       rate: 0,
       per: "Mtr",
+      discount: 0,
       amount: 0,
     },
   ]);
@@ -101,7 +103,7 @@ export default function DynamicTaxInvoice() {
         console.log('this is line.rate'+ line.rate);
         console.log('this is line.quantity'+ line.quantity);
         console.log('this is product.cost'+ product.cost);
-        const lineProfit = ((line.rate * line.quantity) - (product.cost * line.quantity));
+        const lineProfit = (line.amount - (product.cost * line.quantity));
         totalProfit += lineProfit;
       }
     });
@@ -335,6 +337,7 @@ export default function DynamicTaxInvoice() {
         quantity: 0,
         rate: 0,
         per: "",
+        discount: 0,
         amount: 0,
       },
     ]);
@@ -349,7 +352,10 @@ export default function DynamicTaxInvoice() {
       productLines.map((line) => {
         if (line.id === id) {
           const updatedLine = { ...line, [field]: value };
+          
           updatedLine.amount = updatedLine.quantity * updatedLine.rate;
+          const discount_amount = updatedLine.amount * (updatedLine.discount/100)
+          updatedLine.amount = updatedLine.amount - discount_amount
           return updatedLine;
         }
         return line;
@@ -410,6 +416,7 @@ export default function DynamicTaxInvoice() {
               hsn: selectedProduct.hsn || "",
               per: selectedProduct.per || "",
               rate: selectedProduct.cost || 0,
+              discount : 0,
               amount: line.quantity * (selectedProduct.cost || 0),
             };
           }
@@ -864,6 +871,7 @@ export default function DynamicTaxInvoice() {
                 <TableHead>Quantity</TableHead>
                 <TableHead>Rate</TableHead>
                 <TableHead>per</TableHead>
+                <TableHead>discount</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>
@@ -931,6 +939,14 @@ export default function DynamicTaxInvoice() {
                       value={line.per}
                       onChange={(e) =>
                         updateProductLine(line.id, "per", e.target.value)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      value={line.discount}
+                      onChange={(e) =>
+                        updateProductLine(line.id, "discount", e.target.value)
                       }
                     />
                   </TableCell>
