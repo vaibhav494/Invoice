@@ -520,6 +520,7 @@ export default function DynamicTaxInvoice() {
           "Quantity",
           "Rate",
           "per",
+          "discount",
           "Amount",
         ],
       ],
@@ -530,6 +531,7 @@ export default function DynamicTaxInvoice() {
         line.quantity,
         line.rate,
         line.per,
+        line.discount,
         line.amount.toFixed(2),
       ]),
       startY: 105,
@@ -626,7 +628,7 @@ export default function DynamicTaxInvoice() {
   };
   return (
     <>
-      <Card className="w-full max-w-4xl mx-auto">
+      <Card className="w-full max-w-5xl mx-auto">
         <CardHeader className="border-b">
           <div className="flex justify-between items-center">
             <div>
@@ -816,6 +818,9 @@ export default function DynamicTaxInvoice() {
               </div>
             </div>
           </div>
+          <br />
+          <hr className="full"/>
+          <br />
           <div className="grid grid-cols-3 gap-4 mb-6">
             <div>
               <Label htmlFor="buyerOrderNo">Buyer's Order No.</Label>
@@ -912,6 +917,7 @@ export default function DynamicTaxInvoice() {
                     />
                   </TableCell>
                   <TableCell>
+                    
                     <Input
                       type="number"
                       value={line.quantity}
@@ -919,7 +925,7 @@ export default function DynamicTaxInvoice() {
                         updateProductLine(
                           line.id,
                           "quantity",
-                          parseFloat(e.target.value)
+                          e.target.value
                         )
                       }
                     />
@@ -929,7 +935,7 @@ export default function DynamicTaxInvoice() {
                       type="number"
                       value={line.rate}
                       onChange={ (e) => {
-                        updateProductLine(line.id, "rate", parseFloat(e.target.value));
+                        updateProductLine(line.id, "rate", e.target.value);
                         //calProfit();
                       }}
                     />
@@ -1030,9 +1036,10 @@ export default function DynamicTaxInvoice() {
             </p>
             <p className="text-sm">{numberToWords(calculateGrandTotal())}</p>
             <p className="text-sm font-semibold mt-4">Company's Bank Details</p>
-            <div className="mt-6">
-              <Label htmlFor="bankDetails">Select Bank Account</Label>
+            <div className="">
+              <Label htmlFor="bankDetails">Select Bank Account: </Label>
               <select
+              className="text-sm"
                 id="bankDetails"
                 value={selectedBankDetail?.Ac_No || ""}
                 onChange={(e) => {
@@ -1058,7 +1065,7 @@ export default function DynamicTaxInvoice() {
               </select>
 
               {selectedBankDetail && (
-                <div>
+                <div className="text-xs">
                   <p>Bank Name: {selectedBankDetail.name}</p>
                   <p>A/c No.: {selectedBankDetail.Ac_No}</p>
                   <p>Branch & IFS Code: {selectedBankDetail.branch_ifsc}</p>
