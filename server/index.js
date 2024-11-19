@@ -155,24 +155,37 @@ app.get('/get-users', async (req, res) => {
 
 
 app.post("/addinvoicedatabase", async (req, res) => {
-  const newInvoice = new Invoice({
-    supplier: req.body.Supplier,
-    customer_billing: req.body.CustomerBilling,
-    customer_shipping: req.body.CustomerShipping,
-    productLines: req.body.ProductLine,
-    invoiceNumber: req.body.InvoiceNumber,
-    invoiceDate: req.body.InvoiceDate,
-    buyerOrderNo: req.body.BuyerOrderNo,
-    buyerOrderDate: req.body.BuyerOrderDate,
-    dispatchDocNo: req.body.DispatchDocNo,
-    dispatchedThrough: req.body.DispatchedThrough,
-    destination: req.body.Destination,
-    taxLines: req.body.TaxLines,
-    userId: req.body.UserId,
-    status: req.body.Status,
-    profit: req.body.Profit
-  });
-  await newInvoice.save();
+  try {
+    const newInvoice = new Invoice({
+      supplier: req.body.Supplier,
+      customer_billing: req.body.CustomerBilling,
+      customer_shipping: req.body.CustomerShipping,
+      productLines: req.body.ProductLine,
+      invoiceNumber: req.body.InvoiceNumber,
+      invoiceDate: req.body.InvoiceDate,
+      buyerOrderNo: req.body.BuyerOrderNo,
+      buyerOrderDate: req.body.BuyerOrderDate,
+      dispatchDocNo: req.body.DispatchDocNo,
+      dispatchedThrough: req.body.DispatchedThrough,
+      destination: req.body.Destination,
+      taxLines: req.body.TaxLines,
+      userId: req.body.UserId,
+      status: req.body.Status,
+      profit: req.body.Profit
+    });
+    await newInvoice.save();
+    res.status(201).json({ 
+      success: true, 
+      message: "Invoice created successfully",
+      invoice: newInvoice 
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: "Error creating invoice",
+      error: error.message 
+    });
+  }
 });
 app.get("/insert_full_invoice_detail", async (req, res) => {
   const userId = req.query.userId; // Get userId from query parameters

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast"; 
+import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -51,6 +51,7 @@ interface BankDetail {
   userId: string;
 }
 export default function DynamicTaxInvoice() {
+  const { toast } = useToast();
   const [Profit, setProfit] = useState(0);
   const status = "Pending";
   const { user } = useUser();
@@ -251,29 +252,66 @@ export default function DynamicTaxInvoice() {
     fetchProducts();
   }, []);
 
+  const [isSaving, setIsSaving] = useState(false);
 
-
-  function AddInvoiceDatabase() {
+  const handleAddInvoiceDatabase = async () => {
+    if (isSaving) return;
+  
+    console.log("Saving started");
+    setIsSaving(true);
+  
     const calculatedTaxLines = calculateTaxLines();
-    axios.post("http://localhost:4000/addinvoicedatabase", {
-      Supplier: supplier,
-      CustomerBilling: customer_billing,
-      CustomerShipping: customer_shipping,
-      ProductLine: productLines,
-      InvoiceNumber: invoiceNumber,
-      InvoiceDate: invoiceDate,
-      BuyerOrderNo: buyerOrderNo,
-      BuyerOrderDate: buyerOrderDate,
-      DispatchDocNo: dispatchDocNo,
-      DispatchedThrough: dispatchedThrough,
-      Destination: destination,
-      //TaxLines:taxLines,
-      TaxLines: calculatedTaxLines,
-      UserId: user?.id,
-      Status: status,
-      Profit: Profit
-    })
-  }
+  
+    try {
+      console.log("Attempting to save invoice");
+  
+      const response = await axios.post(
+        "http://localhost:4000/addinvoicedatabase",
+        {
+          Supplier: supplier,
+          CustomerBilling: customer_billing,
+          CustomerShipping: customer_shipping,
+          ProductLine: productLines,
+          InvoiceNumber: invoiceNumber,
+          InvoiceDate: invoiceDate,
+          BuyerOrderNo: buyerOrderNo,
+          BuyerOrderDate: buyerOrderDate,
+          DispatchDocNo: dispatchDocNo,
+          DispatchedThrough: dispatchedThrough,
+          Destination: destination,
+          TaxLines: calculatedTaxLines,
+          UserId: user?.id,
+          Status: status,
+          Profit: Profit,
+        },
+        { timeout: 5000 } 
+      );
+  
+      console.log("API Response:", response.data);
+  
+      toast({
+        title: "Success",
+        description: "Invoice saved successfully",
+      });
+    } catch (error) {
+      console.error("Error saving invoice:", error);
+  
+    
+        toast({
+          variant: "destructive",
+          title: "Failed to save invoice",
+          description: error.response?.data?.message + ". Refresh the Page" || "An unexpected error occurred",
+        });
+      
+    } finally {
+      console.log("Saving ended");
+      setIsSaving(false);
+    }
+  };
+  
+
+  
+
   const fetchCompanyDetails = (
     company: "supplier" | "customer_billing" | "customer_shipping",
     id: string
@@ -301,6 +339,7 @@ export default function DynamicTaxInvoice() {
           let pan = details.gst.slice(2, -3);
           setPan(pan)
 
+
         } else if (company === "customer_billing") {
           setCustomerBilling({
             name: details.name,
@@ -311,6 +350,7 @@ export default function DynamicTaxInvoice() {
             state: details.state,
             stateCode: details.stateCode,
           });
+         
         } else {
           setCustomerShipping({
             name: details.name,
@@ -321,11 +361,18 @@ export default function DynamicTaxInvoice() {
             state: details.state,
             stateCode: details.stateCode,
           });
+       
         }
+        
       })
-      .catch((error) =>
-        console.error(`Error fetching ${company} details:`, error)
-      );
+      .catch((error) => {
+        console.error(`Error fetching ${company} details:`, error);
+        toast({
+          variant: "destructive",
+          title: "Error fetching details",
+          description: error.message || `Failed to fetch ${company} details`,
+        })
+      });
   };
   const addProductLine = () => {
     setProductLines([
@@ -455,6 +502,10 @@ export default function DynamicTaxInvoice() {
     return words;
   };
   const downloadInvoice = () => {
+    toast({
+      title: "Downloaded Successfully",
+      description: "",
+    })
     const doc = new jsPDF();
     // Set font styles
     doc.setFont("helvetica", "normal");
@@ -1090,9 +1141,14 @@ export default function DynamicTaxInvoice() {
           </p>
           <Button onClick={downloadInvoice} className="mt-4">
             Download Invoice
+            
           </Button>
-          <Button className="float-right mt-4" onClick={AddInvoiceDatabase}>
-            Save Invoice
+          <Button 
+            className="float-right mt-4" 
+            onClick={handleAddInvoiceDatabase}
+            disabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save Invoice"}
           </Button>
           <div className="mt-4">
             <p className="text-sm font-semibold">Total Profit: ₹ {Profit.toFixed(2)}</p>
