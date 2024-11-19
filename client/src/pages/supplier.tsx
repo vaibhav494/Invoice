@@ -159,6 +159,102 @@ export default function Supplier() {
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+              <DialogTitle>Add New Supplier</DialogTitle>
+              <DialogDescription>
+                Enter the details of the new supplier here. Click save when you're done.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={newSupplier.name}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="addressLine1" className="text-right">
+                  Address Line 1*
+                </Label>
+                <Input
+                  id="addressLine1"
+                  name="addressLine1"
+                  value={newSupplier.addressLine1}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="addressLine2" className="text-right">
+                  Address Line 2
+                </Label>
+                <Input
+                  id="addressLine2"
+                  name="addressLine2"
+                  value={newSupplier.addressLine2}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="addressLine3" className="text-right">
+                  Address Line 3
+                </Label>
+                <Input
+                  id="addressLine3"
+                  name="addressLine3"
+                  value={newSupplier.addressLine3}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="gst" className="text-right">
+                  GST
+                </Label>
+                <Input
+                  id="gst"
+                  name="gst"
+                  value={newSupplier.gst}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="state" className="text-right">
+                  State
+                </Label>
+                <Input
+                  id="state"
+                  name="state"
+                  value={newSupplier.state}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="stateCode" className="text-right">
+                  State Code
+                </Label>
+                <Input
+                  id="stateCode"
+                  name="stateCode"
+                  value={newSupplier.stateCode}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit" onClick={handleAddSupplier}>Save changes</Button>
+            </DialogFooter>
             {/* Dialog content remains the same */}
           </DialogContent>
         </Dialog>
