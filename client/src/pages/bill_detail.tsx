@@ -7,6 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Pencil,
+  ArchiveIcon,
 } from "lucide-react";
 import {
   Table,
@@ -50,6 +51,12 @@ type SortOrder = "asc" | "desc" | "none";
 
 const ITEMS_PER_PAGE = 10;
 
+interface ArchiveDialogProps {
+  invoice: InvoiceDetail;
+  onDelete: () => void;
+  onUpdate: () => void;
+}
+
 export default function ImprovedInvoiceTable() {
   const [detail, setDetail] = useState<InvoiceDetail[]>([]);
   const [filteredDetail, setFilteredDetail] = useState<InvoiceDetail[]>([]);
@@ -66,11 +73,11 @@ export default function ImprovedInvoiceTable() {
 
   useEffect(() => {
     if (user) {
-      // Ensure user is available
+
       axios
         .get(
           `http://localhost:4000/insert_full_invoice_detail?userId=${user.id}`
-        ) // Pass userId as a query parameter
+        ) 
         .then((response) => {
           setDetail(response.data);
           console.log("this is the data available", response.data);
@@ -79,7 +86,7 @@ export default function ImprovedInvoiceTable() {
           console.log(err);
         });
     }
-  }, [user]); // Add user as a dependency
+  }, [user]); 
 
   useEffect(() => {
     let data = [...detail];
@@ -129,6 +136,37 @@ export default function ImprovedInvoiceTable() {
     currentPage * ITEMS_PER_PAGE
   );
 
+  const handleDeleteInvoice = useCallback(
+    async (invoiceNumber: string) => {
+      try {
+        await axios.delete(`http://localhost:4000/delete_invoice`, {
+          data: {
+            invoiceNumber,
+            userId: user?.id,
+          },
+        });
+        setDetail((prevDetail) =>
+          prevDetail.filter(
+            (invoice) => 
+              !(invoice.invoiceNumber === invoiceNumber && invoice.userId === user?.id)
+          )
+        );
+        toast({
+          title: "Invoice Deleted",
+          description: `Invoice ${invoiceNumber} has been deleted successfully`,
+        });
+      } catch (error) {
+        console.error("Error deleting invoice:", error);
+        toast({
+          title: "Error",
+          description: "Failed to delete invoice",
+          variant: "destructive",
+        });
+      }
+    },
+    [user?.id]
+  ); 
+
   const handleStatusUpdate = useCallback(
     async (invoiceNumber: string, newStatus: string) => {
       try {
@@ -159,7 +197,7 @@ export default function ImprovedInvoiceTable() {
       }
     },
     [user?.id]
-  ); // Add user.id to the dependency array
+  ); 
 
   return (
     <Card className="w-full">
@@ -216,7 +254,7 @@ export default function ImprovedInvoiceTable() {
               <SelectItem value="Defaulted">Defaulted</SelectItem>
             </SelectContent>
           </Select>
-          <div className="relative w-full md:w-[300px]">
+          <div className="relative w-full md:w-[435px]">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search invoice number or date"
@@ -252,6 +290,7 @@ export default function ImprovedInvoiceTable() {
                   </Button>
                 </TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -313,6 +352,37 @@ export default function ImprovedInvoiceTable() {
                         </DialogContent>
                       </Dialog>
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button className="text-gray-500 hover:text-gray-700">
+                          <ArchiveIcon className="w-6" />
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Invoice Actions</DialogTitle>
+                        </DialogHeader>
+                        <div className="flex flex-col gap-4 py-4">
+                          <Button 
+                            variant="destructive"
+                            onClick={() => handleDeleteInvoice(invoice.invoiceNumber)}
+                          >
+                            Delete Invoice
+                          </Button>
+                          <Button 
+                            variant="default"
+                            onClick={() => {
+                              // Add update logic here
+                              console.log("Update invoice:", invoice.invoiceNumber);
+                            }}
+                          >
+                            Update Invoice
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </TableCell>
                 </TableRow>
               ))}

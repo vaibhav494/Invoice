@@ -259,7 +259,7 @@ export default function Supplier() {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="bg-background rounded-lg shadow overflow-x-auto">
+      <div className="bg-white rounded-lg shadow overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
